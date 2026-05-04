@@ -1,0 +1,44 @@
+/* Extracted Inline Styles */
+.style-465b2a { display: flex; gap: 1.5rem; align-items: center; }
+.style-1cb386 { color: var(--accent-purple); text-decoration: none; font-weight: 800; font-size: 1.25rem; display: flex; align-items: center; gap: 12px; opacity: 0.9; transition: 0.3s; }
+.style-ea0079 { background: var(--accent-purple); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+.style-18e8a5 { text-decoration: none; padding: 10px 20px; border-radius: 12px; }
+.style-a13c9c { padding: 2rem; border-radius: 24px; overflow: hidden; }
+.style-5702eb { display: flex; gap: 2.5rem; flex-wrap: wrap; }
+.style-b02fdb { flex: 1.2; min-width: 350px; }
+.style-407972 { position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); height: 350px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); }
+.style-8acfcc { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-dim); }
+.style-b2178e { font-size: 5rem; margin-bottom: 1rem; opacity: 0.3; }
+.style-964eba { display: none; width: 100%; height: 100%; object-fit: cover; }
+.style-d2e2f5 { position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
+.style-452fc9 { display: flex; justify-content: space-between; align-items: flex-end; }
+.style-a52a1b { background: var(--accent-purple); color: white; padding: 5px 15px; border-radius: 8px; font-weight: 800; font-size: 1.2rem; display: inline-block; margin-bottom: 10px; letter-spacing: 1px; box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4); }
+.style-b512c9 { display: flex; align-items: center; gap: 10px; }
+.style-d31629 { font-weight: 600; color: white; text-transform: uppercase; font-size: 0.9rem; }
+.style-c233d6 { margin-top: 2rem; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.style-8c191c { font-size: 1rem; color: var(--text-dim); }
+.style-502951 { flex: 1; min-width: 300px; }
+.style-b3de61 { font-size: 1.4rem; font-weight: 700; margin-bottom: 2rem; color: var(--accent-purple); }
+.style-2ee324 { display: flex; flex-direction: column; gap: 1.5rem; }
+.style-85f502 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.style-34ec1e { padding: 1.25rem; border-radius: 16px; }
+.style-7eef84 { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 5px; }
+.style-32102a { font-weight: 700; font-size: 1.1rem; }
+.style-e67d3e { padding: 1.25rem; border-radius: 16px; margin-top: 1rem; }
+.style-f3780a { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 1rem; }
+.style-ee8a4b { display: flex; align-items: center; gap: 1rem; }
+.style-1de599 { width: 50px; height: 50px; border-radius: 12px; background: rgba(168, 85, 247, 0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-purple); }
+.style-6cdad5 { font-weight: 700; color: white; margin: 0; }
+.style-6d4167 { font-size: 0.75rem; color: var(--text-dim); margin: 0; }
+.style-fd0deb { display: flex; align-items: center; gap: 1rem; opacity: 0.6; }
+.style-c6e720 { width: 50px; height: 50px; border-radius: 12px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; }
+.style-4f38c3 { font-weight: 600; color: var(--text-dim); margin: 0; }
+.style-b2e6dc { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
+.style-d922ea { position:absolute; top:20px; right:30px; color:#fff; font-size:40px; font-weight:bold; cursor:pointer; }
+.style-058322 { max-width:90%; max-height:90%; border-radius:12px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+
+/* Extracted Inline Styles v2 */
+.style-803650 { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
+.style-71ffb8 { height: 70px; border-radius: 12px; overflow: hidden; cursor: pointer; border: 2px solid ___BLADE_9___; background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+.style-7d1fae { width: 100%; height: 100%; object-fit: cover; }
+.style-a54e88 { width: 50px; height: 50px; border-radius: 12px; object-fit: cover; }

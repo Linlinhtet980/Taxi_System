@@ -1,0 +1,133 @@
+/* Admin Layout Components Styles */
+
+.notifications-wrapper {
+    position: relative;
+}
+
+.notifications-btn {
+    cursor: pointer;
+    font-size: 1.25rem;
+    position: relative;
+}
+
+.notif-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--accent-pink);
+    color: white;
+    font-size: 0.65rem;
+    padding: 2px 5px;
+    border-radius: 50%;
+    min-width: 18px;
+    text-align: center;
+    font-weight: 700;
+    border: 2px solid var(--bg-main);
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 320px;
+    margin-top: 1rem;
+    border-radius: 15px;
+    border: 1px solid var(--card-border);
+    z-index: 1000;
+    padding: 1rem;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+.dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.dropdown-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.mark-read-link {
+    font-size: 0.75rem;
+    color: var(--accent-purple);
+    text-decoration: none;
+}
+
+.notif-list {
+    max-height: 350px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.notif-item {
+    padding: 0.75rem;
+    border-radius: 10px;
+}
+
+.notif-item.unread {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--card-border);
+}
+
+.notif-item.read {
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+.notif-content {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.notif-icon {
+    margin-top: 0.2rem;
+}
+
+.notif-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.notif-message {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.4;
+    margin-top: 0.2rem;
+}
+
+.notif-time {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    margin-top: 0.4rem;
+}
+
+.notif-empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+}
+
+.search-bar-spacer {
+    flex: 1;
+}
+
+.alert-box {
+    padding: 1.25rem;
+    border-left: 4px solid var(--accent-purple);
+    margin-bottom: 2rem;
+}
+
+.alert-text {
+    color: var(--accent-purple);
+    font-weight: 700;
+}

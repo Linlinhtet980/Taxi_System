@@ -1,0 +1,153 @@
+/* Extracted Inline Styles */
+.style-d3297f {
+    margin-bottom: 1.5rem;
+}
+
+.style-d62148 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.style-a9a25b {
+    padding: 20px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%);
+}
+
+.style-af391f {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.style-3c0b40 {
+    font-size: 1.5rem;
+    color: #4ade80;
+    font-weight: 800;
+}
+
+.style-fb2a71 {
+    font-size: 0.8rem;
+}
+
+.style-45ad02 {
+    padding: 20px;
+    border-radius: 24px;
+}
+
+.style-ab71b2 {
+    font-size: 1.5rem;
+    color: #f43f5e;
+    font-weight: 800;
+}
+
+.style-57c15d {
+    padding: 25px;
+    border-radius: 24px;
+    margin-bottom: 25px;
+}
+
+.style-995390 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.style-c63345 {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.style-0ed0e9 {
+    display: flex;
+    gap: 10px;
+}
+
+.style-fbd666 {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+}
+
+.style-d268a8 {
+    color: #6366f1;
+    margin-right: 5px;
+}
+
+.style-c40e32 {
+    height: 250px;
+    width: 100%;
+}
+
+.style-c3e0b7 {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.style-4f6f68 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-left: 5px;
+}
+
+.style-c8a5af {
+    padding: 15px 20px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.style-99129a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.style-8fd29b {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    background: rgba(74, 222, 128, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.style-a5e3c2 {
+    color: #4ade80;
+}
+
+.style-2a880b {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.style-831dee {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}
+
+.style-d41bb0 {
+    font-weight: 800;
+    color: white;
+}
+
+.style-4d1a80 {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    background: rgba(96, 165, 250, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.style-8ffdae {
+    color: #60a5fa;
+}

@@ -1,0 +1,25 @@
+#create-map { z-index: 1; border: 1px solid var(--card-border); }
+    .leaflet-tile-pane { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
+    /* Hide the routing instructions panel to keep map clean */
+    .leaflet-routing-container { display: none; }
+/* Extracted Inline Styles */
+.style-1cb386 { color: var(--accent-purple); text-decoration: none; font-weight: 800; font-size: 1.25rem; display: flex; align-items: center; gap: 12px; opacity: 0.9; transition: 0.3s; }
+.style-ea0079 { background: var(--accent-purple); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+.style-27ac6d { margin-top: 1.25rem; }
+.style-9a3433 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2.5rem; align-items: start; }
+.style-b293d7 { padding: 2.5rem; border-radius: 24px; }
+.style-257995 { margin-bottom: 2rem; }
+.style-4ac43c { font-size: 1.25rem; font-weight: 700; color: var(--accent-purple); display: flex; align-items: center; gap: 10px; }
+.style-2ee324 { display: flex; flex-direction: column; gap: 1.5rem; }
+.style-c45d59 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.style-d4bdca { display: block; margin-bottom: 0.75rem; font-weight: 600; color: var(--text-main); }
+.style-ad5d06 { width: 100%; padding: 12px; border-radius: 12px; color: white; border-color: var(--glass-border); }
+.style-d85c4e { position: relative; }
+.style-2d90a7 { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #4ade80; }
+.style-09e273 { width: 100%; padding: 12px 12px 12px 45px; border-radius: 12px; color: white; border-color: var(--glass-border); }
+.style-4b7518 { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #f43f5e; }
+.style-358939 { width: 100%; padding: 12px; border-radius: 12px; color: #4ade80; border-color: var(--glass-border); font-weight: 700; }
+.style-7cb755 { margin-top: 1rem; padding: 15px; border-radius: 15px; font-weight: 700; box-shadow: 0 10px 20px rgba(168, 85, 247, 0.3); }
+.style-0f6d9e { padding: 1rem; position: sticky; top: 1rem; }
+.style-e7e64e { width: 100%; height: 500px; border-radius: var(--radius-md); }
+.style-49faa5 { margin-top: 1rem; font-size: 0.8rem; color: var(--text-dim); }

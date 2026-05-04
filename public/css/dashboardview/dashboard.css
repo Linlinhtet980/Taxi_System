@@ -1,0 +1,175 @@
+/* Dashboard Specific Styles */
+
+.dashboard-header {
+    display: flex;
+    gap: 1rem;
+}
+
+.system-status {
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    background: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #4ade80;
+}
+
+.status-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.dashboard-stats-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+}
+
+.stat-card-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.stat-icon-box {
+    padding: 0.75rem;
+    border-radius: 12px;
+}
+
+.stat-update-info {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.dashboard-middle-row {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.chart-card {
+    padding: 1.5rem;
+    height: fit-content;
+}
+
+.chart-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.chart-container {
+    height: 250px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-legend {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.launch-panel {
+    padding: 1.5rem;
+}
+
+.launch-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.action-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.5rem 1rem;
+    border-radius: 15px;
+    text-decoration: none;
+    color: var(--text-main);
+    border: 1px solid var(--card-border);
+    transition: all 0.3s ease;
+}
+
+.action-tile i {
+    font-size: 1.5rem;
+    color: var(--accent-purple);
+}
+
+.action-tile span {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.action-tile:hover {
+    background: rgba(168, 85, 247, 0.1);
+    border-color: var(--accent-purple)50;
+    transform: translateY(-5px);
+}
+
+.live-stream-card {
+    margin-top: 2rem;
+}
+
+.live-stream-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.stream-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.view-history-btn {
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+}
+
+.trip-id-text {
+    font-weight: 600;
+}
+
+.fare-text {
+    color: #4ade80;
+    font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-middle-row {
+        grid-template-columns: 1fr !important;
+    }
+}

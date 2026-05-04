@@ -1,0 +1,100 @@
+.custom-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 15px; /* Rows spacing */
+    }
+    .custom-table th {
+        padding: 15px 25px;
+        color: var(--text-dim);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        text-align: left;
+    }
+    .custom-table td {
+        padding: 22px 25px; /* Spacious padding */
+        background: rgba(255, 255, 255, 0.02);
+        border-top: 1px solid var(--glass-border);
+        border-bottom: 1px solid var(--glass-border);
+        vertical-align: middle;
+    }
+    .custom-table tr td:first-child {
+        border-left: 1px solid var(--glass-border);
+        border-radius: 16px 0 0 16px;
+    }
+    .custom-table tr td:last-child {
+        border-right: 1px solid var(--glass-border);
+        border-radius: 0 16px 16px 0;
+    }
+    .id-badge {
+        background: rgba(168, 85, 247, 0.1);
+        color: var(--accent-purple);
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.75rem;
+    }
+    .action-btn-success {
+        background: #4ade80;
+        color: white;
+        border: none;
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px rgba(74, 222, 128, 0.2);
+    }
+    .btn-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .action-btn-success:hover, .btn-icon:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+    }
+/* Extracted Inline Styles */
+.style-cdd8ca { text-align: center; }
+.style-df2b77 { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+.style-1aecdc { font-weight: 600; font-size: 0.95rem; }
+.style-831dee { font-size: 0.75rem; color: var(--text-dim); }
+.style-1f7302 { font-weight: 700; color: #4ade80; }
+.style-30f144 { font-size: 0.85rem; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; }
+.style-e7992d { font-size: 0.85rem; }
+.style-fbd666 { font-size: 0.7rem; color: var(--text-dim); }
+.style-cc8ca4 { display: flex; gap: 8px; justify-content: center; }
+.style-315c37 { width: 100%; max-width: 450px; padding: 25px; }
+.style-c6641d { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+.style-a5e3c2 { color: #4ade80; }
+.style-75c22c { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 20px; }
+.style-7002f9 { margin-bottom: 20px; }
+.style-378c81 { display: block; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 8px; }
+.style-093cd6 { padding: 15px; border-style: dashed; border-width: 2px; text-align: center; position: relative; }
+.style-4f769f { font-size: 1.5rem; color: var(--accent-purple); margin-bottom: 5px; }
+.style-d9a249 { font-size: 0.8rem; color: var(--text-dim); }
+.style-0ed0e9 { display: flex; gap: 10px; }
+.style-896acc { flex: 1; background: #4ade80; }
+.style-6ff9b2 { width: 100%; max-width: 400px; padding: 25px; }
+.style-46e6db { width: 100%; height: 100px; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); border-radius: 10px; color: white; padding: 10px; margin-bottom: 15px; }
+.style-d08d8a { flex: 1; background: #f43f5e; }
+.style-0b4371 { color: var(--text-dim); font-size: 0.8rem; display: block; margin-bottom: 5px; }
+.style-4a02cd { text-align: center; padding: 50px; color: var(--text-dim); }
+.style-194b57 { margin-top: 20px; }
+
+/* Extracted Inline Styles v2 */
+.style-76290e { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-purple); }
+.style-baf106 { background: rgba(244, 63, 94, 0.1); color: #f43f5e; border: 1px solid #f43f5e; }
+.style-2f5608 { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; }
+.style-daa30f { opacity: 0; position: absolute; inset: 0; cursor: pointer; }
+.style-49cdf8 { flex: 1; }
+.style-28eb31 { font-size: 0.7rem; color: var(--accent-purple); text-decoration: none; border-bottom: 1px solid; }

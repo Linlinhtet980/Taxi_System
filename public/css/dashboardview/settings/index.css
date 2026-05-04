@@ -1,0 +1,17 @@
+.form-control:focus {
+        border-color: var(--accent-purple) !important;
+        background: rgba(168, 85, 247, 0.05) !important;
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+    }
+/* Extracted Inline Styles */
+.style-ba1ada { display: flex; flex-direction: column; gap: 2rem; }
+.style-46105d { padding: 2rem; }
+.style-a61c4c { font-size: 1.25rem; font-weight: 700; margin-bottom: 2rem; color: var(--accent-purple); text-transform: capitalize; }
+.style-fc40eb { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 2rem; }
+.style-ad8938 { color: var(--text-dim); margin-top: 0.5rem; display: block; }
+.style-6e8e8a { display: flex; justify-content: flex-end; margin-top: 1rem; }
+.style-fa434d { padding: 1rem 3rem; font-size: 1rem; border-radius: 12px; box-shadow: 0 10px 20px rgba(168, 85, 247, 0.3); }
+
+/* Extracted Inline Styles v2 */
+.style-d4bdca { display: block; margin-bottom: 0.75rem; font-weight: 600; color: var(--text-main); }
+.style-423751 { width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(255,255,255,0.02); color: var(--text-main); outline: none; }

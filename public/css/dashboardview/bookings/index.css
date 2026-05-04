@@ -1,0 +1,302 @@
+/* --- Drivers Index Specific Styles --- */
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    padding: 1.5rem;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+/* Tables */
+.table-container {
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+.premium-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+}
+
+.premium-table th {
+    padding: 0.75rem 1rem;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
+}
+
+.premium-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+[data-theme="light"] .premium-table td {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.row-hover:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.driver-profile-cell {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.avatar-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--card-border);
+}
+
+.avatar-placeholder {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+/* Badges */
+.status-badge {
+    --status-active: #22c55e;
+    --status-pending: #fbbf24;
+    --status-inactive: #f43f5e;
+    
+    position: static;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+    text-transform: uppercase;
+    font-weight: 700;
+    display: inline-block;
+}
+
+[data-theme="light"] .status-badge {
+    --status-active: #16a34a;
+    --status-pending: #d97706;
+    --status-inactive: #e11d48;
+}
+
+.status-active { background: rgba(34, 197, 94, 0.1); color: var(--status-active); border: 1px solid rgba(34, 197, 94, 0.2); }
+.status-pending { background: rgba(251, 191, 36, 0.1); color: var(--status-pending); border: 1px solid rgba(251, 191, 36, 0.2); }
+.status-inactive { background: rgba(244, 63, 94, 0.1); color: var(--status-inactive); border: 1px solid rgba(244, 63, 94, 0.2); }
+
+.action-btn-group {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.btn-action-show { color: #3b82f6; font-size: 1.1rem; transition: var(--transition); background: none; border: none; cursor: pointer; padding: 0; }
+.btn-action-show:hover { color: #60a5fa; }
+.btn-action-edit { color: var(--accent-purple); font-size: 1.1rem; transition: var(--transition); }
+.btn-action-delete { color: #ef4444; font-size: 1.1rem; transition: var(--transition); background: none; border: none; cursor: pointer; padding: 0; }
+
+/* Small Pagination Buttons (Flex Layout with Text) */
+.small-pagination {
+    margin-top: 2rem;
+    width: 100%;
+}
+
+.small-pagination nav {
+    width: 100%;
+}
+
+/* Hide mobile-only block */
+.small-pagination nav > div:first-child {
+    display: none !important;
+}
+
+/* Display the desktop block explicitly */
+.small-pagination nav > div:last-child {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Text style (Showing 1 to 5) */
+.small-pagination nav p {
+    color: var(--text-dim) !important;
+    font-size: 0.9rem !important;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* The wrapper container for buttons */
+.small-pagination nav > div:last-child > div:last-child > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.4rem;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    box-shadow: none !important;
+}
+
+/* Buttons */
+.small-pagination a,
+.small-pagination span[aria-disabled="true"],
+.small-pagination span[aria-current="page"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 0.5rem;
+    background: rgba(255, 255, 255, 0.05); /* Slight contrast from the wrapper */
+    border: 1px solid transparent !important;
+    color: var(--text-dim);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    margin: 0 !important; /* Remove Tailwind default margins/negatives */
+    box-shadow: none !important;
+}
+
+.small-pagination svg {
+    width: 1rem;
+    height: 1rem;
+}
+
+.small-pagination a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+}
+
+/* Active Page */
+.small-pagination span[aria-current="page"] {
+    background: var(--accent-purple) !important; /* Electric Cyan */
+    color: #111 !important; /* Dark text for contrast on cyan */
+    box-shadow: 0 4px 15px rgba(34, 211, 238, 0.4) !important;
+}
+
+/* Disabled Prev/Next */
+.small-pagination span[aria-disabled="true"] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: transparent;
+}
+/* Trip Status Badges */
+.status-badge.status-pending { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2); }
+.status-badge.status-confirmed { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
+.status-badge.status-ongoing { background: rgba(168, 85, 247, 0.1); color: var(--accent-purple); border: 1px solid rgba(168, 85, 247, 0.2); }
+.status-badge.status-completed { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
+.status-badge.status-cancelled { background: rgba(244, 63, 94, 0.1); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.2); }
+
+/* Status Update Buttons */
+.btn-status-update {
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    text-decoration: none;
+}
+.btn-confirm { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+.btn-confirm:hover { background: #3b82f6; color: white; }
+.btn-start { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+.btn-start:hover { background: #a855f7; color: white; }
+.btn-complete { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+.btn-complete:hover { background: #22c55e; color: white; }
+.btn-cancel { background: rgba(244, 63, 94, 0.2); color: #f43f5e; }
+.btn-cancel:hover { background: #f43f5e; color: white; }
+
+/* Utilities */
+.trip-id {
+    font-family: monospace;
+    font-weight: 700;
+    color: var(--accent-purple);
+}
+
+.sub-text {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 0.2rem;
+}
+
+.passenger-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.passenger-phone {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}
+
+.vehicle-plate {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--accent-cyan);
+}
+
+.route-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.route-text {
+    font-size: 0.85rem;
+}
+
+.route-icon {
+    width: 15px;
+}
+
+.fare-value {
+    font-weight: 700;
+    color: #4ade80;
+}
+
+.fare-currency {
+    font-size: 0.7rem;
+}
