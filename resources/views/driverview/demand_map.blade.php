@@ -82,14 +82,17 @@
             </div>
 
             <div class="style-0000c8">
-                <div onclick="setPaymentMethod('Cash')" id="opt-cash" class="glass style-ece2e4">
-                    <i class="fa-solid fa-money-bill-wave style-893807"></i>
-                    <p class="style-e678dc">CASH</p>
-                </div>
-                <div onclick="setPaymentMethod('Digital')" id="opt-digital" class="glass style-ece2e4">
-                    <i class="fa-solid fa-mobile-screen-button style-5d5bcf"></i>
-                    <p class="style-e678dc">DIGITAL</p>
-                </div>
+                @if($activeBooking->payment_method == 'wallet')
+                    <div class="glass style-ece2e4 active" style="width: 100%; border-color: var(--primary);">
+                        <i class="fa-solid fa-mobile-screen-button style-5d5bcf"></i>
+                        <p class="style-e678dc">DIGITAL PAYMENT RECEIVED</p>
+                    </div>
+                @else
+                    <div class="glass style-ece2e4 active" style="width: 100%; border-color: #4ade80;">
+                        <i class="fa-solid fa-money-bill-wave style-893807" style="color: #4ade80;"></i>
+                        <p class="style-e678dc">CASH PAYMENT</p>
+                    </div>
+                @endif
             </div>
 
             <!-- Payment Hint Box -->
@@ -100,8 +103,10 @@
             <form action="{{ route('driver.trip.update', [$driver->id, $activeBooking->id]) }}" method="POST">
                 @csrf
                 <input type="hidden" name="status" value="completed">
-                <input type="hidden" name="payment_method" id="final-method" value="Cash">
-                <button type="submit" id="submit-btn" class="btn-nav-action btn-nav-finish">COMPLETE</button>
+                <input type="hidden" name="payment_method" id="final-method" value="{{ $activeBooking->payment_method ?? 'cash' }}">
+                <button type="submit" id="submit-btn" class="btn-nav-action btn-nav-finish">
+                    {{ $activeBooking->payment_method == 'wallet' ? 'CONFIRM & COMPLETE' : 'COLLECT & COMPLETE' }}
+                </button>
                 <button type="button" onclick="closePaymentModal()" class="style-89882f">Cancel</button>
             </form>
         </div>
@@ -174,28 +179,22 @@
     }
 
     function refreshData() { fetchDemandData(); }
-    function showPaymentSelection() { document.getElementById('payment-modal').style.display = 'flex'; setPaymentMethod('Cash'); }
+    function showPaymentSelection() { 
+        document.getElementById('payment-modal').style.display = 'flex'; 
+        initPaymentInfo();
+    }
     function closePaymentModal() { document.getElementById('payment-modal').style.display = 'none'; }
-    function setPaymentMethod(m) {
-        document.getElementById('final-method').value = m;
-        document.getElementById('opt-cash').style.borderColor = m === 'Cash' ? '#4ade80' : 'transparent';
-        document.getElementById('opt-digital').style.borderColor = m === 'Digital' ? '#60a5fa' : 'transparent';
-        
-        const btn = document.getElementById('submit-btn');
+    function initPaymentInfo() {
+        const m = "{{ $activeBooking->payment_method ?? 'cash' }}";
         const hintText = document.getElementById('hint-text');
-        
         const fare = {{ $activeBooking->fare ?? 0 }};
         const commission = fare * 0.15;
         const earnings = fare - commission;
-
-        if (m === 'Cash') {
-            btn.style.background = '#4ade80';
-            btn.innerText = 'COLLECT ' + fare.toLocaleString() + ' MMK';
-            hintText.innerHTML = '<i class="fa-solid fa-circle-info style-0f5418"></i> Collect full fare from passenger. Commission (' + commission.toLocaleString() + ') will be deducted from your wallet.';
+        
+        if (m === 'cash') {
+            hintText.innerHTML = '<i class="fa-solid fa-circle-info" style="color: #4ade80;"></i> Collect full fare from passenger. Commission (' + commission.toLocaleString() + ') will be deducted from your wallet.';
         } else {
-            btn.style.background = '#60a5fa';
-            btn.innerText = 'DISMISS & COMPLETE';
-            hintText.innerHTML = '<i class="fa-solid fa-circle-info style-3b5f25"></i> Passenger paid online. Your share (' + earnings.toLocaleString() + ') will be added to your wallet.';
+            hintText.innerHTML = '<i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> Passenger paid online. Your share (' + earnings.toLocaleString() + ') will be added to your wallet.';
         }
     }
 

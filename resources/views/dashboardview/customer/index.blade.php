@@ -62,7 +62,7 @@
                     <td>
                         <div class="driver-profile-cell">
                             @if($customer->profile_picture)
-                                <img src="{{ asset('storage/' . $customer->profile_picture) }}" alt="Avatar" class="avatar-img">
+                                <img src="{{ Str::startsWith($customer->profile_picture, 'uploads/') ? asset($customer->profile_picture) : asset('storage/' . $customer->profile_picture) }}" alt="Avatar" class="avatar-img">
                             @else
                                 <div class="avatar-placeholder">
                                     {{ substr($customer->name, 0, 1) }}

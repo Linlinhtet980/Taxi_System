@@ -3,394 +3,405 @@
 @push('css')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-<link rel="stylesheet" href="{{ asset('css/driverview/dashboard.css') }}">
+<style>
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        padding: 25px;
+        position: relative;
+        overflow: hidden;
+    }
+    .stat-card i {
+        position: absolute;
+        right: -10px;
+        bottom: -10px;
+        font-size: 60px;
+        color: rgba(212, 175, 55, 0.05);
+        transform: rotate(-15deg);
+    }
+    .stat-card p { font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+    .stat-card h2 { font-size: 24px; font-weight: 800; color: #fff; }
+    .stat-card .trend { font-size: 11px; margin-top: 10px; font-weight: 700; }
+    .trend.up { color: #4ade80; }
+
+    .main-content-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+    .card-header h3 { font-size: 18px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 12px; }
+    .card-header h3 i { color: var(--primary); }
+
+    .online-status-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 30px;
+        margin-bottom: 30px;
+        background: linear-gradient(90deg, rgba(212, 175, 55, 0.05) 0%, rgba(0,0,0,0) 100%);
+    }
+
+    .status-toggle-btn {
+        padding: 10px 24px;
+        border-radius: 50px;
+        border: 1px solid var(--border-color);
+        background: rgba(0,0,0,0.3);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.3s;
+    }
+    .status-toggle-btn.active { border-color: #4ade80; color: #4ade80; }
+    .status-toggle-btn.inactive { border-color: #f43f5e; color: #f43f5e; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    .job-card { padding: 30px; margin-bottom: 25px; border-left: 4px solid var(--primary); }
+    .job-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+    .info-item { display: flex; gap: 15px; }
+    .info-item i { font-size: 18px; color: var(--primary); margin-top: 3px; }
+    .info-item .label { font-size: 10px; color: var(--text-dim); font-weight: 800; text-transform: uppercase; }
+    .info-item .value { font-size: 14px; color: #fff; font-weight: 600; margin-top: 2px; }
+
+    .btn-group { display: flex; gap: 15px; margin-top: 25px; }
+    .btn-primary-dash { flex: 1; background: var(--primary); color: #000; padding: 15px; border-radius: 14px; font-weight: 800; border: none; cursor: pointer; transition: 0.3s; }
+    .btn-secondary-dash { flex: 1; background: rgba(255,255,255,0.05); color: #fff; padding: 15px; border-radius: 14px; font-weight: 700; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s; }
+
+    .goal-card { padding: 30px; }
+    .progress-container { height: 12px; background: rgba(255,255,255,0.05); border-radius: 10px; margin: 20px 0; overflow: hidden; }
+    .progress-bar { height: 100%; background: var(--primary); box-shadow: 0 0 15px var(--primary); transition: 1s ease-out; }
+
+    .request-map-container { height: 250px; border-radius: 20px; margin: 20px 0; border: 1px solid var(--border-color); overflow: hidden; }
+
+    @media (max-width: 1200px) {
+        .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+        .main-content-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+        .dashboard-grid { grid-template-columns: 1fr; }
+    }
+</style>
 @endpush
 
 @section('content')
 <div class="animate-fade">
-    <!-- Header with Toggle -->
-    <div class="style-995390">
+    <!-- Status & Welcome -->
+    <div class="glass online-status-card">
         <div>
-            <h3 class="style-aa38c0">Dashboard</h3>
-            <p class="style-d9a249">{{ date('l, d M Y') }}</p>
+            <h2 style="font-size: 24px; font-weight: 800; color: #fff;">Welcome back, {{ $driver->full_name }}!</h2>
+            <p style="color: var(--text-dim); font-size: 13px;">You have {{ $newRequests->count() }} new ride requests waiting.</p>
         </div>
         <form action="{{ route('driver.status.toggle', $driver->id) }}" method="POST">
             @csrf
-            <button type="submit" class="glass " style="padding: 8px 15px; border-radius: 50px; display: flex; align-items: center; gap: 8px; cursor: pointer; border-color: {{ $driver->driver_status =='active' ? '#4ade80': '#f43f5e' }};">
-                <div  style="width: 10px; height: 10px; border-radius: 50%; background: {{ $driver->driver_status =='active' ? '#4ade80': '#f43f5e' }}; box-shadow: 0 0 10px {{ $driver->driver_status =='active' ? '#4ade80': '#f43f5e' }};"></div>
-                <span  style="font-size: 0.8rem; font-weight: 600; color: {{ $driver->driver_status =='active' ? '#4ade80': '#f43f5e' }};">
-                    {{ $driver->driver_status == 'active' ? 'Online' : 'Offline' }}
-                </span>
+            <button type="submit" class="status-toggle-btn {{ $driver->driver_status =='active' ? 'active': 'inactive' }}">
+                <div class="status-dot" style="background: {{ $driver->driver_status =='active' ? '#4ade80': '#f43f5e' }}; box-shadow: 0 0 10px {{ $driver->driver_status =='active' ? '#4ade80': '#f43f5e' }};"></div>
+                {{ $driver->driver_status == 'active' ? 'Online' : 'Offline' }}
             </button>
         </form>
     </div>
 
-    <!-- Wallet Card -->
-    <div class="glass" style="padding: 30px; margin-bottom: 25px; background: linear-gradient(135deg, #111 0%, #222 100%); border: 1px solid var(--primary); box-shadow: 0 15px 40px rgba(212, 175, 55, 0.15);">
-        <p style="color: var(--primary); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">{{ $driver->wallet_balance < 0 ? 'Outstanding Debt' : 'Total Earnings' }}</p>
-        <h1 style="font-size: 2.8rem; font-weight: 800; color: #fff; margin-bottom: 20px;">{{ number_format($driver->wallet_balance) }} <span style="font-size: 1.2rem; color: var(--primary);">MMK</span></h1>
-        
-        <div style="display: flex; gap: 12px;">
-            <button onclick="{{ $driver->wallet_balance > 0 ? "document.getElementById('withdraw-modal').style.display='flex'" : "alert('Insufficient balance to withdraw.')" }}" style="flex: 1; padding: 12px; border-radius: 15px; border: 1px solid var(--primary); background: var(--primary); color: #000; font-weight: 700; cursor: pointer;">
-                WITHDRAW
-            </button>
-            <a href="{{ route('driver.withdrawals', $driver->id) }}" style="flex: 1; padding: 12px; border-radius: 15px; border: 1px solid var(--primary); background: transparent; color: var(--primary); font-weight: 700; text-align: center; text-decoration: none;">
-                HISTORY
-            </a>
-        </div>
-    </div>
-
-
-    <!-- New Ride Requests (Flash Notification Style) -->
-    @foreach($newRequests as $request)
-    <div class="glass animate-fade style-1625a1">
-        <div class="style-edad91">
-            <h3 class="style-83dbb4"><i class="fa-solid fa-bell"></i> New Ride Request!</h3>
-            <span class="style-8af478">{{ $request->created_at->diffForHumans() }}</span>
-        </div>
-        
-        <div class="style-44cf8c">
-            <div class="style-32ad3d">
-                <i class="fa-solid fa-location-dot"></i>
-                <p class="style-fd134c"><strong>From:</strong> {{ $request->pickup_location }}</p>
-            </div>
-            <div class="style-da6e27">
-                <i class="fa-solid fa-flag-checkered"></i>
-                <p class="style-fd134c"><strong>To:</strong> {{ $request->dropoff_location }}</p>
-            </div>
-            
-            <!-- Mini Map for Request -->
-            <div id="request-map-{{ $request->id }}" class="request-map-container"></div>
-        </div>
-
-        <div class="style-e30fad">
-            <form action="{{ route('driver.trip.accept', [$driver->id, $request->id]) }}" method="POST"  class="style-49cdf8">
-                @csrf
-                <button type="submit" class="style-071527">
-                    ACCEPT
-                </button>
-            </form>
-            <form action="{{ route('driver.trip.decline', [$driver->id, $request->id]) }}" method="POST"  class="style-49cdf8">
-                @csrf
-                <button type="submit" class="style-d0dd65">
-                    DECLINE
-                </button>
-            </form>
-        </div>
-    </div>
-    @endforeach
-
-    <!-- Vehicle Assignment Quick Info -->
-    @if($driver->vehicle)
-    <div class="glass animate-fade style-70a9a2">
-        <div class="style-99129a">
-            <div class="style-3035a9">
-                <i class="fa-solid fa-car"></i>
-            </div>
-            <div>
-                <p class="style-5df2e9">Assigned Vehicle</p>
-                <h4 class="style-493754">{{ $driver->vehicle->license_plate }}</h4>
-            </div>
-        </div>
-        <div class="style-7851db">
-            <span  style="font-size: 0.65rem; background: {{ $driver->vehicle->status =='Available' ? 'rgba(74, 222, 128, 0.1)': 'rgba(251, 191, 36, 0.1)' }}; color: {{ $driver->vehicle->status =='Available' ? '#4ade80': '#fbbf24' }}; padding: 4px 10px; border-radius: 50px; font-weight: 700; text-transform: uppercase; border: 1px solid {{ $driver->vehicle->status =='Available' ? 'rgba(74, 222, 128, 0.2)': 'rgba(251, 191, 36, 0.2)' }};">
-                {{ $driver->vehicle->status }}
-            </span>
-            <p class="style-3d8dfe">{{ $driver->vehicle->vehicle_type }}</p>
-        </div>
-    </div>
-    @endif
-
     <!-- Stats Grid -->
-
-    <div class="style-36b5aa">
-        <div class="glass style-087bdd">
-            <p class="style-b8cc31">Today's Earning</p>
-            <h4 class="style-d97f2c">{{ number_format($todayEarnings) }}</h4>
+    <div class="dashboard-grid">
+        <div class="glass stat-card">
+            <i class="fa-solid fa-wallet"></i>
+            <p>Wallet Balance</p>
+            <h2>{{ number_format($driver->wallet_balance) }} K</h2>
+            <div class="trend up"><i class="fa-solid fa-arrow-up"></i> Available</div>
         </div>
-        <div class="glass style-087bdd">
-            <p class="style-b8cc31">Weekly Total</p>
-            <h4 class="style-1e8742">{{ number_format($thisWeekEarnings) }}</h4>
+        <div class="glass stat-card">
+            <i class="fa-solid fa-route"></i>
+            <p>Trips Today</p>
+            <h2>{{ $completedJobsCount ?? 0 }}</h2>
+            <div class="trend"><i class="fa-solid fa-clock"></i> Last: {{ now()->format('H:i') }}</div>
         </div>
-    </div>
-
-    <div class="style-d62148">
-        <div class="glass style-087bdd">
-            <p class="style-b8cc31">Completed Trips</p>
-            <h4 class="style-33f38b">{{ $completedJobsCount }}</h4>
+        <div class="glass stat-card">
+            <i class="fa-solid fa-star"></i>
+            <p>Rating</p>
+            <h2>4.9</h2>
+            <div class="trend up">Premium Driver</div>
         </div>
-        <div class="glass style-d0cce7">
-            <p class="style-b8cc31">Online Time</p>
-            <h4 class="style-1e8742">{{ $todayOnlineTime }}</h4>
-        </div>
-    </div>
-
-    <!-- Earnings Analytics Chart -->
-    <div class="glass animate-fade style-89c0e0">
-        <h3 class="style-14fc06">Earnings Analytics (Last 7 Days)</h3>
-        <div class="style-648ec5">
-            <canvas id="earningsChart"></canvas>
+        <div class="glass stat-card">
+            <i class="fa-solid fa-hourglass-half"></i>
+            <p>Online Time</p>
+            <h2>{{ $todayOnlineTime ?? '0h 0m' }}</h2>
+            <div class="trend">Today's session</div>
         </div>
     </div>
 
-
-    <!-- Daily Goal Tracker -->
-    <div class="glass style-89c0e0">
-        <div class="style-edad91">
-            <div>
-                <h3 class="style-8eae47">Daily Goal Progress</h3>
-                <p class="style-831dee">Target: {{ number_format($dailyTarget) }} MMK</p>
-            </div>
-            <div class="style-7851db">
-                <span class="style-85a9da">{{ $goalProgress }}%</span>
-            </div>
-        </div>
-        <div class="style-98d1b1" style="height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; margin-bottom: 10px;">
-            <div style="width: {{ $goalProgress }}%; height: 100%; background: var(--primary); box-shadow: 0 0 15px rgba(212, 175, 55, 0.5); transition: width 1s ease-out;"></div>
-        </div>
-        <p class="style-6a7a99">
-            @if($goalProgress < 100)
-                You need {{ number_format($dailyTarget - $todayEarnings) }} MMK more to reach your goal!
-            @else
-                Amazing! You've reached your daily goal! 🚀
-            @endif
-        </p>
-    </div>
-
-    <!-- More Features -->
-    <div class="style-d62148">
-        <a href="{{ route('driver.leaderboard', $driver->id) }}" class="glass style-8f156e" >
-            <i class="fa-solid fa-trophy style-6055de"></i>
-            <h4 class="style-70f30b">Leaderboard</h4>
-            <p class="style-fbd666">See rankings</p>
-        </a>
-        <a href="{{ route('driver.reviews', $driver->id) }}" class="glass style-b3a40d" >
-            <i class="fa-solid fa-star-half-stroke style-6055de"></i>
-            <h4 class="style-70f30b">Reviews</h4>
-            <p class="style-fbd666">Check feedback</p>
-        </a>
-    </div>
-
-    <!-- Active Jobs Section -->
-    <div class="style-ffbeea">
-        <div class="style-edad91">
-            <h3 class="style-460f77">
-                <i class="fa-solid fa-bolt style-c06d9c"></i> Active Jobs
-            </h3>
-            @if($activeJobs->isNotEmpty())
-            <button onclick="sendSOS()" class="style-3f3bbb">
-                <i class="fa-solid fa-circle-exclamation"></i> SOS
-            </button>
-            @endif
-        </div>
-
-        @forelse($activeJobs as $job)
-        <div class="glass style-f7bcf1">
-            <div class="style-bb19fd">
-                <span class="status-badge style-2f5f62">{{ strtoupper($job->status) }}</span>
-                <span class="style-d9a249">#TRP-{{ str_pad($job->id, 5, '0', STR_PAD_LEFT) }}</span>
-            </div>
-            
-            <div class="style-c3e0b7">
-                <div class="style-800a82">
-                    <i class="fa-solid fa-location-dot style-def79a"></i>
-                    <div>
-                        <p class="style-fbd666">PICKUP</p>
-                        <p class="style-19f6a2">{{ $job->pickup_location }}</p>
-                    </div>
-                </div>
-                <div class="style-800a82">
-                    <i class="fa-solid fa-flag-checkered style-bb30be"></i>
-                    <div>
-                        <p class="style-fbd666">DESTINATION</p>
-                        <p class="style-19f6a2">{{ $job->dropoff_location }}</p>
-                    </div>
-                </div>
+    <div class="main-content-grid">
+        <!-- Left Side: Active Jobs & Requests -->
+        <div class="left-column">
+            <!-- Active Jobs -->
+            <div class="card-header">
+                <h3><i class="fa-solid fa-bolt"></i> Active Trip</h3>
+                @if($activeJobs->isNotEmpty())
+                    <button onclick="sendSOS()" style="background: #f43f5e; color: #fff; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 800; font-size: 11px; cursor: pointer;">SOS EMERGENCY</button>
+                @endif
             </div>
 
-            <div class="style-6c78a9">
-                <div class="style-b512c9">
-                    <div class="style-579af7">
-                        <i class="fa-solid fa-user style-fb2a71"></i>
-                    </div>
-                    <div>
-                        <p class="style-fbd666">PASSENGER</p>
-                        <p class="style-6b7db9">{{ $job->customer->name ?? 'N/A' }}</p>
-                    </div>
-                </div>
-                <div class="style-0ed0e9">
-                    <a href="{{ route('driver.demand.map', $driver->id) }}" class="glass style-9201ec" >
-                        Navigate <i class="fa-solid fa-map-location-dot"></i>
-                    </a>
-                    
-                    @if($job->status == 'confirmed')
-                    <form action="{{ route('driver.trip.update', [$driver->id, $job->id]) }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="status" value="ongoing">
-                        <button type="submit" class="glass style-baf6db">
-                            Start Trip
-                        </button>
-                    </form>
-                    @elseif($job->status == 'ongoing')
-                    <div class="style-199b6f">
-                        <button onclick="showPaymentSelection({{ $job->id }}, {{ $job->fare }})" class="glass style-ab8c3e" >
-                            FINISH TRIP <i class="fa-solid fa-flag-checkered style-43ae80"></i>
-                        </button>
+            @forelse($activeJobs as $job)
+                <div class="glass job-card">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <span style="background: var(--primary-light); color: var(--primary); padding: 4px 12px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase;">{{ $job->status }}</span>
+                            <p style="margin-top: 8px; font-size: 14px; font-weight: 700; color: #fff;">Trip #TRP-{{ str_pad($job->id, 5, '0', STR_PAD_LEFT) }}</p>
+                        </div>
+                        <h3 style="color: var(--primary); font-weight: 800;">{{ number_format($job->fare) }} K</h3>
                     </div>
 
-                    <!-- Visual Payment Selection Modal -->
-                    <div id="payment-modal-{{ $job->id }}"  class="style-a2e1c8">
-                        <div class="animate-fade style-607010">
-                            <div class="style-7f5ca6">
-                                <h2 class="style-3c195e">Select Payment Method</h2>
-                                <p class="style-2e72b4">Total Fare: <span class="style-299f11">{{ number_format($job->fare) }} MMK</span></p>
+                    <div class="job-info-grid">
+                        <div class="info-item">
+                            <i class="fa-solid fa-location-dot" style="color: #4ade80;"></i>
+                            <div>
+                                <p class="label">Pickup</p>
+                                <p class="value">{{ $job->pickup_location }}</p>
                             </div>
-
-                            <div class="style-64b7e1">
-                                <!-- Cash Option -->
-                                <div onclick="setPaymentMethod({{ $job->id }}, 'Cash')" id="opt-cash-{{ $job->id }}" class="glass style-00208b" >
-                                    <div class="style-95d066">
-                                        <i class="fa-solid fa-money-bill-wave style-f4ff59"></i>
-                                    </div>
-                                    <p class="style-cc1dc8">CASH</p>
-                                    <p class="style-e89ed8">Customer pays you directly in cash.</p>
-                                    <div class="style-8beb53">Commission: -{{ number_format($job->fare * 0.15) }}</div>
-                                </div>
-
-                                <!-- Digital Option -->
-                                <div onclick="setPaymentMethod({{ $job->id }}, 'Digital')" id="opt-digital-{{ $job->id }}" class="glass style-00208b" >
-                                    <div class="style-f668e7">
-                                        <i class="fa-solid fa-mobile-screen-button style-020c5a"></i>
-                                    </div>
-                                    <p class="style-cc1dc8">DIGITAL</p>
-                                    <p class="style-e89ed8">Customer paid online via app.</p>
-                                    <div class="style-2e7fb7">Earnings: +{{ number_format($job->fare * 0.85) }}</div>
-                                </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fa-solid fa-flag-checkered" style="color: #f43f5e;"></i>
+                            <div>
+                                <p class="label">Dropoff</p>
+                                <p class="value">{{ $job->dropoff_location }}</p>
                             </div>
-
-                            <form action="{{ route('driver.trip.update', [$driver->id, $job->id]) }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="status" value="completed">
-                                <input type="hidden" name="payment_method" id="final-method-{{ $job->id }}" value="Cash">
-                                <button type="submit" id="submit-btn-{{ $job->id }}" class="btn-primary style-8db1fd" >
-                                    COMPLETE TRANSACTION
-                                </button>
-                                <button type="button" onclick="closePaymentModal({{ $job->id }})"  class="style-604586">Back</button>
-                            </form>
                         </div>
                     </div>
+
+                    <div style="display: flex; align-items: center; gap: 12px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 15px;">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($job->customer->name ?? 'User') }}&background=333&color=fff" style="width: 35px; height: 35px; border-radius: 10px;">
+                        <div>
+                            <p class="label">Customer</p>
+                            <p class="value" style="font-size: 13px;">{{ $job->customer->name ?? 'N/A' }}</p>
+                        </div>
+                        <a href="tel:{{ $job->customer->phone ?? '' }}" style="margin-left: auto; color: var(--primary); font-size: 18px;"><i class="fa-solid fa-phone-volume"></i></a>
+                    </div>
+
+                    <div class="btn-group">
+                        <a href="{{ route('driver.demand.map', $driver->id) }}" class="btn-secondary-dash" style="text-align: center; text-decoration: none;">NAVIGATE</a>
+                        @if($job->status == 'confirmed')
+                            <form action="{{ route('driver.trip.update', [$driver->id, $job->id]) }}" method="POST" style="flex: 1;">
+                                @csrf
+                                <input type="hidden" name="status" value="ongoing">
+                                <button type="submit" class="btn-primary-dash">START TRIP</button>
+                            </form>
+                        @elseif($job->status == 'ongoing')
+                            <button onclick="showPaymentSelection({{ $job->id }}, {{ $job->fare }})" class="btn-primary-dash">COMPLETE TRIP</button>
+                        @endif
+                    </div>
+                </div>
+            @empty
+                <div class="glass" style="padding: 40px; text-align: center; color: var(--text-dim); margin-bottom: 30px;">
+                    <i class="fa-solid fa-mug-hot" style="font-size: 40px; margin-bottom: 15px; opacity: 0.3;"></i>
+                    <p>No active trips. Go online to receive requests!</p>
+                </div>
+            @endforelse
+
+            <!-- New Requests -->
+            <div class="card-header">
+                <h3><i class="fa-solid fa-bell"></i> New Requests</h3>
+            </div>
+            @foreach($newRequests as $request)
+                <div class="glass job-card" style="border-left-color: #6366f1;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <h4 style="color: #fff; font-weight: 700;">New Ride Request</h4>
+                        <span style="font-size: 11px; color: var(--text-dim);">{{ $request->created_at->diffForHumans() }}</span>
+                    </div>
+                    <div id="request-map-{{ $request->id }}" class="request-map-container"></div>
+                    <div class="job-info-grid">
+                        <div class="info-item">
+                            <i class="fa-solid fa-location-arrow" style="color: #6366f1;"></i>
+                            <div>
+                                <p class="label">From</p>
+                                <p class="value">{{ Str::limit($request->pickup_location, 40) }}</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fa-solid fa-map-pin" style="color: #f43f5e;"></i>
+                            <div>
+                                <p class="label">To</p>
+                                <p class="value">{{ Str::limit($request->dropoff_location, 40) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <form action="{{ route('driver.trip.accept', [$driver->id, $request->id]) }}" method="POST" style="flex: 1;">
+                            @csrf
+                            <button type="submit" class="btn-primary-dash" style="background: #6366f1; color: #fff;">ACCEPT</button>
+                        </form>
+                        <form action="{{ route('driver.trip.decline', [$driver->id, $request->id]) }}" method="POST" style="flex: 1;">
+                            @csrf
+                            <button type="submit" class="btn-secondary-dash">DECLINE</button>
+                        </form>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <!-- Right Side: Goals & Wallet -->
+        <div class="right-column">
+            <!-- Wallet Summary -->
+            <div class="glass stat-card" style="margin-bottom: 30px; background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(0,0,0,0) 100%);">
+                <p>Available Balance</p>
+                <h2 style="font-size: 32px; color: var(--primary);">{{ number_format($driver->wallet_balance) }} <span style="font-size: 14px;">MMK</span></h2>
+                <div class="btn-group" style="margin-top: 20px;">
+                    <button onclick="{{ $driver->wallet_balance > 0 ? "document.getElementById('withdraw-modal').style.display='flex'" : "alert('Insufficient balance.')" }}" class="btn-primary-dash" style="padding: 10px; font-size: 12px;">WITHDRAW</button>
+                    <a href="{{ route('driver.withdrawals', $driver->id) }}" class="btn-secondary-dash" style="padding: 10px; font-size: 12px; text-align: center; text-decoration: none;">HISTORY</a>
+                </div>
+            </div>
+
+            <!-- Daily Goal -->
+            <div class="glass goal-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-bullseye"></i> Daily Goal</h3>
+                    <span style="font-size: 14px; font-weight: 800; color: var(--primary);">{{ $goalProgress }}%</span>
+                </div>
+                <p style="font-size: 12px; color: var(--text-dim);">Target: {{ number_format($dailyTarget) }} MMK</p>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: {{ $goalProgress }}%;"></div>
+                </div>
+                <p style="font-size: 13px; color: #fff; font-weight: 600;">
+                    @if($goalProgress < 100)
+                        {{ number_format($dailyTarget - $todayEarnings) }} K more to go!
+                    @else
+                        Goal achieved! 🚀
                     @endif
-
-
-
-                </div>
-
+                </p>
             </div>
-        </div>
-        @empty
-        <div class="glass style-59d046">
-            <i class="fa-solid fa-mug-hot style-569918"></i>
-            <p class="style-33dd45">No active jobs at the moment.</p>
-        </div>
-        @endforelse
-    </div>
 
-    <!-- Vehicle Card -->
-    @if($driver->vehicle)
-    <div class="glass style-790d87">
-        <h3 class="style-69295c">Assigned Vehicle</h3>
-        <div class="style-04affe">
-            <div class="style-76e68d"><i class="fa-solid fa-car-side"></i></div>
-            <div>
-                <p class="style-7cc7b9">{{ $driver->vehicle->license_plate }}</p>
-                <p class="style-831dee">{{ $driver->vehicle->model }} ({{ $driver->vehicle->type }})</p>
+            <!-- Quick Links -->
+            <div style="margin-top: 30px;">
+                <p class="nav-label" style="margin-left: 0;">Resources</p>
+                <a href="{{ route('driver.leaderboard', $driver->id) }}" class="glass" style="display: flex; align-items: center; gap: 15px; padding: 20px; text-decoration: none; margin-bottom: 15px;">
+                    <div style="width: 40px; height: 40px; background: rgba(212, 175, 55, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary);"><i class="fa-solid fa-trophy"></i></div>
+                    <div>
+                        <h4 style="color: #fff; font-size: 14px;">Leaderboard</h4>
+                        <p style="color: var(--text-dim); font-size: 11px;">Top drivers this week</p>
+                    </div>
+                </a>
+                <a href="{{ route('driver.reviews', $driver->id) }}" class="glass" style="display: flex; align-items: center; gap: 15px; padding: 20px; text-decoration: none;">
+                    <div style="width: 40px; height: 40px; background: rgba(212, 175, 55, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary);"><i class="fa-solid fa-star"></i></div>
+                    <div>
+                        <h4 style="color: #fff; font-size: 14px;">Ratings & Reviews</h4>
+                        <p style="color: var(--text-dim); font-size: 11px;">See what customers say</p>
+                    </div>
+                </a>
             </div>
-        </div>
-    </div>
-    @endif
-
-    <!-- Withdrawal Modal -->
-    <div id="withdraw-modal" class="style-6e61f3">
-        <div class="glass animate-fade style-6ff9b2">
-            <div class="style-6bc63b">
-                <h3 class="style-b28cb1">Request Payout</h3>
-                <i class="fa-solid fa-xmark style-24b531" onclick="document.getElementById('withdraw-modal').style.display='none'"></i>
-            </div>
-            
-            <form action="{{ route('driver.withdrawal.request', $driver->id) }}" method="POST">
-                @csrf
-                <div class="style-b0473a">
-                    <label class="style-f36cc0">Withdrawal Amount (MMK)</label>
-                    <input type="number" name="amount" class="glass style-5223f1" value="{{ $driver->wallet_balance }}" max="{{ $driver->wallet_balance }}" required>
-                </div>
-                
-                <div class="style-ffbeea">
-                    <label class="style-f36cc0">Payment Method</label>
-                    <select name="payment_method" class="glass style-5223f1">
-                        <option value="KBZPay">KBZPay</option>
-                        <option value="WaveMoney">WaveMoney</option>
-                        <option value="CBPay">CBPay</option>
-                        <option value="Cash">Cash at Office</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="glass style-455ca1">
-                    Confirm Request
-                </button>
-            </form>
         </div>
     </div>
 </div>
+
+<!-- Withdrawal Modal -->
+<div id="withdraw-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+    <div class="glass animate-fade" style="width: 100%; max-width: 450px; padding: 35px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <h3 style="color: #fff;">Request Payout</h3>
+            <i class="fa-solid fa-xmark" style="cursor: pointer; color: var(--text-dim);" onclick="document.getElementById('withdraw-modal').style.display='none'"></i>
+        </div>
+        <form action="{{ route('driver.withdrawal.request', $driver->id) }}" method="POST">
+            @csrf
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 10px;">Amount (MMK)</label>
+                <input type="number" name="amount" value="{{ $driver->wallet_balance }}" max="{{ $driver->wallet_balance }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; color: #fff; outline: none;" required>
+            </div>
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 10px;">Payment Method</label>
+                <select name="payment_method" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; color: #fff; outline: none;">
+                    <option value="KBZPay">KBZPay</option>
+                    <option value="WaveMoney">WaveMoney</option>
+                    <option value="CBPay">CBPay</option>
+                    <option value="Cash">Cash at Office</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary-dash">SUBMIT REQUEST</button>
+        </form>
+    </div>
+</div>
+
+<!-- Trip Completion Modal -->
+<div id="payment-selection-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+    <div class="glass animate-fade" style="width: 100%; max-width: 500px; padding: 35px;">
+        <h3 style="color: #fff; margin-bottom: 10px;">Finish Trip</h3>
+        <p style="color: var(--text-dim); font-size: 14px; margin-bottom: 25px;">Select how the customer is paying for the ride.</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+            <div id="opt-cash" onclick="selectFinalPayment('Cash')" style="padding: 20px; border: 1px solid var(--border-color); border-radius: 20px; text-align: center; cursor: pointer; transition: 0.3s;">
+                <i class="fa-solid fa-money-bill-wave" style="font-size: 30px; color: #4ade80; margin-bottom: 10px;"></i>
+                <p style="font-weight: 800; color: #fff;">CASH</p>
+            </div>
+            <div id="opt-digital" onclick="selectFinalPayment('Digital')" style="padding: 20px; border: 1px solid var(--border-color); border-radius: 20px; text-align: center; cursor: pointer; transition: 0.3s;">
+                <i class="fa-solid fa-mobile-screen" style="font-size: 30px; color: #60a5fa; margin-bottom: 10px;"></i>
+                <p style="font-weight: 800; color: #fff;">DIGITAL</p>
+            </div>
+        </div>
+
+        <form id="completion-form" action="" method="POST">
+            @csrf
+            <input type="hidden" name="status" value="completed">
+            <input type="hidden" name="payment_method" id="final-payment-method" value="Cash">
+            <button type="submit" class="btn-primary-dash" id="final-submit-btn">COMPLETE TRIP</button>
+            <button type="button" onclick="document.getElementById('payment-selection-modal').style.display='none'" style="width: 100%; margin-top: 15px; background: transparent; border: none; color: var(--text-dim); cursor: pointer; font-weight: 700;">CANCEL</button>
+        </form>
+    </div>
+</div>
+
 @push('js')
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     function showPaymentSelection(jobId, fare) {
-        document.getElementById('payment-modal-' + jobId).style.display = 'flex';
-        setPaymentMethod(jobId, 'Cash'); // Default
+        const modal = document.getElementById('payment-selection-modal');
+        const form = document.getElementById('completion-form');
+        form.action = `/driver/{{ $driver->id }}/trip/${jobId}/update`;
+        modal.style.display = 'flex';
+        selectFinalPayment('Cash');
     }
 
-    function setPaymentMethod(jobId, method) {
-        document.getElementById('final-method-' + jobId).value = method;
-        
-        // Visual selection feedback
-        const cashOpt = document.getElementById('opt-cash-' + jobId);
-        const digitalOpt = document.getElementById('opt-digital-' + jobId);
-        const submitBtn = document.getElementById('submit-btn-' + jobId);
+    function selectFinalPayment(method) {
+        document.getElementById('final-payment-method').value = method;
+        const cashOpt = document.getElementById('opt-cash');
+        const digitalOpt = document.getElementById('opt-digital');
+        const submitBtn = document.getElementById('final-submit-btn');
 
         if(method === 'Cash') {
             cashOpt.style.borderColor = '#4ade80';
             cashOpt.style.background = 'rgba(74, 222, 128, 0.1)';
-            digitalOpt.style.borderColor = 'transparent';
-            digitalOpt.style.background = 'rgba(255,255,255,0.03)';
+            digitalOpt.style.borderColor = 'rgba(212, 175, 55, 0.15)';
+            digitalOpt.style.background = 'transparent';
             submitBtn.style.background = '#4ade80';
             submitBtn.innerText = 'COMPLETE (COLLECT CASH)';
         } else {
             digitalOpt.style.borderColor = '#60a5fa';
             digitalOpt.style.background = 'rgba(96, 165, 250, 0.1)';
-            cashOpt.style.borderColor = 'transparent';
-            cashOpt.style.background = 'rgba(255,255,255,0.03)';
+            cashOpt.style.borderColor = 'rgba(212, 175, 55, 0.15)';
+            cashOpt.style.background = 'transparent';
             submitBtn.style.background = '#60a5fa';
             submitBtn.innerText = 'COMPLETE (DIGITAL PAID)';
         }
     }
 
-    function closePaymentModal(jobId) {
-        document.getElementById('payment-modal-' + jobId).style.display = 'none';
-    }
-
     function sendSOS() {
-
-        if(confirm('Are you sure you want to send an emergency SOS to the admin?')) {
-            alert('SOS signal sent! Admin has been notified of your location.');
-            // In a real app, this would hit an API endpoint to notify admin via socket/push
+        if(confirm('Are you in immediate danger? This will notify emergency services and our dispatch team.')) {
+            alert('SOS Signal Sent. Help is on the way.');
         }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Request Maps
         @foreach($newRequests as $request)
         (function() {
             const mapId = 'request-map-{{ $request->id }}';
@@ -401,96 +412,29 @@
 
             try {
                 const reqMap = L.map(mapId, {
-                    zoomControl: true,
-                    attributionControl: false,
-                    dragging: true,
-                    touchZoom: true,
-                    scrollWheelZoom: true,
-                    doubleClickZoom: true
+                    zoomControl: false,
+                    attributionControl: false
                 }).setView([pLat, pLng], 14);
 
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                    maxZoom: 19
-                }).addTo(reqMap);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(reqMap);
 
-                // Use Leaflet Routing Machine for actual road paths
                 L.Routing.control({
-                    waypoints: [
-                        L.latLng(pLat, pLng),
-                        L.latLng(dLat, dLng)
-                    ],
-                    lineOptions: {
-                        styles: [{ color: '#6366f1', opacity: 0.8, weight: 6 }]
-                    },
-                    createMarker: function(i, wp, nWps) {
-                        const iconHtml = (i === 0) 
-                            ? '<div class="style-a21ea4"><i class="fa-solid fa-location-dot style-b33db9"></i></div>'
-                            : '<div class="style-a21ea4"><i class="fa-solid fa-flag-checkered style-5a797c"></i></div>';
-                        
-                        return L.marker(wp.latLng, {
-                            icon: L.divIcon({
-                                html: iconHtml,
-                                className: 'custom-div-icon',
-                                iconSize: [24, 24],
-                                iconAnchor: [12, 24]
-                            })
-                        });
-                    },
+                    waypoints: [L.latLng(pLat, pLng), L.latLng(dLat, dLng)],
+                    lineOptions: { styles: [{ color: '#6366f1', opacity: 0.8, weight: 6 }] },
+                    createMarker: function() { return null; },
                     addWaypoints: false,
                     routeWhileDragging: false,
                     draggableWaypoints: false,
                     fitSelectedRoutes: true
                 }).addTo(reqMap);
                 
-                // Force a map refresh after a small delay to fix container sizing issues
-                setTimeout(() => {
-                    reqMap.invalidateSize();
-                }, 500);
+                setTimeout(() => { reqMap.invalidateSize(); }, 500);
             } catch (e) {
-                console.error("Map initialization failed for " + mapId, e);
-                document.getElementById(mapId).innerHTML = '<div class="style-deac98">Map currently unavailable</div>';
+                console.error("Map failed", e);
             }
         })();
         @endforeach
-
-        const ctx = document.getElementById('earningsChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: {!! json_encode($dailyEarnings->keys()) !!},
-                datasets: [{
-                    label: 'Earnings (MMK)',
-                    data: {!! json_encode($dailyEarnings->values()) !!},
-                    borderColor: '#D4AF37',
-                    backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#D4AF37'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(255,255,255,0.05)' },
-                        ticks: { color: '#94a3b8', font: { size: 10 } }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: '#94a3b8', font: { size: 10 } }
-                    }
-                }
-            }
-        });
     });
 </script>
 @endpush
 @endsection
-

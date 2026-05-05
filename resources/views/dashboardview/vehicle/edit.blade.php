@@ -91,7 +91,7 @@
                         <label class="style-bb948d">{{ str_replace('_', ' ', $pos) }}</label>
                         <div class="photo-upload-box glass style-738f98" onclick="document.getElementById('{{ $pos }}_photo').click()">
                             @if($vehicle->$photoField)
-                                <img src="{{ asset('storage/' . $vehicle->$photoField) }}" id="img-{{ $pos }}"  class="style-7d1fae">
+                                <img src="{{ asset($vehicle->$photoField) }}" id="img-{{ $pos }}"  class="style-7d1fae">
                             @else
                                 <div id="preview-{{ $pos }}" class="style-cdd8ca">
                                     <i class="fa-solid fa-camera style-ed4950"></i>

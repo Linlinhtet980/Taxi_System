@@ -28,7 +28,7 @@
                     <td><span class="id-badge">DRV-{{ str_pad($w->driver->id, 4, '0', STR_PAD_LEFT) }}</span></td>
                     <td>
                         <div class="style-df2b77">
-                            <img src="{{ $w->driver->profile_picture ? asset('storage/' . $w->driver->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($w->driver->full_name) . '&background=a855f7&color=fff' }}" 
+                            <img src="{{ $w->driver->profile_picture ? asset($w->driver->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($w->driver->full_name) . '&background=a855f7&color=fff' }}" 
                                   class="style-76290e">
                             <div>
                                 <div class="style-1aecdc">{{ $w->driver->full_name }}</div>

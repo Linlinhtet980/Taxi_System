@@ -30,7 +30,7 @@
                 </div>
                 
                 <div  style="width: 50px; height: 50px; border-radius: 15px; overflow: hidden; background: #1e293b; margin-right: 15px; border: 2px solid {{ $isMe ? 'var(--accent-purple)' : ($isTop3 ? $trophyColor : 'transparent') }}; flex-shrink: 0;">
-                    <img src="{{ $td->profile_picture ? asset('storage/' . $td->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($td->full_name) . '&background=a855f7&color=fff' }}"  class="style-7d1fae">
+                    <img src="{{ $td->profile_picture ? asset($td->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($td->full_name) . '&background=a855f7&color=fff' }}"  class="style-7d1fae">
                 </div>
 
                 <div class="style-49cdf8">

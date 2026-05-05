@@ -73,7 +73,7 @@
                     <td>
                         <div class="driver-profile-cell">
                             @if($vehicle->vehicle_photo)
-                                <img src="{{ asset('storage/' . $vehicle->vehicle_photo) }}" alt="Vehicle" class="vehicle-img-thumb">
+                                <img src="{{ asset($vehicle->vehicle_photo) }}" alt="Vehicle" class="vehicle-img-thumb">
                             @else
                                 <div class="vehicle-icon-placeholder">
                                     <i class="fa-solid fa-car sub-text"></i>

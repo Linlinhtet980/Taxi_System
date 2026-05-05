@@ -33,7 +33,7 @@
                 <div class="style-b546cd">
                     <div class="style-61a045">
                         @if($driver->profile_picture)
-                            <img src="{{ asset('storage/' . $driver->profile_picture) }}"  class="style-7d1fae">
+                            <img src="{{ asset($driver->profile_picture) }}"  class="style-7d1fae">
                         @else
                             <div class="style-a1bd68">
                                 {{ substr($driver->full_name, 0, 1) }}

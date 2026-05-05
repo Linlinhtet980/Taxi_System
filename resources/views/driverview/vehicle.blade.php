@@ -17,7 +17,7 @@
     <div class="glass style-b6ad2d">
         <div class="style-e49f64">
             <div class="style-bf13c3">
-                <img src="{{ $driver->vehicle->vehicle_photo ? asset('storage/' . $driver->vehicle->vehicle_photo) : 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=200' }}"  class="style-7d1fae">
+                <img src="{{ $driver->vehicle->vehicle_photo ? asset($driver->vehicle->vehicle_photo) : 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=200' }}"  class="style-7d1fae">
             </div>
             <div>
                 <h2 class="style-aa38c0">{{ $driver->vehicle->brand }} {{ $driver->vehicle->model }}</h2>
@@ -35,6 +35,30 @@
                 <p class="style-6f84e5">Vehicle Type</p>
                 <p class="style-be8e63">{{ $driver->vehicle->vehicle_type }}</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Gallery -->
+    <div class="glass" style="padding: 20px; margin-bottom: 20px;">
+        <h3 style="color: var(--primary); margin-bottom: 15px; font-size: 1.1rem; font-weight: 800; text-transform: uppercase;">Vehicle Gallery</h3>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+            @php
+                $photos = [
+                    'Front' => $driver->vehicle->front_photo,
+                    'Back' => $driver->vehicle->back_photo,
+                    'Left' => $driver->vehicle->left_side_photo,
+                    'Right' => $driver->vehicle->right_side_photo,
+                    'Inside' => $driver->vehicle->interior_photo
+                ];
+            @endphp
+            @foreach($photos as $label => $path)
+                @if($path)
+                    <div style="text-align: center;">
+                        <img src="{{ asset($path) }}" style="width: 100%; height: 80px; object-fit: cover; border-radius: 12px; border: 1px solid var(--glass-border);">
+                        <span style="font-size: 10px; color: var(--text-dim); display: block; margin-top: 4px;">{{ $label }}</span>
+                    </div>
+                @endif
+            @endforeach
         </div>
     </div>
 

@@ -31,7 +31,7 @@
             <div class="style-b02fdb">
                 <div class="style-407972">
                     @if($vehicle->vehicle_photo)
-                        <img src="{{ asset('storage/' . $vehicle->vehicle_photo) }}" id="main-vehicle-image"  onclick="openLightbox()" class="style-803650">
+                        <img src="{{ asset($vehicle->vehicle_photo) }}" id="main-vehicle-image"  onclick="openLightbox()" class="style-803650">
                     @else
                         <div id="no-photo-placeholder" class="style-8acfcc">
                             <i class="fa-solid fa-car style-b2178e"></i>
@@ -58,9 +58,9 @@
                 <div class="style-c233d6">
                     @foreach(['front', 'back', 'left_side', 'right_side', 'interior'] as $pos)
                         @php $photoField = $pos . '_photo'; @endphp
-                        <div onclick="switchMainImage('{{ $pos }}', '{{ asset('storage/' . $vehicle->$photoField) }}')"  onmouseover="this.style.borderColor='var(--accent-purple)'" onmouseout="this.style.borderColor='var(--glass-border)'" class="style-71ffb8">
+                        <div onclick="switchMainImage('{{ $pos }}', '{{ asset($vehicle->$photoField) }}')"  onmouseover="this.style.borderColor='var(--accent-purple)'" onmouseout="this.style.borderColor='var(--glass-border)'" class="style-71ffb8">
                             @if($vehicle->$photoField)
-                                <img src="{{ asset('storage/' . $vehicle->$photoField) }}"  class="style-7d1fae">
+                                <img src="{{ asset($vehicle->$photoField) }}"  class="style-7d1fae">
                             @else
                                 <i class="fa-solid fa-camera style-8c191c"></i>
                             @endif
@@ -103,7 +103,7 @@
                         @if($vehicle->driver)
                             <div class="style-ee8a4b">
                                 @if($vehicle->driver->profile_picture)
-                                    <img src="{{ asset('storage/' . $vehicle->driver->profile_picture) }}"  class="style-a54e88">
+                                    <img src="{{ asset($vehicle->driver->profile_picture) }}"  class="style-a54e88">
                                 @else
                                     <div class="style-1de599">
                                         <i class="fa-solid fa-user"></i>

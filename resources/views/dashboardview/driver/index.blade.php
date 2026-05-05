@@ -84,7 +84,7 @@
                     <td>
                         <div class="driver-profile-cell">
                             @if($driver->profile_picture)
-                                <img src="{{ asset('storage/' . $driver->profile_picture) }}" class="avatar-img">
+                                <img src="{{ asset($driver->profile_picture) }}" class="avatar-img">
                             @else
                                 <div class="avatar-placeholder">
                                     {{ substr($driver->full_name, 0, 1) }}

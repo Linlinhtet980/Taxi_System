@@ -48,13 +48,22 @@ class DriverController extends Controller
 
         // Handle File Uploads
         if ($request->hasFile('profile_picture')) {
-            $data['profile_picture'] = $request->file('profile_picture')->store('drivers/profiles', 'public');
+            $file = $request->file('profile_picture');
+            $filename = time() . '_profile_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/drivers'), $filename);
+            $data['profile_picture'] = 'uploads/drivers/' . $filename;
         }
         if ($request->hasFile('license_photo')) {
-            $data['license_photo'] = $request->file('license_photo')->store('drivers/licenses', 'public');
+            $file = $request->file('license_photo');
+            $filename = time() . '_license_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/drivers'), $filename);
+            $data['license_photo'] = 'uploads/drivers/' . $filename;
         }
         if ($request->hasFile('nric_photo')) {
-            $data['nric_photo'] = $request->file('nric_photo')->store('drivers/nric', 'public');
+            $file = $request->file('nric_photo');
+            $filename = time() . '_nric_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/drivers'), $filename);
+            $data['nric_photo'] = 'uploads/drivers/' . $filename;
         }
 
         $driver = Driver::create($data);
@@ -104,16 +113,22 @@ class DriverController extends Controller
 
         // Handle File Uploads & Delete Old Files
         if ($request->hasFile('profile_picture')) {
-            if ($driver->profile_picture) Storage::disk('public')->delete($driver->profile_picture);
-            $data['profile_picture'] = $request->file('profile_picture')->store('drivers/profiles', 'public');
+            $file = $request->file('profile_picture');
+            $filename = time() . '_profile_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/drivers'), $filename);
+            $data['profile_picture'] = 'uploads/drivers/' . $filename;
         }
         if ($request->hasFile('license_photo')) {
-            if ($driver->license_photo) Storage::disk('public')->delete($driver->license_photo);
-            $data['license_photo'] = $request->file('license_photo')->store('drivers/licenses', 'public');
+            $file = $request->file('license_photo');
+            $filename = time() . '_license_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/drivers'), $filename);
+            $data['license_photo'] = 'uploads/drivers/' . $filename;
         }
         if ($request->hasFile('nric_photo')) {
-            if ($driver->nric_photo) Storage::disk('public')->delete($driver->nric_photo);
-            $data['nric_photo'] = $request->file('nric_photo')->store('drivers/nric', 'public');
+            $file = $request->file('nric_photo');
+            $filename = time() . '_nric_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/drivers'), $filename);
+            $data['nric_photo'] = 'uploads/drivers/' . $filename;
         }
 
         $driver->update($data);

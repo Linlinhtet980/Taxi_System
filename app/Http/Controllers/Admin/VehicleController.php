@@ -12,9 +12,9 @@ class VehicleController extends Controller
     public function index()
     {
         $vehicles = Vehicle::query()->latest()->paginate(5);
-        $totalVehicles = Vehicle::query()->count();
-        $totalAvailable = Vehicle::query()->where('status', 'Available')->count();
-        $totalMaintenance = Vehicle::query()->where('status', 'Maintenance')->count();
+        $totalVehicles = Vehicle::query()->count('*');
+        $totalAvailable = Vehicle::query()->where('status', 'Available')->count('*');
+        $totalMaintenance = Vehicle::query()->where('status', 'Maintenance')->count('*');
         
         return view('dashboardview.vehicle.index', compact('vehicles', 'totalVehicles', 'totalAvailable', 'totalMaintenance'));
     }
@@ -43,13 +43,19 @@ class VehicleController extends Controller
         ]);
 
         if ($request->hasFile('vehicle_photo')) {
-            $validated['vehicle_photo'] = $request->file('vehicle_photo')->store('vehicle_photos', 'public');
+            $file = $request->file('vehicle_photo');
+            $filename = time() . '_vehicle_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/vehicles'), $filename);
+            $validated['vehicle_photo'] = 'uploads/vehicles/' . $filename;
         }
 
         $photoFields = ['front_photo', 'back_photo', 'left_side_photo', 'right_side_photo', 'interior_photo'];
         foreach ($photoFields as $field) {
             if ($request->hasFile($field)) {
-                $validated[$field] = $request->file($field)->store('vehicles/inspections', 'public');
+                $file = $request->file($field);
+                $filename = time() . '_' . $field . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/vehicles'), $filename);
+                $validated[$field] = 'uploads/vehicles/' . $filename;
             }
         }
 
@@ -88,19 +94,19 @@ class VehicleController extends Controller
         ]);
 
         if ($request->hasFile('vehicle_photo')) {
-            if ($vehicle->vehicle_photo) {
-                Storage::disk('public')->delete($vehicle->vehicle_photo);
-            }
-            $validated['vehicle_photo'] = $request->file('vehicle_photo')->store('vehicle_photos', 'public');
+            $file = $request->file('vehicle_photo');
+            $filename = time() . '_vehicle_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/vehicles'), $filename);
+            $validated['vehicle_photo'] = 'uploads/vehicles/' . $filename;
         }
 
         $photoFields = ['front_photo', 'back_photo', 'left_side_photo', 'right_side_photo', 'interior_photo'];
         foreach ($photoFields as $field) {
             if ($request->hasFile($field)) {
-                if ($vehicle->$field) {
-                    Storage::disk('public')->delete($vehicle->$field);
-                }
-                $validated[$field] = $request->file($field)->store('vehicles/inspections', 'public');
+                $file = $request->file($field);
+                $filename = time() . '_' . $field . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/vehicles'), $filename);
+                $validated[$field] = 'uploads/vehicles/' . $filename;
             }
         }
 
@@ -122,7 +128,7 @@ class VehicleController extends Controller
             }
         }
 
-        $vehicle->delete();
+        Vehicle::query()->where('id', $vehicle->id)->delete();
         return redirect()->route('vehicles.index')->with('success', 'Vehicle removed from fleet.');
     }
 }

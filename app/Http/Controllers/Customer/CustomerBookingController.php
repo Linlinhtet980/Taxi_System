@@ -98,8 +98,10 @@ class CustomerBookingController extends Controller
         ];
 
         if ($request->hasFile('profile_picture')) {
-            $path = $request->file('profile_picture')->store('customers/profiles', 'public');
-            $data['profile_picture'] = $path;
+            $file = $request->file('profile_picture');
+            $filename = time() . '_profile_' . $customer->id . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/customers'), $filename);
+            $data['profile_picture'] = 'uploads/customers/' . $filename;
         }
 
         Customer::where('id', $customer->id)->update($data);

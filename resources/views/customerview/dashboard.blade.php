@@ -627,7 +627,7 @@
         <div class="user-info">
             <div class="avatar">
                 @if($customer->profile_picture)
-                    <img src="{{ asset('storage/' . $customer->profile_picture) }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
+                    <img src="{{ Str::startsWith($customer->profile_picture, 'uploads/') ? asset($customer->profile_picture) : asset('storage/' . $customer->profile_picture) }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;">
                 @else
                     {{ substr($customer->name, 0, 1) }}
                 @endif

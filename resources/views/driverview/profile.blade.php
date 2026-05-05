@@ -4,7 +4,7 @@
 @section('content')
 <div class="animate-fade">
     <div class="style-7f5ca6" style="text-align: center; padding: 20px 0;">
-        <img src="{{ $driver->profile_picture ? asset('storage/' . $driver->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($driver->full_name) . '&background=D4AF37&color=fff&size=200' }}" alt="Profile" style="width: 100px; height: 100px; border-radius: 25px; border: 3px solid var(--primary); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);">
+        <img src="{{ $driver->profile_picture ? asset($driver->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($driver->full_name) . '&background=D4AF37&color=fff&size=200' }}" alt="Profile" style="width: 100px; height: 100px; border-radius: 25px; border: 3px solid var(--primary); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);">
         <h2 style="margin-top: 15px; font-weight: 800; color: #fff;">{{ $driver->full_name }}</h2>
         <p style="color: var(--primary); font-weight: 600; font-size: 0.9rem;">{{ $driver->email }}</p>
     </div>

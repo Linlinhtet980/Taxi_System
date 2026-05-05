@@ -128,7 +128,7 @@
                         <label class="style-aab719">Profile Portrait</label>
                         <div class="photo-upload-box glass style-104050" onclick="document.getElementById('profile_picture').click()">
                             @if($driver->profile_picture)
-                                <img src="{{ asset('storage/' . $driver->profile_picture) }}" id="img-profile"  class="style-7d1fae">
+                                <img src="{{ asset($driver->profile_picture) }}" id="img-profile"  class="style-7d1fae">
                             @else
                                 <div id="preview-profile" class="style-cdd8ca">
                                     <i class="fa-solid fa-camera style-76e68d"></i>
@@ -144,7 +144,7 @@
                             <label class="style-aab719">License Scan</label>
                             <div class="photo-upload-box glass style-bdc9eb" onclick="document.getElementById('license_photo').click()">
                                 @if($driver->license_photo)
-                                    <img src="{{ asset('storage/' . $driver->license_photo) }}" id="img-license"  class="style-7d1fae">
+                                    <img src="{{ asset($driver->license_photo) }}" id="img-license"  class="style-7d1fae">
                                 @else
                                     <div id="preview-license" class="style-cdd8ca">
                                         <i class="fa-solid fa-id-badge style-ed4950"></i>
@@ -158,7 +158,7 @@
                             <label class="style-aab719">NRIC Scan</label>
                             <div class="photo-upload-box glass style-bdc9eb" onclick="document.getElementById('nric_photo').click()">
                                 @if($driver->nric_photo)
-                                    <img src="{{ asset('storage/' . $driver->nric_photo) }}" id="img-nric"  class="style-7d1fae">
+                                    <img src="{{ asset($driver->nric_photo) }}" id="img-nric"  class="style-7d1fae">
                                 @else
                                     <div id="preview-nric" class="style-cdd8ca">
                                         <i class="fa-solid fa-address-card style-ed4950"></i>

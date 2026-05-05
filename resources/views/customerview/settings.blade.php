@@ -334,7 +334,7 @@
         <div class="profile-hero">
             <div class="profile-avatar" onclick="document.getElementById('profile_image_input').click()">
                 @if($customer->profile_picture)
-                    <img src="{{ asset('storage/' . $customer->profile_picture) }}" alt="Profile">
+                    <img src="{{ Str::startsWith($customer->profile_picture, 'uploads/') ? asset($customer->profile_picture) : asset('storage/' . $customer->profile_picture) }}" alt="Profile">
                 @else
                     {{ substr($customer->name, 0, 1) }}
                 @endif

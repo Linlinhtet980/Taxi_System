@@ -46,7 +46,7 @@
                 @foreach($referredDrivers as $ref)
                     <div class="style-f03d68">
                         <div class="style-1c20bb">
-                            <img src="{{ $ref->profile_picture ? asset('storage/' . $ref->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($ref->full_name) }}"  class="style-679a4b">
+                            <img src="{{ $ref->profile_picture ? asset($ref->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($ref->full_name) }}"  class="style-679a4b">
                             <div>
                                 <p class="style-8c5fd0">{{ $ref->full_name }}</p>
                                 <p class="style-fbd666">Joined {{ $ref->created_at->format('M d, Y') }}</p>

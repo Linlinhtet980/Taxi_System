@@ -26,7 +26,7 @@
             <div class="style-88a1f9">
                 <div class="style-b7ae15">
                     @if($customer->profile_picture)
-                        <img src="{{ asset('storage/' . $customer->profile_picture) }}" alt="Profile"  class="style-70a872">
+                        <img src="{{ Str::startsWith($customer->profile_picture, 'uploads/') ? asset($customer->profile_picture) : asset('storage/' . $customer->profile_picture) }}" alt="Profile"  class="style-70a872">
                     @else
                         <div class="style-aeaced">
                             {{ substr($customer->name, 0, 1) }}

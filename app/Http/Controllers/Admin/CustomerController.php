@@ -37,7 +37,10 @@ class CustomerController extends Controller
         ]);
 
         if ($request->hasFile('profile_picture')) {
-            $validated['profile_picture'] = $request->file('profile_picture')->store('customers/profiles', 'public');
+            $file = $request->file('profile_picture');
+            $filename = time() . '_profile_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/customers'), $filename);
+            $validated['profile_picture'] = 'uploads/customers/' . $filename;
         }
 
         if ($request->filled('password')) {
