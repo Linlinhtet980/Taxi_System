@@ -125,6 +125,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('point-rewards.index') }}" class="nav-link {{ request()->routeIs('point-rewards.*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-gift"></i>
+                        <span class="nav-text">Point Rewards</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('customers.index') }}" class="nav-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
                         <i class="fa-solid fa-user-group"></i>
                         <span class="nav-text">Passengers</span>

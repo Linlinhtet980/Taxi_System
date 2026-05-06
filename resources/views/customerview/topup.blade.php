@@ -278,30 +278,6 @@
             </div>
         @endif
 
-        <div class="points-card">
-            <div class="points-info">
-                <div class="points-icon">
-                    <i class="fa-solid fa-star"></i>
-                </div>
-                <div class="points-text">
-                    <p>Loyalty Points</p>
-                    <h4>{{ number_format($customer->loyalty_points) }} Pts</h4>
-                </div>
-            </div>
-            <button class="btn-exchange-trigger" onclick="toggleExchangeForm()">
-                Exchange
-            </button>
-        </div>
-
-        <div id="exchangeFormContainer">
-            <h3 style="font-size: 15px; margin-bottom: 15px;">Exchange Points</h3>
-            <form action="{{ route('customer.wallet.exchange') }}" method="POST">
-                @csrf
-                <input type="number" name="points" class="exchange-input" placeholder="Enter points to exchange" min="100" max="{{ $customer->loyalty_points }}" required>
-                <button type="submit" class="btn-exchange-submit">Exchange to Wallet Balance</button>
-                <p class="exchange-rate-info">1 Point = 10 Ks • Min 100 Points</p>
-            </form>
-        </div>
 
         <form action="{{ route('customer.wallet.topup.store') }}" method="POST" id="topupForm" enctype="multipart/form-data">
             @csrf
@@ -377,10 +353,6 @@
             if(file) document.getElementById('fileName').innerText = file.name;
         }
 
-        function toggleExchangeForm() {
-            const container = document.getElementById('exchangeFormContainer');
-            container.style.display = container.style.display === 'block' ? 'none' : 'block';
-        }
     </script>
 </body>
 </html>

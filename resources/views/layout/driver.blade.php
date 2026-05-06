@@ -8,16 +8,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-main: #060606;
-            --bg-card: #111111;
-            --primary: #D4AF37;
-            --primary-light: rgba(212, 175, 55, 0.1);
+            --bg-main: #060505ff;
+            --bg-card: #060505ff;
+            --primary: #f9db79ff;
+            --primary-light: rgba(217, 195, 68, 0.1);
             --text-main: #ffffff;
             --text-dim: rgba(255, 255, 255, 0.5);
             --sidebar-width: 280px;
             --header-height: 80px;
-            --glass-bg: rgba(20, 20, 20, 0.7);
-            --border-color: rgba(212, 175, 55, 0.15);
+            --glass-bg: rgba(105, 94, 94, 0.7);
+            --border-color: rgba(255, 196, 0, 0.41);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
@@ -113,10 +113,10 @@
             border-radius: 16px;
             font-weight: 600;
             font-size: 14px;
-            transition: 0.3s;
+            transition: none;
             margin-bottom: 5px;
         }
-        .nav-link i { font-size: 18px; width: 22px; text-align: center; transition: 0.3s; }
+        .nav-link i { font-size: 18px; width: 22px; text-align: center; transition: none; }
         .nav-link:hover, .nav-link.active {
             color: #fff;
             background: var(--primary-light);
@@ -243,7 +243,7 @@
             border-radius: 24px;
             transition: 0.3s;
         }
-        .glass:hover { border-color: rgba(212, 175, 55, 0.3); transform: translateY(-2px); }
+        .glass:hover { border-color: rgba(212, 175, 55, 0.3); }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }

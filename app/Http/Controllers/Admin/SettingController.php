@@ -11,6 +11,13 @@ class SettingController extends Controller
     public function index()
     {
         $settings = Setting::query()->get()->groupBy('group');
+        
+        // Ensure 'general' is always first if it exists
+        if ($settings->has('general')) {
+            $general = $settings->pull('general');
+            $settings = collect(['general' => $general])->merge($settings);
+        }
+        
         return view('dashboardview.settings.index', compact('settings'));
     }
 

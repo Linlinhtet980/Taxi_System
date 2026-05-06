@@ -209,10 +209,10 @@ class CustomerBookingController extends Controller
                 ]);
 
                 // Award Points Immediately for Digital (Prepaid)
-                $pointRateDigital = \App\Models\Core\Setting::get('point_rate_digital', 500); // e.g., 500 Ks = 1 Point
-                $earnedPoints = floor($request->fare / $pointRateDigital);
+                $pointRatio = (float) \App\Models\Core\Setting::get('point_earning_ratio_digital', 2);
+                $earnedPoints = floor($request->fare / 1000) * $pointRatio;
                 if ($earnedPoints > 0) {
-                    $customer->increment('loyalty_points', $earnedPoints);
+                    $customer->increment('loyalty_points', (int)$earnedPoints);
                 }
             }
         }

@@ -138,7 +138,7 @@ class DriverPortalController extends Controller
         if ($newStatus == 'completed' && $oldStatus != 'completed') {
             $fare = $booking->fare;
             $rate = \App\Models\Core\Setting::get('commission_rate', 15) / 100;
-            $commission = $fare * $rate;
+            $commission = round($fare * $rate);
             $driverAmount = $fare - $commission;
 
             Transaction::create([
@@ -167,11 +167,10 @@ class DriverPortalController extends Controller
             // Award Loyalty Points to Customer (Only for CASH at completion, Digital is instant)
             $customer = $booking->customer;
             if ($customer && $paymentMethod == 'Cash') {
-                $pointRateCash = \App\Models\Core\Setting::get('point_rate_cash', 1000); // e.g., 1000 Ks = 1 Point
-                $earnedPoints = floor($fare / $pointRateCash);
+                $pointRatio = (float) \App\Models\Core\Setting::get('point_earning_ratio_cash', 1);
+                $earnedPoints = floor($fare / 1000) * $pointRatio;
                 if ($earnedPoints > 0) {
-                    $customer->loyalty_points += $earnedPoints;
-                    $customer->save();
+                    $customer->increment('loyalty_points', (int)$earnedPoints);
                 }
             }
 

@@ -16,7 +16,10 @@
 
     <div class="style-c3e0b7">
         @forelse($notifications as $n)
-        @if($n->link)
+        @php
+            $is_admin_link = $n->link && (Str::contains($n->link, '/admin') || Str::contains($n->link, '/transactions') || Str::contains($n->link, '/bookings') || Str::contains($n->link, '/dashboard'));
+        @endphp
+        @if($n->link && !$is_admin_link)
         <a href="{{ $n->link }}"  class="style-2e2127">
         @endif
         <div class="glass notification-item style-747679">
@@ -41,13 +44,13 @@
                 </div>
                 <p class="style-a6fb7d">{{ $n->message }}</p>
             </div>
-            @if($n->link)
+            @if($n->link && !$is_admin_link)
             <div class="style-622e85">
                 <i class="fa-solid fa-chevron-right"></i>
             </div>
             @endif
         </div>
-        @if($n->link)
+        @if($n->link && !$is_admin_link)
         </a>
         @endif
         @empty

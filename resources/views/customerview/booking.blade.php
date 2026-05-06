@@ -268,7 +268,10 @@
             }).addTo(map);
 
             routingControl.on('routesfound', function(e) {
-                const distance = e.routes[0].summary.totalDistance / 1000;
+                let distance = e.routes[0].summary.totalDistance / 1000;
+                // Round distance to 1 decimal place (e.g. 5.983 -> 6.0) to match user expectations
+                distance = Math.round(distance * 10) / 10;
+                
                 const baseFare = {{ \App\Models\Core\Setting::get('base_fare', 2500) }};
                 const pricePerKm = {{ \App\Models\Core\Setting::get('price_per_km', 800) }};
                 const fare = Math.round(baseFare + (distance * pricePerKm));
