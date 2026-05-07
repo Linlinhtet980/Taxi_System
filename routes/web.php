@@ -1,17 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Core\NotificationController as CoreNotificationController;
 use App\Http\Controllers\Admin\{
     DriverController, VehicleController, CustomerController, 
     BookingController, AnalyticsController, TransactionController, 
     ReportController, DashboardController, SettingController, 
-    NotificationController, WithdrawalController, PointRewardController
+    WithdrawalController, PointRewardController
 };
 use App\Http\Controllers\Driver\DriverPortalController;
 use App\Http\Controllers\Customer\{CustomerBookingController, PointController};
 use App\Http\Controllers\Auth\{CustomerAuthController, DriverAuthController};
 
-// === Home Redirect ===
 // =========================================================================
 // === MAIN ENTRY POINTS (အဓိက ဝင်ပေါက် ၃ ခု) ===
 // =========================================================================
@@ -19,11 +19,16 @@ Route::get('/', fn() => redirect()->route('dashboard.home')); // Root Redirect
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.home'); // 1. Admin Panel
 Route::get('/login/customer', fn() => view('auth.customer_auth', ['mode' => 'login']))->name('view.login.customer'); // 2. Customer App
 Route::get('/login/driver', fn() => view('auth.driver_login'))->name('view.login.driver'); // 3. Driver Portal
+
 // =========================================================================
+// === GLOBAL CORE FEATURES (Noti, etc.) ===
+// =========================================================================
+Route::post('/notifications/{id}/mark-as-read', [CoreNotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
+Route::post('/notifications/mark-all-as-read', [CoreNotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');
 
-// === Import Controllers ===
-
-// === Customer Authentication ===
+// =========================================================================
+// === CUSTOMER AUTHENTICATION ===
+// =========================================================================
 Route::controller(CustomerAuthController::class)->group(function() {
     Route::get('/register/customer', fn() => view('auth.customer_auth', ['mode' => 'register']))->name('view.register.customer');
     Route::post('/login/customer', 'login')->name('customer.login.submit');
@@ -31,7 +36,9 @@ Route::controller(CustomerAuthController::class)->group(function() {
     Route::post('/logout/customer', 'logout')->name('customer.logout');
 });
 
-// === Driver Authentication ===
+// =========================================================================
+// === DRIVER AUTHENTICATION ===
+// =========================================================================
 Route::controller(DriverAuthController::class)->group(function() {
     Route::get('/register/driver', fn() => view('auth.driver_register'))->name('view.register.driver');
     Route::post('/login/driver', 'login')->name('driver.login.submit');
@@ -43,7 +50,9 @@ Route::controller(DriverAuthController::class)->group(function() {
     Route::post('/logout/driver', 'logout')->name('driver.logout');
 });
 
-// === Customer Portal (Protected) ===
+// =========================================================================
+// === CUSTOMER PORTAL (PROTECTED) ===
+// =========================================================================
 Route::middleware('auth:customer')->controller(CustomerBookingController::class)->group(function () {
     Route::get('/home', 'dashboard')->name('customer.dashboard');
     Route::get('/activities', 'activities')->name('customer.activities');
@@ -64,7 +73,9 @@ Route::middleware('auth:customer')->controller(CustomerBookingController::class)
     Route::post('/points/exchange/{rewardId}', [PointController::class, 'exchange'])->name('customer.points.exchange.submit');
 });
 
-// === Driver Portal ===
+// =========================================================================
+// === DRIVER PORTAL ===
+// =========================================================================
 Route::prefix('driver')->controller(DriverPortalController::class)->group(function () {
     Route::get('/{id}/dashboard', 'dashboard')->name('driver.dashboard');
     Route::get('/{id}/jobs', 'jobs')->name('driver.jobs');
@@ -86,9 +97,9 @@ Route::prefix('driver')->controller(DriverPortalController::class)->group(functi
     Route::post('/{id}/trip/{tripId}/decline', 'declineBooking')->name('driver.trip.decline');
 });
 
-// === Admin Dashboard & Management ===
-Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
-
+// =========================================================================
+// === ADMIN DASHBOARD & MANAGEMENT ===
+// =========================================================================
 Route::controller(SettingController::class)->group(function() {
     Route::get('settings', 'index')->name('settings.index');
     Route::post('settings', 'update')->name('settings.update');

@@ -209,31 +209,37 @@
 
                     <!-- Notification Dropdown -->
                     <div id="notif-dropdown" class="glass dropdown-menu">
-                        <div  class="style-acd1a1">
-                            <h4  class="style-a88a79">Notifications</h4>
-                            <form action="{{ route('notifications.markAllRead') }}" method="POST">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <h4 style="margin: 0; color: #fff;">Notifications</h4>
+                            @if(auth()->check())
+                            <form action="{{ route('notifications.mark-all-as-read') }}" method="POST">
                                 @csrf
-                                <button type="submit"  class="style-2a00f9">Mark all read</button>
+                                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                                <input type="hidden" name="user_type" value="{{ get_class(auth()->user()) }}">
+                                <button type="submit" style="background: none; border: none; color: var(--accent-purple); font-size: 11px; font-weight: 700; cursor: pointer;">Mark all read</button>
                             </form>
+                            @endif
                         </div>
                         <div class="notif-list">
                             @forelse($latestNotifications as $notif)
-                            <div class="notif-item {{ $notif->is_read ? 'read' : 'unread' }}">
-                                <div class="notif-content">
+                            <div class="notif-item {{ $notif->is_read ? 'read' : 'unread' }}" 
+                                 onclick="markAsRead(this, {{ $notif->id }}, '{{ $notif->link }}')"
+                                 style="cursor: pointer; transition: 0.3s; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <div class="notif-content" style="display: flex; gap: 12px;">
                                     @php
                                         $icon = $notif->type == 'success' ? 'fa-circle-check' : ($notif->type == 'warning' ? 'fa-circle-exclamation' : 'fa-circle-info');
                                         $iconColor = $notif->type == 'success' ? '#4ade80' : ($notif->type == 'warning' ? '#fbbf24' : '#60a5fa');
                                     @endphp
-                                    <i class="fa-solid {{ $icon }} notif-icon style-139515" ></i>
+                                    <i class="fa-solid {{ $icon }}" style="color: {{ $iconColor }}; margin-top: 4px;"></i>
                                     <div>
-                                        <div class="notif-title">{{ $notif->title }}</div>
-                                        <div class="notif-message">{{ $notif->message }}</div>
-                                        <div class="notif-time">{{ $notif->created_at->diffForHumans() }}</div>
+                                        <div class="notif-title" style="font-weight: 700; font-size: 13px; color: #fff; margin-bottom: 2px;">{{ $notif->title }}</div>
+                                        <div class="notif-message" style="font-size: 11px; color: var(--text-dim); line-height: 1.4;">{{ $notif->message }}</div>
+                                        <div class="notif-time" style="font-size: 9px; color: var(--text-dim); margin-top: 5px; opacity: 0.6;">{{ $notif->created_at->diffForHumans() }}</div>
                                     </div>
                                 </div>
                             </div>
                             @empty
-                            <div class="notif-empty">No notifications.</div>
+                            <div class="notif-empty" style="padding: 20px; text-align: center; color: var(--text-dim); font-size: 12px;">No notifications.</div>
                             @endforelse
                         </div>
                     </div>
@@ -263,6 +269,30 @@
     <!-- Interactivity Script -->
     <script src="{{ asset('js/dashboardview/layout/admin-layout.js') }}"></script>
 
+    <script>
+        function markAsRead(element, id, link) {
+            fetch(`/notifications/${id}/mark-as-read`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    element.classList.remove('unread');
+                    element.classList.add('read');
+                    element.style.opacity = '0.5';
+                    if (link && link !== '#') {
+                        window.location.href = link;
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
     @stack('js')
 </body>
 

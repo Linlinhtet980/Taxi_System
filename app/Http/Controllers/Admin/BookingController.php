@@ -8,7 +8,7 @@ use App\Models\Auth\Customer;
 use App\Models\Core\Vehicle;
 use App\Models\Auth\Driver;
 use App\Models\Core\Transaction;
-use App\Models\Core\Notification;
+use App\Models\Core\Notification as NotificationModel;
 use Illuminate\Http\Request;
 
 
@@ -93,11 +93,12 @@ class BookingController extends Controller
         $booking = Booking::create($validated);
 
         // Send Notification
-        Notification::send(
+        NotificationModel::send(
             'New Booking Received',
             "A new ride has been booked by {$booking->customer->name} for " . number_format($booking->fare) . " MMK.",
             'info',
-            route('bookings.index')
+            route('bookings.index'),
+            \App\Models\Auth\User::first(['*'])
         );
 
 
@@ -178,55 +179,61 @@ class BookingController extends Controller
             return back()->with('error', 'Cannot change status of a finished or cancelled trip.');
         }
 
-        $booking->update(['status' => $newStatus]);
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            $booking->update(['status' => $newStatus]);
 
-        // Transaction & Wallet Logic
-        if ($newStatus == 'completed' && $oldStatus != 'completed') {
-            $fare = $booking->fare;
-            $rate = \App\Models\Core\Setting::get('commission_rate', 15) / 100; // Default to 15 if not set
-            $commission = $fare * $rate;
-            $driverAmount = $fare - $commission;
+            // Transaction & Wallet Logic
+            if ($newStatus == 'completed' && $oldStatus != 'completed') {
+                $fare = $booking->fare;
+                $rate = \App\Models\Core\Setting::get('commission_rate', 15) / 100; // Default to 15 if not set
+                $commission = $fare * $rate;
+                $driverAmount = $fare - $commission;
 
+                Transaction::create([
+                    'booking_id' => $booking->id,
+                    'driver_id' => $booking->driver_id,
+                    'customer_id' => $booking->customer_id,
+                    'amount' => $fare,
+                    'commission_amount' => $commission,
+                    'driver_amount' => $driverAmount,
+                    'payment_method' => 'Cash',
+                    'type' => 'Ride Fare',
+                    'status' => 'Completed',
+                    'note' => 'Auto-generated on completion.'
+                ]);
 
-            Transaction::create([
-                'booking_id' => $booking->id,
-                'driver_id' => $booking->driver_id,
-                'customer_id' => $booking->customer_id,
-                'amount' => $fare,
-                'commission_amount' => $commission,
-                'driver_amount' => $driverAmount,
-                'payment_method' => 'Cash',
-                'type' => 'Ride Fare',
-                'status' => 'Completed',
-                'note' => 'Auto-generated on completion.'
-            ]);
+                if ($booking->driver_id) {
+                    $driver = Driver::query()->find((int)$booking->driver_id);
+                    if ($driver) {
+                        $driver->wallet_balance -= $commission; // Cash: deduct commission
+                        $driver->save();
+                    }
+                }
 
-            if ($booking->driver_id) {
-                $driver = Driver::query()->find((int)$booking->driver_id);
-                if ($driver) {
-                    $driver->wallet_balance -= $commission; // Cash: deduct commission
-                    $driver->save();
+                // Send Notification
+                NotificationModel::send(
+                    'Trip Completed',
+                    "Trip #{$booking->id} is completed. Commission of " . number_format($commission) . " MMK has been processed.",
+                    'success',
+                    route('transactions.index'),
+                    \App\Models\Auth\User::first(['*'])
+                );
+            }
+
+            // Automatically manage Vehicle Status
+            if ($booking->vehicle_id) {
+                if (in_array($newStatus, ['completed', 'cancelled'])) {
+                    Vehicle::query()->where('id', $booking->vehicle_id)->update(['status' => 'Available']);
+                } elseif (in_array($newStatus, ['confirmed', 'ongoing'])) {
+                    Vehicle::query()->where('id', $booking->vehicle_id)->update(['status' => 'On Ride']);
                 }
             }
 
-            // Send Notification
-            Notification::send(
-                'Trip Completed',
-                "Trip #{$booking->id} is completed. Commission of " . number_format($commission) . " MMK has been processed.",
-                'success',
-                route('transactions.index')
-            );
-
-        }
-
-
-        // Automatically manage Vehicle Status
-        if ($booking->vehicle_id) {
-            if (in_array($newStatus, ['completed', 'cancelled'])) {
-                Vehicle::query()->where('id', $booking->vehicle_id)->update(['status' => 'Available']);
-            } elseif (in_array($newStatus, ['confirmed', 'ongoing'])) {
-                Vehicle::query()->where('id', $booking->vehicle_id)->update(['status' => 'On Ride']);
-            }
+            \Illuminate\Support\Facades\DB::commit();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->with('error', 'Update failed: ' . $e->getMessage());
         }
 
         return back()->with('success', "Booking status updated to " . ucfirst($newStatus));

@@ -239,6 +239,46 @@
     </header>
 
     <main class="container">
+        <!-- Notifications Section -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div class="section-title" style="margin: 0;">အကြောင်းကြားစာများ</div>
+            @if($unreadCount > 0)
+            <form action="{{ route('notifications.mark-all-as-read') }}" method="POST">
+                @csrf
+                <input type="hidden" name="user_id" value="{{ auth()->guard('customer')->id() }}">
+                <input type="hidden" name="user_type" value="{{ get_class(auth()->guard('customer')->user()) }}">
+                <button type="submit" style="background: none; border: none; color: var(--primary); font-size: 12px; font-weight: 700; cursor: pointer;">Mark all read</button>
+            </form>
+            @endif
+        </div>
+
+        <div style="margin-bottom: 40px;">
+            @forelse($latestNotifications as $notif)
+            <div class="activity-card" 
+                 onclick="markAsRead(this, {{ $notif->id }}, '{{ $notif->link }}')"
+                 style="cursor: pointer; padding: 15px; border-left: 4px solid {{ $notif->is_read ? '#e2e8f0' : 'var(--primary)' }}; {{ $notif->is_read ? 'opacity: 0.6;' : '' }}">
+                <div style="display: flex; gap: 12px;">
+                    @php
+                        $icon = $notif->type == 'success' ? 'fa-circle-check' : ($notif->type == 'warning' ? 'fa-circle-exclamation' : 'fa-circle-info');
+                        $color = $notif->type == 'success' ? '#10b981' : ($notif->type == 'warning' ? '#f59e0b' : '#3b82f6');
+                    @endphp
+                    <i class="fa-solid {{ $icon }}" style="color: {{ $color }}; margin-top: 3px;"></i>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <h5 style="font-size: 14px; font-weight: 700;">{{ $notif->title }}</h5>
+                            <span style="font-size: 10px; color: var(--text-light);">{{ $notif->created_at->diffForHumans() }}</span>
+                        </div>
+                        <p style="font-size: 12px; color: var(--text-light); margin-top: 2px;">{{ $notif->message }}</p>
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div style="text-align: center; padding: 20px; background: white; border-radius: 20px; color: var(--text-light); font-size: 12px; border: 1px dashed #e2e8f0;">
+                အကြောင်းကြားစာ အသစ်မရှိပါ။
+            </div>
+            @endforelse
+        </div>
+
         <div class="section-title">ခရီးစဉ်မှတ်တမ်းများ</div>
 
         @forelse($bookings as $booking)
@@ -289,6 +329,28 @@
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+
+        function markAsRead(element, id, link) {
+            fetch(`/notifications/${id}/mark-as-read`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    element.style.opacity = '0.6';
+                    element.style.borderLeftColor = '#e2e8f0';
+                    if (link && link !== '#') {
+                        window.location.href = link;
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
         }
     </script>
 </body>

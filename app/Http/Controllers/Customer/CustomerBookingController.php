@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Core\Booking;
 use App\Models\Auth\Driver;
 use App\Models\Auth\Customer;
-use App\Models\Core\Notification;
+use App\Models\Core\Notification as NotificationModel;
 use App\Models\Core\Transaction;
 use Illuminate\Http\Request;
 
@@ -45,8 +45,12 @@ class CustomerBookingController extends Controller
             ->take(2)
             ->get();
 
-        // Get unread notifications count
-        $unreadNotificationsCount = Notification::query()->where('is_read', false)->count();
+        // Get unread notifications count for this customer
+        $unreadNotificationsCount = NotificationModel::query()
+            ->where('user_id', $customer->id)
+            ->where('user_type', get_class($customer))
+            ->where('is_read', false)
+            ->count();
 
         // Determine greeting
         $hour = now()->hour;
@@ -218,11 +222,12 @@ class CustomerBookingController extends Controller
         }
 
         // Notify Driver
-        Notification::send(
+        NotificationModel::send(
             'New Ride Request',
             "You have a new ride request from {$booking->customer->name}. Please accept or decline.",
             'warning',
-            route('driver.dashboard', $driver->id)
+            route('driver.dashboard', $driver->id),
+            $driver
         );
 
         return redirect()->route('customer.waiting', $booking->id);

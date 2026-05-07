@@ -2,27 +2,30 @@
 
 @section('content')
 <div class="animate-fade">
-    <div class="page-header style-ffbeea">
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
         <div>
             <h1 class="page-title">Notifications</h1>
             <p class="page-subtitle">Stay updated with the latest system alerts.</p>
         </div>
-        <div class="style-3a5f63">
-            <i class="fa-solid fa-bell-concierge"></i>
-        </div>
+        <form action="{{ route('notifications.mark-all-as-read') }}" method="POST">
+            @csrf
+            <input type="hidden" name="user_id" value="{{ $driver->id }}">
+            <input type="hidden" name="user_type" value="{{ get_class($driver) }}">
+            <button type="submit" class="glass" style="padding: 10px 20px; border: 1px solid var(--border-color); color: var(--primary); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border-radius: 12px;">Mark all read</button>
+        </form>
     </div>
 
     <link rel="stylesheet" href="{{ asset('css/driverview/notifications.css') }}">
 
-    <div class="style-c3e0b7">
+    <div style="display: grid; gap: 15px;">
         @forelse($notifications as $n)
         @php
             $is_admin_link = $n->link && (Str::contains($n->link, '/admin') || Str::contains($n->link, '/transactions') || Str::contains($n->link, '/bookings') || Str::contains($n->link, '/dashboard'));
+            $is_read = $n->is_read;
         @endphp
-        @if($n->link && !$is_admin_link)
-        <a href="{{ $n->link }}"  class="style-2e2127">
-        @endif
-        <div class="glass notification-item style-747679">
+        <div class="glass notification-item {{ $is_read ? 'read' : 'unread' }}" 
+             onclick="markAsRead(this, {{ $n->id }}, '{{ ($n->link && !$is_admin_link) ? $n->link : '' }}')"
+             style="display: flex; gap: 20px; padding: 25px; cursor: pointer; transition: 0.3s; {{ $is_read ? 'opacity: 0.5;' : '' }}">
             @php
                 $icon = 'fa-circle-info';
                 $bg = 'rgba(96, 165, 250, 0.1)';
@@ -34,32 +37,54 @@
                     $icon = 'fa-circle-exclamation'; $bg = 'rgba(251, 191, 36, 0.1)'; $color = '#fbbf24';
                 }
             @endphp
-            <div  style="width: 40px; height: 40px; border-radius: 12px; background: {{ $bg }}; display: flex; align-items: center; justify-content: center; color: {{ $color }}; flex-shrink: 0;">
-                <i class="fa-solid {{ $icon }} style-e7ec96"></i>
+            <div style="width: 40px; height: 40px; border-radius: 12px; background: {{ $bg }}; display: flex; align-items: center; justify-content: center; color: {{ $color }}; flex-shrink: 0;">
+                <i class="fa-solid {{ $icon }}"></i>
             </div>
-            <div class="style-49cdf8">
-                <div class="style-1cac1b">
-                    <h4 class="style-8e600e">{{ $n->title }}</h4>
-                    <span class="style-782f1b">{{ $n->created_at->diffForHumans() }}</span>
+            <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
+                    <h4 style="font-size: 16px; font-weight: 700; color: #fff;">{{ $n->title }}</h4>
+                    <span style="font-size: 11px; color: var(--text-dim);">{{ $n->created_at->diffForHumans() }}</span>
                 </div>
-                <p class="style-a6fb7d">{{ $n->message }}</p>
+                <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5;">{{ $n->message }}</p>
             </div>
             @if($n->link && !$is_admin_link)
-            <div class="style-622e85">
+            <div style="color: var(--primary); opacity: 0.5;">
                 <i class="fa-solid fa-chevron-right"></i>
             </div>
             @endif
         </div>
-        @if($n->link && !$is_admin_link)
-        </a>
-        @endif
         @empty
-        <div class="glass style-2d55c1">
-            <i class="fa-regular fa-bell-slash style-35ae2b"></i>
+        <div class="glass" style="padding: 50px; text-align: center; color: var(--text-dim);">
+            <i class="fa-regular fa-bell-slash" style="font-size: 40px; margin-bottom: 20px; opacity: 0.2;"></i>
             <p>You're all caught up! No notifications here.</p>
         </div>
         @endforelse
     </div>
+
+    @push('js')
+    <script>
+        function markAsRead(element, id, link) {
+            fetch(`/notifications/${id}/mark-as-read`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    element.style.opacity = '0.5';
+                    if (link) {
+                        window.location.href = link;
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+    @endpush
 
     <!-- Custom Pagination -->
     @if($notifications->hasPages())

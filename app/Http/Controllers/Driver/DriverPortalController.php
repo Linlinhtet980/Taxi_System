@@ -7,7 +7,7 @@ use App\Models\Auth\Driver;
 use App\Models\Core\Booking;
 use App\Models\Core\Transaction;
 use App\Models\Core\Withdrawal;
-use App\Models\Core\Notification;
+use App\Models\Core\Notification as NotificationModel;
 use App\Models\Core\OnlineLog;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -141,45 +141,62 @@ class DriverPortalController extends Controller
             $commission = round($fare * $rate);
             $driverAmount = $fare - $commission;
 
-            Transaction::create([
-                'booking_id' => $booking->id,
-                'driver_id' => $booking->driver_id,
-                'customer_id' => $booking->customer_id,
-                'amount' => $fare,
-                'commission_amount' => $commission,
-                'driver_amount' => $driverAmount,
-                'payment_method' => $paymentMethod,
-                'status' => 'completed'
-            ]);
+            \Illuminate\Support\Facades\DB::beginTransaction();
+            try {
+                Transaction::create([
+                    'booking_id' => $booking->id,
+                    'driver_id' => $booking->driver_id,
+                    'customer_id' => $booking->customer_id,
+                    'amount' => $fare,
+                    'commission_amount' => $commission,
+                    'driver_amount' => $driverAmount,
+                    'payment_method' => $paymentMethod,
+                    'status' => 'Completed'
+                ]);
 
-            $driver = Driver::query()->find($booking->driver_id);
-            if ($driver) {
-                if ($paymentMethod == 'Cash') {
-                    // Driver received full amount, owes commission to company
-                    $driver->wallet_balance -= $commission;
-                } else {
-                    // Company received full amount, owes driver share to driver
-                    $driver->wallet_balance += $driverAmount;
+                $driver = Driver::query()->find($booking->driver_id);
+                if ($driver) {
+                    if ($paymentMethod == 'Cash') {
+                        // Driver received full amount, owes commission to company
+                        $driver->wallet_balance -= $commission;
+                    } else {
+                        // Company received full amount, owes driver share to driver
+                        $driver->wallet_balance += $driverAmount;
+                    }
+                    $driver->save();
                 }
-                $driver->save();
+
+                // Award Loyalty Points to Customer (Only for CASH at completion, Digital is instant)
+                $customer = $booking->customer;
+                if ($customer && $paymentMethod == 'Cash') {
+                    $pointRatio = (float) \App\Models\Core\Setting::get('point_earning_ratio_cash', 1);
+                    $earnedPoints = floor($fare / 1000) * $pointRatio;
+                    if ($earnedPoints > 0) {
+                        $customer->increment('loyalty_points', (int)$earnedPoints);
+                    }
+                }
+
+                \Illuminate\Support\Facades\DB::commit();
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\DB::rollBack();
+                return back()->with('error', 'Trip completion failed: ' . $e->getMessage());
             }
 
-            // Award Loyalty Points to Customer (Only for CASH at completion, Digital is instant)
-            $customer = $booking->customer;
-            if ($customer && $paymentMethod == 'Cash') {
-                $pointRatio = (float) \App\Models\Core\Setting::get('point_earning_ratio_cash', 1);
-                $earnedPoints = floor($fare / 1000) * $pointRatio;
-                if ($earnedPoints > 0) {
-                    $customer->increment('loyalty_points', (int)$earnedPoints);
-                }
-            }
 
-
-            Notification::send(
+        NotificationModel::send(
                 'Trip Completed',
                 "Driver {$driver->full_name} has completed trip #{$booking->id}.",
                 'success',
-                route('transactions.index')
+                route('transactions.index'),
+                \App\Models\Auth\User::first(['*']) // Notify Admin
+            );
+            
+        NotificationModel::send(
+                'Ride Completed',
+                "Your ride #{$booking->id} has been finished. Thank you!",
+                'success',
+                route('customer.activities'),
+                $booking->customer
             );
         }
 
@@ -211,11 +228,12 @@ class DriverPortalController extends Controller
             'status' => 'pending'
         ]);
 
-        Notification::send(
+        NotificationModel::send(
             'New Withdrawal Request',
             "Driver {$driver->full_name} has requested a withdrawal of " . number_format($request->amount) . " MMK.",
             'warning',
-            route('admin.withdrawals.index')
+            route('admin.withdrawals.index'),
+            \App\Models\Auth\User::first(['*']) // Notify Admin
         );
 
         return back()->with('success', 'Withdrawal request submitted successfully.');
@@ -312,8 +330,12 @@ class DriverPortalController extends Controller
     public function notifications_history(int $id)
     {
         $driver = Driver::query()->findOrFail($id);
-        // Using Notification model
-        $notifications = Notification::query()->latest()->paginate(10);
+        // Using Notification model scoped to driver
+        $notifications = NotificationModel::query()
+            ->where('user_id', $id)
+            ->where('user_type', get_class($driver))
+            ->latest()
+            ->paginate(10);
         
         return view('driverview.notifications', compact('driver', 'notifications'));
     }

@@ -6,7 +6,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use App\Models\Core\Notification;
+use App\Models\Core\Notification as NotificationModel;
 use App\Models\Core\Transaction;
 use Carbon\Carbon;
 
@@ -29,8 +29,30 @@ class AppServiceProvider extends ServiceProvider
         
         View::composer('*', function ($view) {
             if (Schema::hasTable('notifications')) {
-                $unreadCount = Notification::query()->where('is_read', false)->count();
-                $latestNotifications = Notification::query()->latest()->take(5)->get();
+                $user = null;
+                $userType = null;
+
+                if (\Illuminate\Support\Facades\Auth::check()) {
+                    $user = \Illuminate\Support\Facades\Auth::user();
+                    $userType = get_class($user);
+                } elseif (\Illuminate\Support\Facades\Auth::guard('customer')->check()) {
+                    $user = \Illuminate\Support\Facades\Auth::guard('customer')->user();
+                    $userType = get_class($user);
+                } elseif (\Illuminate\Support\Facades\Auth::guard('driver')->check()) {
+                    $user = \Illuminate\Support\Facades\Auth::guard('driver')->user();
+                    $userType = get_class($user);
+                }
+
+                $query = NotificationModel::query();
+                if ($user) {
+                    $query->where('user_id', $user->id)->where('user_type', $userType);
+                } else {
+                    $query->where('user_id', null); // Global/System notifications
+                }
+
+                $unreadCount = (clone $query)->where('is_read', false)->count();
+                $latestNotifications = $query->latest()->take(5)->get();
+                
                 $view->with('unreadCount', $unreadCount)->with('latestNotifications', $latestNotifications);
             }
 

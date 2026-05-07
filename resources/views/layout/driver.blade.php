@@ -364,7 +364,11 @@
                 
                 <a href="{{ route('driver.notifications', $driver->id) }}" class="notification-btn">
                     <i class="fa-regular fa-bell"></i>
-                    <span class="badge"></span>
+                    @if($unreadCount > 0)
+                    <span class="badge" style="width: auto; height: 16px; min-width: 16px; padding: 0 4px; border-radius: 8px; top: 5px; right: 5px; font-size: 9px; color: #000; font-weight: 800; display: flex; align-items: center; justify-content: center;">
+                        {{ $unreadCount }}
+                    </span>
+                    @endif
                 </a>
             </div>
         </header>

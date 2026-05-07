@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Core\Withdrawal;
 use App\Models\Auth\Driver;
-use App\Models\Core\Notification;
+use App\Models\Core\Notification as NotificationModel;
+use App\Models\Core\Transaction;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class WithdrawalController extends Controller
@@ -35,30 +37,50 @@ class WithdrawalController extends Controller
             $screenshotPath = $request->file('screenshot')->store('withdrawals', 'public');
         }
 
-        $driver->wallet_balance -= $withdrawal->amount;
-        $driver->save();
+        DB::beginTransaction();
+        try {
+            $driver->wallet_balance -= $withdrawal->amount;
+            $driver->save();
 
-        $withdrawal->update([
-            'status' => 'approved',
-            'screenshot' => $screenshotPath
-        ]);
-
-        // Automatically reject other identical pending requests
-        Withdrawal::query()->where('driver_id', $driver->id)
-            ->where('status', 'pending')
-            ->where('amount', $withdrawal->amount)
-            ->where('id', '!=', $withdrawal->id)
-            ->update([
-                'status' => 'rejected',
-                'notes' => 'Duplicate request identified after manual approval.'
+            $withdrawal->update([
+                'status' => 'approved',
+                'screenshot' => $screenshotPath
             ]);
 
+            // Create financial record
+            Transaction::create([
+                'driver_id' => $driver->id,
+                'amount' => $withdrawal->amount,
+                'payment_method' => 'Digital',
+                'type' => 'Withdrawal',
+                'note' => "Withdrawal request #{$withdrawal->id} approved.",
+                'status' => 'Completed',
+                'reference_number' => $withdrawal->id
+            ]);
+
+            // Automatically reject other identical pending requests
+            Withdrawal::query()->where('driver_id', $driver->id)
+                ->where('status', 'pending')
+                ->where('amount', $withdrawal->amount)
+                ->where('id', '!=', $withdrawal->id)
+                ->update([
+                    'status' => 'rejected',
+                    'notes' => 'Duplicate request identified after manual approval.'
+                ]);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Approval failed: ' . $e->getMessage());
+        }
+
         // Notify Driver
-        Notification::send(
+        NotificationModel::send(
             'Withdrawal Success! 💰',
             "Your withdrawal of " . number_format($withdrawal->amount) . " MMK has been processed. Tap to see receipt.",
             'success',
-            route('driver.withdrawal.detail', ['id' => $driver->id, 'withdrawalId' => $withdrawal->id])
+            route('driver.withdrawal.detail', ['id' => $driver->id, 'withdrawalId' => $withdrawal->id]),
+            $driver
         );
 
         return back()->with('success', 'Withdrawal approved and driver notified.');

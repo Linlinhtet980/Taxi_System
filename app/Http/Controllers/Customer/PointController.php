@@ -37,15 +37,25 @@ class PointController extends Controller
 
             // Record transaction
             Transaction::create([
-                'user_id' => $customer->id,
-                'user_type' => 'customer',
+                'customer_id' => $customer->id,
                 'amount' => $reward->reward_amount,
-                'type' => 'deposit',
-                'description' => "Exchanged {$reward->points_required} points for {$reward->reward_amount} Ks wallet balance.",
-                'status' => 'completed',
+                'payment_method' => 'Digital',
+                'type' => 'Recharge',
+                'note' => "Exchanged {$reward->points_required} points for {$reward->reward_amount} Ks wallet balance.",
+                'status' => 'Completed',
             ]);
 
             DB::commit();
+
+            // Send Notification
+            \App\Models\Core\Notification::send(
+                'Point Exchange Success! 🎉',
+                "You have successfully exchanged {$reward->points_required} points for " . number_format($reward->reward_amount) . " MMK.",
+                'success',
+                route('customer.activities'),
+                $customer
+            );
+
             return back()->with('success', 'လဲလှယ်မှု အောင်မြင်ပါသည်။ Wallet ထဲသို့ ငွေထည့်သွင်းပြီးပါပြီ။');
         } catch (\Exception $e) {
             DB::rollBack();

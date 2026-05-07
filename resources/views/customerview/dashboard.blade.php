@@ -138,8 +138,13 @@
                     {{ number_format($customer->loyalty_points) }} P
                 </a>
             </div>
-            <a href="{{ route('customer.activities') }}" style="font-size: 18px; color: var(--text-light); text-decoration: none;">
+            <a href="{{ route('customer.activities') }}" style="font-size: 18px; color: var(--text-light); text-decoration: none; position: relative;">
                 <i class="fa-regular fa-bell"></i>
+                @if($unreadCount > 0)
+                <span style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 10px; width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; border: 2px solid white;">
+                    {{ $unreadCount }}
+                </span>
+                @endif
             </a>
             <a href="{{ route('customer.settings') }}" class="nav-profile">
                 @if($customer->profile_picture)

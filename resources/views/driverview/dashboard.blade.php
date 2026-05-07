@@ -201,7 +201,7 @@
                                 <button type="submit" class="btn-primary-dash">START TRIP</button>
                             </form>
                         @elseif($job->status == 'ongoing')
-                            <button onclick="showPaymentSelection({{ $job->id }}, {{ $job->fare }})" class="btn-primary-dash">COMPLETE TRIP</button>
+                            <button onclick="showPaymentSelection({{ $job->id }}, {{ $job->fare }}, '{{ $job->payment_method }}')" class="btn-primary-dash">COMPLETE TRIP</button>
                         @endif
                     </div>
                 </div>
@@ -364,12 +364,30 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 <script>
-    function showPaymentSelection(jobId, fare) {
+    function showPaymentSelection(jobId, fare, method) {
         const modal = document.getElementById('payment-selection-modal');
         const form = document.getElementById('completion-form');
         form.action = `/driver/{{ $driver->id }}/trip/${jobId}/update`;
+        
+        // Convert to Capitalized case to match IDs if needed, but our methods are 'Cash'/'Digital' usually
+        const capitalizedMethod = method.charAt(0).toUpperCase() + method.slice(1).toLowerCase();
+        
+        // Hide/Show options based on booking payment method
+        const cashOpt = document.getElementById('opt-cash');
+        const digitalOpt = document.getElementById('opt-digital');
+        
+        if (capitalizedMethod === 'Cash') {
+            cashOpt.style.display = 'block';
+            digitalOpt.style.display = 'none';
+            document.querySelector('#payment-selection-modal h3 + p').innerText = 'The customer selected CASH payment.';
+        } else {
+            cashOpt.style.display = 'none';
+            digitalOpt.style.display = 'block';
+            document.querySelector('#payment-selection-modal h3 + p').innerText = 'The customer selected DIGITAL payment.';
+        }
+        
         modal.style.display = 'flex';
-        selectFinalPayment('Cash');
+        selectFinalPayment(capitalizedMethod);
     }
 
     function selectFinalPayment(method) {
