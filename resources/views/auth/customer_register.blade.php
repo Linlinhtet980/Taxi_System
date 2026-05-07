@@ -54,7 +54,7 @@
             <button class="btn-register">Create Account</button>
 
             <div class="footer-text">
-                Already have an account? <a href="{{ route('view.login.customer') }}">Sign in</a>
+                Already have an account? <a href="{{ route('login') }}">Sign in</a>
             </div>
         </div>
     </div>

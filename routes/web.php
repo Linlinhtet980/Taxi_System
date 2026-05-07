@@ -17,6 +17,7 @@ use App\Http\Controllers\Auth\{CustomerAuthController, DriverAuthController};
 // =========================================================================
 Route::get('/', fn() => redirect()->route('dashboard.home')); // Root Redirect
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.home'); // 1. Admin Panel
+Route::get('/login', fn() => redirect()->route('view.login.customer'))->name('login');
 Route::get('/login/customer', fn() => view('auth.customer_auth', ['mode' => 'login']))->name('view.login.customer'); // 2. Customer App
 Route::get('/login/driver', fn() => view('auth.driver_login'))->name('view.login.driver'); // 3. Driver Portal
 

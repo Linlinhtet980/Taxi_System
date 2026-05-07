@@ -88,15 +88,15 @@ class DriverAuthController extends Controller
         
         $request->validate([
             'phone_no' => 'required|string|unique:drivers,phone_no,' . $driver->id,
-            'emergency_contact_no' => 'required|string',
-            'license_no' => 'required|string|unique:drivers,license_no,' . $driver->id,
-            'identity_card_no' => 'required|string',
-            'address' => 'required|string',
-            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'license_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'license_photo_back' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'nric_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'nric_photo_back' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'emergency_contact_no' => 'nullable|string',
+            'license_no' => 'nullable|string|unique:drivers,license_no,' . $driver->id,
+            'identity_card_no' => 'nullable|string',
+            'address' => 'nullable|string',
+            'profile_picture' => 'nullable',
+            'license_photo' => 'nullable',
+            'license_photo_back' => 'nullable',
+            'nric_photo' => 'nullable',
+            'nric_photo_back' => 'nullable',
         ]);
 
         $data = $request->only(['phone_no', 'emergency_contact_no', 'license_no', 'identity_card_no', 'address']);
@@ -130,19 +130,19 @@ class DriverAuthController extends Controller
         $driver = Auth::guard('driver')->user();
 
         $request->validate([
-            'brand' => 'required|string',
-            'model' => 'required|string',
+            'brand' => 'nullable|string',
+            'model' => 'nullable|string',
             'license_plate' => 'required|string|unique:vehicles,license_plate',
-            'vehicle_type' => 'required|string',
-            'color' => 'required|string',
-            'year' => 'required|integer',
-            'mileage' => 'required|integer',
-            'vehicle_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'front_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'back_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'left_side_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'right_side_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'interior_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'vehicle_type' => 'nullable|string',
+            'color' => 'nullable|string',
+            'year' => 'nullable|integer',
+            'mileage' => 'nullable|integer',
+            'vehicle_photo' => 'nullable',
+            'front_photo' => 'nullable',
+            'back_photo' => 'nullable',
+            'left_side_photo' => 'nullable',
+            'right_side_photo' => 'nullable',
+            'interior_photo' => 'nullable',
             'last_maintenance_at' => 'nullable|date',
             'next_maintenance_at' => 'nullable|date',
         ]);
