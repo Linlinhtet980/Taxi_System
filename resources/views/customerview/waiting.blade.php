@@ -8,13 +8,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="{{ asset('css/root/theme.css') }}">
+    <script>
+        const savedTheme = localStorage.getItem('taxi_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
     <style>
         :root {
-            --primary: #6366f1;
-            --bg: #f8fafc;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --text: #1e293b;
-            --accent: #10b981;
+            --primary: var(--primary);
+            --bg: var(--bg-main);
+            --card-bg: var(--card-glass);
+            --text: var(--text-main);
+            --accent: var(--accent-secondary);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
@@ -24,48 +29,50 @@
 
         .sidebar {
             width: 350px; height: 100%; background: var(--card-bg); 
-            backdrop-filter: blur(20px); border-left: 1px solid rgba(0,0,0,0.05);
+            backdrop-filter: blur(20px); border-left: 1px solid var(--card-border);
             z-index: 10; display: flex; flex-direction: column; padding: 30px;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+            box-shadow: -10px 0 30px var(--primary-light);
         }
 
         .trip-header { margin-bottom: 20px; }
         .trip-status {
             display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(16, 185, 129, 0.1); color: var(--accent);
+            background: var(--success-light); color: var(--success);
             padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 800;
             margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;
         }
-        .pulse { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        .pulse { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 var(--success-light); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 var(--success-light); } }
 
-        .dest-label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
+        .dest-label { font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 5px; }
         .dest-name { font-size: 16px; font-weight: 800; color: var(--text); line-height: 1.4; }
 
         .trip-meta {
             display: flex; gap: 10px; margin-top: 15px;
         }
         .meta-pill {
-            flex: 1; background: #f1f5f9; padding: 10px; border-radius: 12px;
-            text-align: center; font-size: 13px; font-weight: 700; color: var(--text);
+            flex: 1; background: var(--input-bg); padding: 10px; border-radius: 12px;
+            text-align: center; font-size: 13px; font-weight: 700; color: var(--text-main);
             display: flex; flex-direction: column; gap: 2px;
+            border: 1px solid var(--card-border);
         }
-        .meta-pill span:first-child { font-size: 10px; text-transform: uppercase; color: #64748b; }
+        .meta-pill span:first-child { font-size: 10px; text-transform: uppercase; color: var(--text-dim); }
 
-        .divider { height: 1px; background: rgba(0,0,0,0.05); margin: 25px 0; }
+        .divider { height: 1px; background: var(--card-border); margin: 25px 0; }
 
         .driver-card {
-            background: #fff; padding: 20px; border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px;
+            background: var(--input-bg); padding: 20px; border-radius: 20px;
+            box-shadow: 0 4px 15px var(--primary-light); margin-bottom: 20px;
+            border: 1px solid var(--card-border);
         }
         .driver-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         .driver-avatar { width: 50px; height: 50px; border-radius: 15px; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #fff; overflow: hidden; }
         .driver-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .driver-name { font-size: 15px; font-weight: 800; }
-        .car-info { font-size: 11px; color: #64748b; font-weight: 600; }
+        .car-info { font-size: 11px; color: var(--text-dim); font-weight: 600; }
 
-        .fare-info { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px; border-radius: 12px; }
-        .fare-label { font-size: 11px; font-weight: 700; color: #64748b; }
+        .fare-info { display: flex; justify-content: space-between; align-items: center; background: var(--bg-main); padding: 12px; border-radius: 12px; border: 1px solid var(--card-border); }
+        .fare-label { font-size: 11px; font-weight: 700; color: var(--text-dim); }
         .fare-val { font-size: 16px; font-weight: 800; color: var(--primary); }
 
         .actions { margin-top: auto; display: grid; gap: 10px; }
@@ -74,14 +81,14 @@
             padding: 14px; border-radius: 15px; border: none; font-weight: 800; font-size: 14px;
             cursor: pointer; transition: 0.3s; text-decoration: none;
         }
-        .btn-call { background: var(--primary); color: #fff; }
-        .btn-cancel { background: #fee2e2; color: #ef4444; }
+        .btn-call { background: var(--primary); color: var(--bg-main); }
+        .btn-cancel { background: var(--danger-light); color: var(--danger); }
 
         /* Marker Styles */
         .map-marker { width: 30px; height: 30px; border-radius: 50% 50% 50% 0; border: 2px solid #fff; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; }
         .map-marker i { transform: rotate(45deg); font-size: 10px; color: #fff; }
         .marker-pickup { background: var(--primary); }
-        .marker-dropoff { background: #f43f5e; }
+        .marker-dropoff { background: var(--danger); }
 
         /* Hide Default Routing UI */
         .leaflet-routing-container { display: none !important; }
@@ -150,9 +157,12 @@
                 <i class="fa-solid fa-phone"></i> CALL DRIVER
             </a>
             @if($booking->status == 'pending')
-            <button class="btn-action btn-cancel" onclick="alert('Trip cancellation coming soon')">
-                <i class="fa-solid fa-xmark"></i> CANCEL RIDE
-            </button>
+            <form action="{{ route('customer.booking.cancel', $booking->id) }}" method="POST" style="flex: 1;">
+                @csrf
+                <button type="submit" class="btn-action btn-cancel" style="width: 100%; border: none; cursor: pointer;">
+                    <i class="fa-solid fa-xmark"></i> CANCEL RIDE
+                </button>
+            </form>
             @endif
         </div>
     </div>
@@ -186,7 +196,7 @@
 
         const routingControl = L.Routing.control({
             waypoints: [pickup, dropoff],
-            lineOptions: { styles: [{ color: '#6366f1', opacity: 0.6, weight: 6 }] },
+            lineOptions: { styles: [{ color: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#D4AF37', opacity: 0.6, weight: 6 }] },
             createMarker: function() { return null; },
             addWaypoints: false,
             routeWhileDragging: false,
@@ -207,23 +217,34 @@
             document.getElementById('trip-time').innerText = time + ' min';
         });
 
-        // Optimized Status Checker (No flickering)
+        // Optimized Status Checker (Detects backend redirects seamlessly)
         let checkStatusInterval = setInterval(() => {
             fetch(window.location.href)
-                .then(r => r.text())
+                .then(r => {
+                    if (r.redirected) {
+                        window.location.href = r.url;
+                        return null;
+                    }
+                    return r.text();
+                })
                 .then(html => {
+                    if (!html) return;
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
-                    const newStatus = doc.querySelector('.trip-status').innerText.trim();
+                    const statusEl = doc.querySelector('.trip-status');
+                    if (!statusEl) {
+                        window.location.reload();
+                        return;
+                    }
+                    const newStatus = statusEl.innerText.trim();
                     const oldStatus = document.querySelector('.trip-status').innerText.trim();
                     
-                    // Only reload if the status has actually changed (e.g. from Ongoing to Completed)
                     if (newStatus !== oldStatus) {
                         window.location.reload();
                     }
                 })
                 .catch(err => console.log('Status check failed'));
-        }, 10000); // Check every 10 seconds to save battery and reduce flicker
+        }, 5000); // Check every 5 seconds for fast real-time demonstration
     </script>
 </body>
 </html>

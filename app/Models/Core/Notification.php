@@ -13,7 +13,7 @@ class Notification extends Model
         return $this->morphTo();
     }
 
-    public static function send($title, $message, $type = 'info', $link = null, $user = null)
+    public static function send(string $title, string $message, string $type = 'info', ?string $link = null, $user = null)
     {
         $data = [
             'title' => $title,

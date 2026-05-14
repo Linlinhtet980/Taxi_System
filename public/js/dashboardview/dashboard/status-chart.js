@@ -13,7 +13,11 @@ function initStatusChart(statusCounts) {
             datasets: [{
                 data: data,
                 backgroundColor: [
-                    '#fbbf24', '#60a5fa', '#a855f7', '#4ade80', '#f43f5e'
+                    getComputedStyle(document.documentElement).getPropertyValue('--warning').trim() || '#fbbf24',
+                    getComputedStyle(document.documentElement).getPropertyValue('--info').trim() || '#60a5fa',
+                    getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#D4AF37',
+                    getComputedStyle(document.documentElement).getPropertyValue('--success').trim() || '#4ade80',
+                    getComputedStyle(document.documentElement).getPropertyValue('--danger').trim() || '#f43f5e'
                 ],
                 borderWidth: 0
             }]

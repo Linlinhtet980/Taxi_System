@@ -2,7 +2,7 @@
 @extends('layout.admin')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/dashboardview/vehicles/show.css?v=5') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboardview/vehicle/show.css?v=5') }}">
 @endpush
 
 @section('content')
@@ -170,3 +170,4 @@ function openLightbox() {
 }
 </script>
 @endsection
+

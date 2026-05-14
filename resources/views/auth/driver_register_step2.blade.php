@@ -40,7 +40,7 @@
             </div>
         @endif
 
-        <form action="{{ route('driver.register.step2.submit') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('driver.onboarding.vehicle.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="input-box">

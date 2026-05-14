@@ -17,11 +17,11 @@
         @foreach($topDrivers as $index => $td)
             @php
                 $isTop3 = $index < 3;
-                $trophyColor = $index == 0 ? '#fbbf24' : ($index == 1 ? '#94a3b8' : '#cd7f32');
+                $trophyColor = $index == 0 ? '#fbbf24' : ($index == 1 ? '#94a3b8' : '#b45309');
                 $isMe = $td->id == $driver->id;
             @endphp
-            <div  style="display: flex; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--glass-border); {{ $isMe ? 'background: rgba(168, 85, 247, 0.1);' : '' }} transition: 0.3s;">
-                <div class="style-f9cde4">
+            <div  style="display: flex; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--card-border); {{ $isMe ? 'background: var(--primary-light);' : '' }} transition: 0.3s;">
+                <div class="style-f9cde4" style="display: flex; align-items: center; justify-content: center; color: var(--primary); border: 1px solid var(--card-border);">
                     @if($isTop3)
                         <i class="fa-solid fa-crown " style="color: {{ $trophyColor }}; font-size: 1.1rem;"></i>
                     @else
@@ -29,8 +29,8 @@
                     @endif
                 </div>
                 
-                <div  style="width: 50px; height: 50px; border-radius: 15px; overflow: hidden; background: #1e293b; margin-right: 15px; border: 2px solid {{ $isMe ? 'var(--accent-purple)' : ($isTop3 ? $trophyColor : 'transparent') }}; flex-shrink: 0;">
-                    <img src="{{ $td->profile_picture ? asset($td->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($td->full_name) . '&background=a855f7&color=fff' }}"  class="style-7d1fae">
+                <div  style="width: 50px; height: 50px; border-radius: 15px; overflow: hidden; background: var(--input-bg); margin-right: 15px; border: 2px solid {{ $isMe ? 'var(--primary)' : ($isTop3 ? $trophyColor : 'transparent') }}; flex-shrink: 0;">
+                    <img src="{{ $td->profile_picture ? asset($td->profile_picture) : 'https://ui-avatars.com/api/?name=' . urlencode($td->full_name) . '&background=D4AF37&color=fff' }}"  class="style-7d1fae">
                 </div>
 
                 <div class="style-49cdf8">
@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="style-7851db">
-                    <div  style="font-size: 1.1rem; font-weight: 800; color: {{ $isTop3 ? $trophyColor : 'white' }};">{{ $td->bookings_count }}</div>
+                    <div  style="font-size: 1.1rem; font-weight: 800; color: {{ $isTop3 ? $trophyColor : 'var(--text-main)' }};">{{ $td->bookings_count }}</div>
                     <div class="style-2bde83">Trips</div>
                 </div>
             </div>

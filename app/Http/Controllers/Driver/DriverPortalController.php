@@ -137,7 +137,9 @@ class DriverPortalController extends Controller
 
         if ($newStatus == 'completed' && $oldStatus != 'completed') {
             $fare = $booking->fare;
-            $rate = \App\Models\Core\Setting::get('commission_rate', 15) / 100;
+            $driverObj = Driver::query()->find($booking->driver_id);
+            $customRate = $driverObj ? $driverObj->commission_rate : null;
+            $rate = ($customRate !== null ? $customRate : \App\Models\Core\Setting::get('commission_rate', 15)) / 100;
             $commission = round($fare * $rate);
             $driverAmount = $fare - $commission;
 
@@ -150,13 +152,13 @@ class DriverPortalController extends Controller
                     'amount' => $fare,
                     'commission_amount' => $commission,
                     'driver_amount' => $driverAmount,
-                    'payment_method' => $paymentMethod,
+                    'payment_method' => (strtolower($paymentMethod) == 'wallet' || strtolower($paymentMethod) == 'digital') ? 'Digital' : 'Cash',
                     'status' => 'Completed'
                 ]);
 
                 $driver = Driver::query()->find($booking->driver_id);
                 if ($driver) {
-                    if ($paymentMethod == 'Cash') {
+                    if (strtolower($paymentMethod) == 'cash') {
                         // Driver received full amount, owes commission to company
                         $driver->wallet_balance -= $commission;
                     } else {
@@ -168,7 +170,7 @@ class DriverPortalController extends Controller
 
                 // Award Loyalty Points to Customer (Only for CASH at completion, Digital is instant)
                 $customer = $booking->customer;
-                if ($customer && $paymentMethod == 'Cash') {
+                if ($customer && strtolower($paymentMethod) == 'cash') {
                     $pointRatio = (float) \App\Models\Core\Setting::get('point_earning_ratio_cash', 1);
                     $earnedPoints = floor($fare / 1000) * $pointRatio;
                     if ($earnedPoints > 0) {
@@ -298,6 +300,36 @@ class DriverPortalController extends Controller
         return view('driverview.profile', compact('driver'));
     }
 
+    public function updateProfile(Request $request, int $id)
+    {
+        $driver = Driver::query()->findOrFail($id);
+        
+        $request->validate([
+            'full_name' => 'required|string|max:255',
+            'phone_no' => 'required|string|unique:drivers,phone_no,' . $id,
+            'address' => 'nullable|string',
+            'profile_picture' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $data = $request->only(['full_name', 'phone_no', 'address']);
+
+        if ($request->hasFile('profile_picture')) {
+            // Delete old picture if exists
+            if ($driver->profile_picture && file_exists(public_path($driver->profile_picture))) {
+                @unlink(public_path($driver->profile_picture));
+            }
+
+            $file = $request->file('profile_picture');
+            $filename = time() . '_profile.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/drivers'), $filename);
+            $data['profile_picture'] = 'uploads/drivers/' . $filename;
+        }
+
+        $driver->update($data);
+
+        return back()->with('success', 'Profile updated successfully!');
+    }
+
     public function leaderboard(int $id)
     {
         $driver = Driver::query()->findOrFail($id);
@@ -348,7 +380,11 @@ class DriverPortalController extends Controller
             ->with('customer')
             ->first();
             
-        return view('driverview.demand_map', compact('driver', 'activeBooking'));
+        $incomingRequest = (!$activeBooking) 
+            ? Booking::query()->where('driver_id', $id)->where('status', 'pending')->first() 
+            : null;
+            
+        return view('driverview.demand_map', compact('driver', 'activeBooking', 'incomingRequest'));
     }
 
     public function earnings(int $id)

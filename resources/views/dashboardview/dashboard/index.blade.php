@@ -17,77 +17,61 @@
                 <div class="status-dot"></div>
                 <span class="status-text">System Online</span>
             </div>
-            <button class="btn-primary" onclick="window.location.href='{{ route('bookings.map') }}'">
+            <x-button onclick="window.location.href='{{ route('bookings.map') }}'">
                 <i class="fa-solid fa-satellite"></i> Live Tracking
-            </button>
+            </x-button>
         </div>
     </div>
 
     <!-- Stats Grid (Always 4 columns on desktop) -->
     <div class="stats-grid animate-fade dashboard-stats-grid">
-        <div class="stat-card glass style-2fc629">
-            <div class="stat-card-inner">
-                <div>
-                    <h3 class="stat-label">Daily Revenue</h3>
-                    <p class="stat-value style-a5e3c2">{{ number_format($todayRevenue) }} <span class="style-fb2a71">MMK</span></p>
-                </div>
-                <div class="stat-icon-box style-82cb4d">
-                    <i class="fa-solid fa-coins fa-lg"></i>
-                </div>
-            </div>
-            <div class="stat-update-info style-a5e3c2">
-                <i class="fa-solid fa-arrow-trend-up"></i> Updated just now
-            </div>
-        </div>
+        <x-stat-card 
+            label="Daily Revenue" 
+            value="{{ number_format($todayRevenue) }} MMK" 
+            icon="fa-solid fa-coins"
+        />
 
-        <div class="stat-card glass style-0cda32">
-            <div class="stat-card-inner">
-                <div>
-                    <h3 class="stat-label">Active Drivers</h3>
-                    <p class="stat-value style-b2fa7f">{{ number_format($activeDrivers) }}</p>
-                </div>
-                <div class="stat-icon-box style-7e310d">
-                    <i class="fa-solid fa-id-card fa-lg"></i>
-                </div>
-            </div>
-            <div class="stat-update-info style-2e72b4">
-                Available for dispatch
-            </div>
-        </div>
+        <x-stat-card 
+            label="Active Drivers" 
+            value="{{ number_format($activeDrivers) }}" 
+            icon="fa-solid fa-id-card"
+        />
 
-        <div class="stat-card glass style-3f5f82">
-            <div class="stat-card-inner">
-                <div>
-                    <h3 class="stat-label">Total Rides</h3>
-                    <p class="stat-value style-524f3f">{{ number_format($totalBookings) }}</p>
-                </div>
-                <div class="stat-icon-box style-804922">
-                    <i class="fa-solid fa-taxi fa-lg"></i>
-                </div>
-            </div>
-            <div class="stat-update-info style-2e72b4">
-                Cumulative bookings
-            </div>
-        </div>
+        <x-stat-card 
+            label="Total Rides" 
+            value="{{ number_format($totalBookings) }}" 
+            icon="fa-solid fa-taxi"
+        />
 
-        <div class="stat-card glass style-1f578e">
-            <div class="stat-card-inner">
-                <div>
-                    <h3 class="stat-label">Passengers</h3>
-                    <p class="stat-value style-462d35">{{ number_format($totalCustomers) }}</p>
-                </div>
-                <div class="stat-icon-box style-9fcb8c">
-                    <i class="fa-solid fa-users fa-lg"></i>
-                </div>
-            </div>
-            <div class="stat-update-info style-2e72b4">
-                Registered accounts
-            </div>
-        </div>
+        <x-stat-card 
+            label="Passengers" 
+            value="{{ number_format($totalCustomers) }}" 
+            icon="fa-solid fa-users"
+        />
     </div>
 
-    <!-- Middle Row: Charts & Quick Actions -->
-    <div class="animate-fade dashboard-middle-row style-967544">
+    <!-- Quick Actions Row -->
+    <div class="quick-actions-row animate-fade">
+        <a href="{{ route('bookings.create') }}" class="action-tile-col glass">
+            <i class="fa-solid fa-plus-circle style-b2fa7f"></i>
+            <span class="primary-text">New Ride</span>
+        </a>
+        <a href="{{ route('drivers.create') }}" class="action-tile-col glass">
+            <i class="fa-solid fa-user-plus style-8ffdae"></i>
+            <span class="primary-text">Add Driver</span>
+        </a>
+        <a href="{{ route('reports.transactions.print') }}" target="_blank" class="action-tile-col glass">
+            <i class="fa-solid fa-file-pdf style-524f3f"></i>
+            <span class="primary-text">Print PDF</span>
+        </a>
+        <a href="{{ route('settings.index') }}" class="action-tile-col glass">
+            <i class="fa-solid fa-gears style-c06d9c"></i>
+            <span class="primary-text">Settings</span>
+        </a>
+    </div>
+
+    <!-- Middle Row: Charts -->
+    <div class="animate-fade dashboard-middle-row charts-row">
         <!-- Status Chart Card -->
         <div class="table-container glass chart-card style-9489cc">
             <h2 class="chart-title">Booking Status</h2>
@@ -95,9 +79,18 @@
                 <canvas id="statusChart"></canvas>
             </div>
             <div class="chart-legend style-64348a">
+                @php
+                    $statusVarMap = [
+                        'pending' => 'var(--warning)',
+                        'confirmed' => 'var(--info)',
+                        'ongoing' => 'var(--primary)',
+                        'completed' => 'var(--success)',
+                        'cancelled' => 'var(--danger)'
+                    ];
+                @endphp
                 @foreach($statusCounts as $status => $count)
                 <div class="legend-item style-37e43d">
-                    <div class="legend-dot " style="width: 8px; height: 8px; border-radius: 50%; background: {{ ['pending'=>'#fbbf24','confirmed'=>'#60a5fa','ongoing'=>'#a855f7','completed'=>'#4ade80','cancelled'=>'#f43f5e'][$status] ?? '#94a3b8' }};"></div>
+                    <div class="legend-dot" style="width: 8px; height: 8px; border-radius: 50%; background: {{ $statusVarMap[$status] ?? 'var(--text-dim)' }};"></div>
                     <span>{{ ucfirst($status) }}</span>
                 </div>
                 @endforeach
@@ -109,29 +102,6 @@
             <h2 class="chart-title">Revenue Trend (Last 6 Months)</h2>
             <div class="chart-container style-8a1f03">
                 <canvas id="revenueChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Quick Launch Panel -->
-        <div class="table-container glass launch-panel style-9489cc">
-            <h2 class="chart-title">Quick Actions</h2>
-            <div class="launch-grid style-e4ed45">
-                <a href="{{ route('bookings.create') }}" class="action-tile glass style-ae2f99">
-                    <i class="fa-solid fa-plus-circle style-b2fa7f"></i>
-                    <span>New Ride</span>
-                </a>
-                <a href="{{ route('drivers.create') }}" class="action-tile glass style-ae2f99">
-                    <i class="fa-solid fa-user-plus style-8ffdae"></i>
-                    <span>Add Driver</span>
-                </a>
-                <a href="{{ route('reports.transactions.print') }}" target="_blank" class="action-tile glass style-ae2f99">
-                    <i class="fa-solid fa-file-pdf style-524f3f"></i>
-                    <span>Print PDF</span>
-                </a>
-                <a href="{{ route('settings.index') }}" class="action-tile glass style-ae2f99">
-                    <i class="fa-solid fa-gears style-c06d9c"></i>
-                    <span>Settings</span>
-                </a>
             </div>
         </div>
     </div>
@@ -162,17 +132,7 @@
                             <div class="primary-text">{{ $booking->customer->name ?? 'N/A' }}</div>
                         </td>
                         <td>
-                            @php
-                                $statusColors = [
-                                    'pending' => '#fbbf24',
-                                    'confirmed' => '#60a5fa',
-                                    'ongoing' => '#a855f7',
-                                    'completed' => '#4ade80',
-                                    'cancelled' => '#f43f5e'
-                                ];
-                                $color = $statusColors[$booking->status] ?? '#94a3b8';
-                            @endphp
-                            <span class="status-badge " style="background: {{ $color }}20; color: {{ $color }}; border: 1px solid {{ $color }}40; font-size: 0.7rem;">
+                            <span class="status-badge status-{{ $booking->status }}">
                                 {{ strtoupper($booking->status) }}
                             </span>
                         </td>
@@ -206,12 +166,12 @@
                 datasets: [{
                     label: 'Revenue (MMK)',
                     data: {!! json_encode($monthlyRevenue->values()) !!},
-                    borderColor: '#a855f7',
-                    backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                    borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#D4AF37',
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-light').trim() || 'rgba(212, 175, 55, 0.1)',
                     fill: true,
                     tension: 0.4,
                     borderWidth: 3,
-                    pointBackgroundColor: '#a855f7'
+                    pointBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#D4AF37'
                 }]
             },
             options: {
@@ -223,12 +183,18 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(255,255,255,0.05)' },
-                        ticks: { color: '#94a3b8' }
+                        grid: { 
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--card-border').trim() || 'rgba(255,255,255,0.05)' 
+                        },
+                        ticks: { 
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-dim').trim() || '#94a3b8' 
+                        }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { color: '#94a3b8' }
+                        ticks: { 
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-dim').trim() || '#94a3b8' 
+                        }
                     }
                 }
             }

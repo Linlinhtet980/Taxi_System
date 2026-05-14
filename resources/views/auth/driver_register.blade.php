@@ -6,22 +6,19 @@
     <title>Driver Registration - Taxi Luxury</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/root/theme.css') }}">
+    <script>
+        const savedTheme = localStorage.getItem('taxi_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
     <style>
-        :root {
-            --primary: #D4AF37;
-            --primary-light: rgba(212, 175, 55, 0.15);
-            --bg-dark: #0a0a0a;
-            --card-bg: rgba(20, 20, 20, 0.8);
-            --text-dim: #94a3b8;
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-main);
             height: 100vh;
             overflow: hidden;
-            color: white;
+            color: var(--text-main);
         }
 
         .split-container {
@@ -33,7 +30,7 @@
         /* Illustration Side */
         .illustration-side {
             flex: 1;
-            background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+            background: var(--bg-gradient-sidebar, linear-gradient(135deg, #111 0%, #1a1a1a 100%));
             display: flex;
             flex-direction: column;
             padding: 40px;
@@ -117,13 +114,13 @@
             backdrop-filter: blur(20px);
             padding: 35px;
             border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
         }
 
         .auth-tabs {
             display: flex;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid var(--card-border);
             margin-bottom: 25px;
         }
 
@@ -144,15 +141,15 @@
             border-bottom-color: var(--primary);
         }
 
-        .auth-header h1 { font-size: 1.6rem; margin-bottom: 5px; font-weight: 800; }
+        .auth-header h1 { font-size: 1.6rem; margin-bottom: 5px; font-weight: 800; color: var(--text-main); }
         .auth-header p { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 25px; }
 
         .error-badge {
             padding: 10px;
             border-radius: 12px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
+            background: var(--danger-light);
+            border: 1px solid var(--danger);
+            color: var(--danger);
             font-size: 0.75rem;
             margin-bottom: 20px;
             display: flex;
@@ -167,17 +164,18 @@
         .input-wrapper i:not(.toggle-pass) { position: absolute; left: 15px; color: var(--primary); font-size: 1rem; }
         .input-wrapper input {
             width: 100%;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
             padding: 12px 15px 12px 42px;
             border-radius: 12px;
-            color: white;
+            color: var(--text-main);
             font-size: 0.9rem;
             outline: none;
             transition: 0.3s;
         }
 
-        .input-wrapper input:focus { border-color: var(--primary); background: rgba(255,255,255,0.06); }
+        .input-wrapper input:focus { border-color: var(--primary); background: var(--input-focus-bg); }
+        .input-wrapper input::placeholder { color: var(--input-placeholder); }
 
         /* Hide browser default password eye icon */
         input::-ms-reveal,
@@ -194,7 +192,7 @@
         .btn-register {
             width: 100%;
             background: var(--primary);
-            color: #000;
+            color: var(--bg-main);
             border: none;
             padding: 16px;
             border-radius: 12px;
@@ -221,7 +219,7 @@
         .progress-line {
             height: 100%;
             width: 100%;
-            background: rgba(255,255,255,0.1);
+            background: var(--card-border);
             position: relative;
             border-radius: 2px;
         }
@@ -242,8 +240,8 @@
             transform: translate(-50%, -50%);
             width: 12px;
             height: 12px;
-            background: #222;
-            border: 2px solid rgba(255,255,255,0.2);
+            background: var(--bg-main);
+            border: 2px solid var(--card-border);
             border-radius: 50%;
             z-index: 2;
         }
@@ -267,13 +265,13 @@
         }
 
         .progress-step.active .step-label {
-            color: white;
+            color: var(--text-main);
         }
 
         @media (max-width: 1100px) {
             .illustration-side { display: none; }
             .vertical-progress { display: none; }
-            .form-side { background: var(--bg-dark); }
+            .form-side { background: var(--bg-main); }
             .step-progress-wrapper { max-width: 420px; }
         }
 
@@ -373,21 +371,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.querySelectorAll('.toggle-pass').forEach(icon => {
-            icon.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                input.setAttribute('type', type);
-                this.classList.toggle('fa-eye');
-                this.classList.toggle('fa-eye-slash');
-            });
-        });
-    </script>
-</body>
-</html>
 
     <script>
         document.querySelectorAll('.toggle-pass').forEach(icon => {

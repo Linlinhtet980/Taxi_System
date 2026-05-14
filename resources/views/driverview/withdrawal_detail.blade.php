@@ -15,11 +15,11 @@
 
     <div class="glass style-57c15d">
         <div class="style-86c435">
-            <div  style="width: 60px; height: 60px; border-radius: 50%; background: {{ $withdrawal->status == 'approved' ? 'rgba(74, 222, 128, 0.1)' : 'rgba(251, 191, 36, 0.1)' }}; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: {{ $withdrawal->status == 'approved' ? '#4ade80' : '#fbbf24' }};">
-                <i class="fa-solid {{ $withdrawal->status == 'approved' ? 'fa-check-double' : 'fa-clock' }} style-fa415b" ></i>
+            <div style="width: 60px; height: 60px; border-radius: 50%; background: {{ $withdrawal->status == 'approved' ? 'var(--success-light)' : 'var(--warning-light)' }}; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: {{ $withdrawal->status == 'approved' ? 'var(--success)' : 'var(--warning)' }}; border: 1px solid {{ $withdrawal->status == 'approved' ? 'var(--success)' : 'var(--warning)' }};">
+                <i class="fa-solid {{ $withdrawal->status == 'approved' ? 'fa-check-double' : 'fa-clock' }} style-fa415b"></i>
             </div>
             <h2 class="style-661890">{{ number_format($withdrawal->amount) }} MMK</h2>
-            <p class="style-f1df8c">{{ ucfirst($withdrawal->status) }}</p>
+            <p class="style-f1df8c" style="color: {{ $withdrawal->status == 'approved' ? 'var(--success)' : 'var(--warning)' }}">{{ ucfirst($withdrawal->status) }}</p>
         </div>
 
         <div class="style-9a3f58">

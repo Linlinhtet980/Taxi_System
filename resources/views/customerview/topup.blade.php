@@ -1,63 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top-up Wallet - Taxi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+@extends('layout.customer')
+
+@section('title', 'Top-up Wallet - Taxi')
+
+@push('css')
     <style>
-        :root {
-            --primary: #6366f1;
-            --bg: #f8fafc;
-            --text: #1e293b;
-            --text-light: #64748b;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding-bottom: 50px; }
-
-        .header {
-            background: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            margin-bottom: 25px;
-        }
-
-        .back-btn {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: #f1f5f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none;
-            color: var(--text);
-        }
-
-        .container { padding: 0 20px; max-width: 500px; margin: 0 auto; }
-
         .balance-card {
-            background: linear-gradient(135deg, var(--primary), #4f46e5);
+            background: linear-gradient(135deg, var(--primary), var(--accent-secondary));
             padding: 30px;
             border-radius: 24px;
-            color: white;
+            color: black;
             text-align: center;
             margin-bottom: 30px;
-            box-shadow: 0 15px 35px rgba(99, 102, 241, 0.25);
+            box-shadow: 0 10px 30px var(--primary-light);
+            border: 1px solid var(--card-border);
         }
-        .balance-card p { font-size: 14px; opacity: 0.9; margin-bottom: 8px; font-weight: 500; }
+        .balance-card p { font-size: 14px; opacity: 0.8; margin-bottom: 8px; font-weight: 600; }
         .balance-card h2 { font-size: 32px; font-weight: 800; }
 
-        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; color: var(--text); }
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 15px; color: var(--text-main); }
 
         .amount-grid {
             display: grid;
@@ -66,36 +26,37 @@
             margin-bottom: 20px;
         }
         .amount-btn {
-            background: white;
-            border: 2px solid #e2e8f0;
+            background: var(--card-glass);
+            border: 1px solid var(--card-border);
             padding: 15px 10px;
             border-radius: 16px;
             font-size: 14px;
             font-weight: 700;
-            color: var(--text);
+            color: var(--text-main);
             cursor: pointer;
             transition: 0.3s;
             text-align: center;
+            backdrop-filter: blur(10px);
         }
-        .amount-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .amount-btn:hover { border-color: var(--primary); background: var(--primary-light); }
 
-        .input-wrapper { position: relative; margin-bottom: 30px; }
-        .input-wrapper input {
+        .input-wrapper-topup { position: relative; margin-bottom: 30px; }
+        .input-wrapper-topup input {
             width: 100%;
             padding: 16px 20px;
             padding-left: 45px;
-            background: white;
-            border: 2px solid #e2e8f0;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
             border-radius: 16px;
             font-size: 18px;
             font-weight: 700;
+            color: var(--text-main);
             outline: none;
             transition: 0.3s;
         }
-        .input-wrapper input:focus { border-color: var(--primary); }
-        .input-wrapper i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 18px; }
+        .input-wrapper-topup input:focus { border-color: var(--primary); background: var(--bg-main); box-shadow: 0 0 0 4px var(--primary-light); }
+        .input-wrapper-topup i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 18px; }
 
-        /* Method Selection */
         .method-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -103,17 +64,19 @@
             margin-bottom: 30px;
         }
         .method-card {
-            background: white;
-            border: 2px solid #e2e8f0;
+            background: var(--card-glass);
+            border: 1px solid var(--card-border);
             padding: 20px;
             border-radius: 20px;
             text-align: center;
             cursor: pointer;
             transition: 0.3s;
+            backdrop-filter: blur(10px);
         }
         .method-card.active {
             border-color: var(--primary);
-            background: #f5f3ff;
+            background: var(--primary-light);
+            box-shadow: 0 0 15px var(--primary-light);
         }
         .method-card img {
             width: 40px;
@@ -121,16 +84,15 @@
             border-radius: 10px;
             margin-bottom: 10px;
         }
-        .method-card span { display: block; font-size: 14px; font-weight: 700; }
+        .method-card span { display: block; font-size: 14px; font-weight: 700; color: var(--text-main); }
 
-        /* Admin Details */
         #adminDetails {
             display: none;
-            background: #f1f5f9;
+            background: var(--input-bg);
             padding: 20px;
             border-radius: 20px;
             margin-bottom: 30px;
-            border: 1px dashed #cbd5e1;
+            border: 1px dashed var(--card-border);
         }
         .detail-row {
             display: flex;
@@ -138,146 +100,70 @@
             align-items: center;
             margin-bottom: 10px;
         }
-        .detail-label { font-size: 12px; color: var(--text-light); }
-        .detail-value { font-size: 14px; font-weight: 700; }
+        .detail-label { font-size: 12px; color: var(--text-dim); }
+        .detail-value { font-size: 14px; font-weight: 700; color: var(--text-main); }
 
-        /* File Upload */
-        .file-upload {
-            border: 2px dashed #e2e8f0;
+        .file-upload-box {
+            border: 2px dashed var(--card-border);
             padding: 30px 20px;
             border-radius: 20px;
             text-align: center;
             cursor: pointer;
-            background: white;
+            background: var(--card-glass);
             margin-bottom: 30px;
+            transition: 0.3s;
         }
-        .file-upload i { font-size: 30px; color: var(--text-light); margin-bottom: 10px; }
-        .file-upload p { font-size: 13px; color: var(--text-light); font-weight: 500; }
+        .file-upload-box:hover { border-color: var(--primary); background: var(--primary-light); }
+        .file-upload-box i { font-size: 30px; color: var(--text-dim); margin-bottom: 10px; }
+        .file-upload-box p { font-size: 13px; color: var(--text-dim); font-weight: 500; }
 
-        .btn-submit {
+        .btn-submit-topup {
             width: 100%;
             padding: 18px;
             background: var(--primary);
-            color: white;
+            color: black;
             border: none;
             border-radius: 20px;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 10px 20px var(--primary-light);
+            transition: 0.3s;
         }
+        .btn-submit-topup:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
-        .info-banner {
-            background: #eff6ff;
+        .info-banner-topup {
+            background: var(--primary-light);
             padding: 15px;
             border-radius: 16px;
             display: flex;
             gap: 12px;
             margin-top: 30px;
+            border: 1px solid var(--card-border);
         }
-        .info-banner i { color: #2563eb; }
-        .info-banner p { font-size: 12px; color: #1e40af; line-height: 1.5; }
-
-        /* Points Exchange UI */
-        .points-card {
-            background: white;
-            padding: 20px;
-            border-radius: 24px;
-            border: 1px solid #f1f5f9;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .points-info { display: flex; align-items: center; gap: 15px; }
-        .points-icon { 
-            width: 50px; 
-            height: 50px; 
-            background: #fffbeb; 
-            border-radius: 15px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            color: #fbbf24; 
-            font-size: 24px;
-        }
-        .points-text p { font-size: 12px; color: var(--text-light); margin-bottom: 2px; }
-        .points-text h4 { font-size: 20px; font-weight: 800; }
-        .btn-exchange-trigger {
-            background: #fffbeb;
-            color: #d97706;
-            border: 1px solid #fef3c7;
-            padding: 10px 15px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        #exchangeFormContainer {
-            display: none;
-            background: white;
-            padding: 20px;
-            border-radius: 24px;
-            border: 1px solid #f1f5f9;
-            margin-bottom: 30px;
-            animation: slideDown 0.3s ease-out;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .exchange-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            outline: none;
-        }
-        .exchange-input:focus { border-color: #fbbf24; }
-        .btn-exchange-submit {
-            width: 100%;
-            padding: 14px;
-            background: #fbbf24;
-            color: #92400e;
-            border: none;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-        .exchange-rate-info { font-size: 11px; color: var(--text-light); text-align: center; margin-top: 10px; }
+        .info-banner-topup i { color: var(--primary); }
+        .info-banner-topup p { font-size: 12px; color: var(--text-main); line-height: 1.5; }
     </style>
-</head>
-<body>
-    <header class="header">
-        <a href="{{ route('customer.dashboard') }}" class="back-btn">
-            <i class="fa-solid fa-chevron-left"></i>
-        </a>
-        <h2 style="font-size: 18px;">Top-up Wallet</h2>
-    </header>
+@endpush
 
-    <main class="container">
+@section('content')
+    <div class="animate-fade">
         <div class="balance-card">
             <p>Current Balance</p>
             <h2>{{ number_format($customer->wallet_balance) }} Ks</h2>
         </div>
 
         @if(session('success'))
-            <div style="background: #dcfce7; color: #166534; padding: 15px; border-radius: 16px; margin-bottom: 20px; font-size: 13px; font-weight: 600;">
+            <div style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 15px; border-radius: 16px; margin-bottom: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.2);">
                 <i class="fa-solid fa-circle-check"></i> {{ session('success') }}
             </div>
         @endif
 
         @if(session('error'))
-            <div style="background: #fee2e2; color: #991b1b; padding: 15px; border-radius: 16px; margin-bottom: 20px; font-size: 13px; font-weight: 600;">
+            <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 15px; border-radius: 16px; margin-bottom: 20px; font-size: 13px; font-weight: 600; border: 1px solid rgba(239, 68, 68, 0.2);">
                 <i class="fa-solid fa-circle-exclamation"></i> {{ session('error') }}
             </div>
         @endif
-
 
         <form action="{{ route('customer.wallet.topup.store') }}" method="POST" id="topupForm" enctype="multipart/form-data">
             @csrf
@@ -289,7 +175,7 @@
                 <div class="amount-btn" onclick="setAmount(50000)">50,000</div>
             </div>
 
-            <div class="input-wrapper">
+            <div class="input-wrapper-topup">
                 <i class="fa-solid fa-wallet"></i>
                 <input type="number" name="amount" id="amount_input" placeholder="Enter amount manually" required>
             </div>
@@ -319,20 +205,20 @@
             </div>
 
             <div class="section-title">Step 3: Upload Receipt</div>
-            <div class="file-upload" onclick="document.getElementById('screenshot').click()">
+            <div class="file-upload-box" onclick="document.getElementById('screenshot').click()">
                 <i class="fa-solid fa-image"></i>
                 <p id="fileName">Click to upload transfer screenshot</p>
                 <input type="file" name="screenshot" id="screenshot" style="display: none;" onchange="updateFileName()">
             </div>
 
-            <button type="submit" class="btn-submit">Submit Top-up Request</button>
+            <button type="submit" class="btn-submit-topup">Submit Top-up Request</button>
         </form>
 
-        <div class="info-banner">
+        <div class="info-banner-topup">
             <i class="fa-solid fa-circle-info"></i>
             <p>Demo Mode: Admin will review your transfer. For this demo, your wallet will be updated automatically upon submission.</p>
         </div>
-    </main>
+    </div>
 
     <script>
         function setAmount(val) {
@@ -352,7 +238,5 @@
             const file = document.getElementById('screenshot').files[0];
             if(file) document.getElementById('fileName').innerText = file.name;
         }
-
     </script>
-</body>
-</html>
+@endsection

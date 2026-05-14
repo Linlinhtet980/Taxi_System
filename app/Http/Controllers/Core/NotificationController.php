@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-    public function markAsRead($id)
+    public function markAsRead(int $id)
     {
         $notification = Notification::findOrFail($id);
         $notification->update(['is_read' => true]);
@@ -18,7 +18,7 @@ class NotificationController extends Controller
 
     public function markAllAsRead(Request $request)
     {
-        $query = Notification::where('is_read', false);
+        $query = Notification::query()->where('is_read', false);
         
         if ($request->has('user_id') && $request->has('user_type')) {
             $query->where('user_id', $request->user_id)

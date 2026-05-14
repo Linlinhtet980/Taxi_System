@@ -6,22 +6,19 @@
     <title>Driver Login - Taxi Luxury</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/root/theme.css') }}">
+    <script>
+        const savedTheme = localStorage.getItem('taxi_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
     <style>
-        :root {
-            --primary: #D4AF37;
-            --primary-light: rgba(212, 175, 55, 0.15);
-            --bg-dark: #0a0a0a;
-            --card-bg: rgba(20, 20, 20, 0.8);
-            --text-dim: #94a3b8;
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-main);
             height: 100vh;
             overflow: hidden;
-            color: white;
+            color: var(--text-main);
         }
 
         .split-container {
@@ -33,7 +30,7 @@
         /* Illustration Side */
         .illustration-side {
             flex: 1;
-            background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+            background: var(--bg-gradient-sidebar, linear-gradient(135deg, #111 0%, #1a1a1a 100%));
             display: flex;
             flex-direction: column;
             padding: 40px;
@@ -109,13 +106,13 @@
             backdrop-filter: blur(20px);
             padding: 40px;
             border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
         }
 
         .auth-tabs {
             display: flex;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid var(--card-border);
             margin-bottom: 30px;
         }
 
@@ -136,7 +133,7 @@
             border-bottom-color: var(--primary);
         }
 
-        .auth-header h1 { font-size: 1.8rem; margin-bottom: 8px; font-weight: 800; }
+        .auth-header h1 { font-size: 1.8rem; margin-bottom: 8px; font-weight: 800; color: var(--text-main); }
         .auth-header p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 30px; }
 
         .form-group { margin-bottom: 20px; text-align: left; }
@@ -146,17 +143,18 @@
         .input-wrapper i:not(.toggle-pass) { position: absolute; left: 15px; color: var(--primary); font-size: 1.1rem; }
         .input-wrapper input {
             width: 100%;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
             padding: 14px 15px 14px 45px;
             border-radius: 12px;
-            color: white;
+            color: var(--text-main);
             font-size: 0.95rem;
             outline: none;
             transition: 0.3s;
         }
 
-        .input-wrapper input:focus { border-color: var(--primary); background: rgba(255,255,255,0.06); }
+        .input-wrapper input:focus { border-color: var(--primary); background: var(--input-focus-bg); }
+        .input-wrapper input::placeholder { color: var(--input-placeholder); }
 
         /* Hide browser default password eye icon */
         input::-ms-reveal,
@@ -182,7 +180,7 @@
         .btn-signin {
             width: 100%;
             background: var(--primary);
-            color: #000;
+            color: var(--bg-main);
             border: none;
             padding: 16px;
             border-radius: 12px;
@@ -203,15 +201,15 @@
             text-align: center;
             margin: 30px 0;
         }
-        .social-divider::before { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 1px; background: rgba(255,255,255,0.05); }
-        .social-divider span { position: relative; background: #141414; padding: 0 15px; color: var(--text-dim); font-size: 0.8rem; }
+        .social-divider::before { content: ''; position: absolute; left: 0; top: 50%; width: 100%; height: 1px; background: var(--card-border); }
+        .social-divider span { position: relative; background: var(--card-bg); color: var(--text-dim); font-size: 0.8rem; padding: 0 15px; }
 
         .social-login { display: flex; gap: 15px; }
         .btn-social {
             flex: 1;
             background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            color: white;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
             padding: 12px;
             border-radius: 12px;
             display: flex;

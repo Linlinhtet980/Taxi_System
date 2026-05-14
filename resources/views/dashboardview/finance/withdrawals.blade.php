@@ -59,11 +59,11 @@
                         @if($w->status == 'pending')
                         <div class="style-cc8ca4">
                             <!-- Approve Modal Trigger -->
-                            <button onclick="document.getElementById('approve-modal-{{ $w->id }}').style.display='flex'" class="action-btn-success" title="Approve Request">
+                            <button onclick="document.getElementById('approve-modal-{{ $w->id }}').style.display='flex'" class="action-btn-success">
                                 <i class="fa-solid fa-check"></i>
                             </button>
                             
-                            <button onclick="document.getElementById('reject-modal-{{ $w->id }}').style.display='flex'" class="btn-icon style-baf106" title="Reject" >
+                            <button onclick="document.getElementById('reject-modal-{{ $w->id }}').style.display='flex'" class="btn-icon style-baf106" >
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
                         </div>

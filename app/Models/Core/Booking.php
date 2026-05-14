@@ -25,7 +25,11 @@ class Booking extends Model
         'pickup_time',
         'fare',
         'status',
-        'notes'
+        'notes',
+        'payment_method',
+        'payment_status',
+        'rating',
+        'review'
     ];
 
     public function customer()

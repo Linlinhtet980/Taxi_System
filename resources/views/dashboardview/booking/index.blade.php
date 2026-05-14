@@ -1,7 +1,7 @@
 @extends('layout.admin')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/dashboardview/bookings/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboardview/booking/index.css') }}">
 @endpush
 
 @section('content')
@@ -103,7 +103,7 @@
                                 <form action="{{ route('bookings.status.update', $booking) }}" method="POST">
                                     @csrf @method('PATCH')
                                     <input type="hidden" name="status" value="confirmed">
-                                    <button type="submit" class="btn-status-update btn-confirm" title="Confirm Booking">
+                                    <button type="submit" class="btn-status-update btn-confirm">
                                         <i class="fa-solid fa-check"></i> Confirm
                                     </button>
                                 </form>
@@ -111,7 +111,7 @@
                                 <form action="{{ route('bookings.status.update', $booking) }}" method="POST">
                                     @csrf @method('PATCH')
                                     <input type="hidden" name="status" value="ongoing">
-                                    <button type="submit" class="btn-status-update btn-start" title="Start Trip">
+                                    <button type="submit" class="btn-status-update btn-start">
                                         <i class="fa-solid fa-play"></i> Start
                                     </button>
                                 </form>
@@ -119,7 +119,7 @@
                                 <form action="{{ route('bookings.status.update', $booking) }}" method="POST">
                                     @csrf @method('PATCH')
                                     <input type="hidden" name="status" value="completed">
-                                    <button type="submit" class="btn-status-update btn-complete" title="Complete Trip">
+                                    <button type="submit" class="btn-status-update btn-complete">
                                         <i class="fa-solid fa-flag-checkered"></i> Finish
                                     </button>
                                 </form>
@@ -129,7 +129,7 @@
                                 <form action="{{ route('bookings.status.update', $booking) }}" method="POST">
                                     @csrf @method('PATCH')
                                     <input type="hidden" name="status" value="cancelled">
-                                    <button type="submit" class="btn-status-update btn-cancel" title="Cancel Booking">
+                                    <button type="submit" class="btn-status-update btn-cancel">
                                         <i class="fa-solid fa-xmark"></i> Cancel
                                     </button>
                                 </form>
@@ -137,13 +137,13 @@
 
                             <div class="vertical-divider"></div>
 
-                            <a href="{{ route('bookings.edit', $booking) }}" class="btn-action-edit" title="Edit Booking">
+                            <a href="{{ route('bookings.edit', $booking) }}" class="btn-action-edit">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                             <form action="{{ route('bookings.destroy', $booking) }}" method="POST" onsubmit="return confirm('Cancel/Delete this booking record?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn-action-delete" title="Delete">
+                                <button type="submit" class="btn-action-delete">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </form>
@@ -172,3 +172,4 @@
 @push('js')
     <script src="{{ asset('js/dashboardview/bookings/search.js') }}"></script>
 @endpush
+

@@ -1,78 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taxi | Admin Dashboard</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- CSS -->
+@extends('layout.master')
+
+@section('title', 'Taxi | Admin Dashboard')
+
+@push('css')
     <link rel="stylesheet" href="{{ asset('css/dashboardview/layout/admin.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboardview/layout/admin-layout.css') }}">
-    @stack('css')
-    <script src="{{ asset('js/dashboardview/layout/theme-init.js') }}"></script>
-
-    <style>
-        /* Global Admin Pagination Styling (Bootstrap 4 structure) */
-        .pagination { 
-            display: flex !important;
-            list-style: none !important;
-            gap: 8px !important;
-            padding: 0 !important;
-            margin: 20px 0 !important;
-            justify-content: flex-start !important;
-        }
-        
-        .page-item { margin: 0; }
-
-        .page-link { 
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            min-width: 38px !important;
-            height: 38px !important;
-            padding: 0 10px !important;
-            border-radius: 10px !important; 
-            background: rgba(255, 255, 255, 0.05) !important; 
-            border: 1px solid var(--card-border) !important;
-            color: var(--text-dim) !important;
-            text-decoration: none !important;
-            font-size: 0.85rem !important;
-            font-weight: 600 !important;
-            transition: all 0.3s ease !important;
-        }
-
-        .page-item.active .page-link {
-            background: var(--accent-purple) !important;
-            border-color: var(--accent-purple) !important;
-            color: white !important;
-            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3) !important;
-        }
-
-        .page-item.disabled .page-link {
-            opacity: 0.3 !important;
-            background: transparent !important;
-        }
-
-        .page-link:hover:not(.active) {
-            background: rgba(168, 85, 247, 0.1) !important;
-            border-color: var(--accent-purple) !important;
-            color: var(--accent-purple) !important;
-            transform: translateY(-2px) !important;
-        }
-
-        /* Responsive Fix */
-        @media (max-width: 768px) {
-            .pagination { justify-content: center !important; }
-        }
-    </style>
-
     <link rel="stylesheet" href="{{ asset('css/layout/admin.css') }}">
-</head>
-<body data-theme="dark">
+@endpush
 
+@section('master_content')
     <!-- Floating Expandable Sidebar -->
     <aside class="sidebar glass expanded" id="sidebar">
 
@@ -193,7 +129,7 @@
 
 
             <div class="user-area">
-                <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+                <button class="theme-toggle" id="theme-toggle">
                     <i class="fa-solid fa-moon" id="theme-icon"></i>
                 </button>
                 
@@ -209,37 +145,36 @@
 
                     <!-- Notification Dropdown -->
                     <div id="notif-dropdown" class="glass dropdown-menu">
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                            <h4 style="margin: 0; color: #fff;">Notifications</h4>
+                        <div class="notif-header">
+                            <h4 class="notif-header-title">Notifications</h4>
                             @if(auth()->check())
                             <form action="{{ route('notifications.mark-all-as-read') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                                 <input type="hidden" name="user_type" value="{{ get_class(auth()->user()) }}">
-                                <button type="submit" style="background: none; border: none; color: var(--accent-purple); font-size: 11px; font-weight: 700; cursor: pointer;">Mark all read</button>
+                                <button type="submit" class="notif-mark-read-btn">Mark all read</button>
                             </form>
                             @endif
                         </div>
                         <div class="notif-list">
                             @forelse($latestNotifications as $notif)
-                            <div class="notif-item {{ $notif->is_read ? 'read' : 'unread' }}" 
-                                 onclick="markAsRead(this, {{ $notif->id }}, '{{ $notif->link }}')"
-                                 style="cursor: pointer; transition: 0.3s; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                                <div class="notif-content" style="display: flex; gap: 12px;">
+                            <div class="notif-item notif-item-container {{ $notif->is_read ? 'read' : 'unread' }}" 
+                                 onclick="markAsRead(this, {{ $notif->id }}, '{{ $notif->link }}')">
+                                <div class="notif-content notif-item-content">
                                     @php
                                         $icon = $notif->type == 'success' ? 'fa-circle-check' : ($notif->type == 'warning' ? 'fa-circle-exclamation' : 'fa-circle-info');
-                                        $iconColor = $notif->type == 'success' ? '#4ade80' : ($notif->type == 'warning' ? '#fbbf24' : '#60a5fa');
+                                        $iconColor = $notif->type == 'success' ? 'var(--success)' : ($notif->type == 'warning' ? 'var(--warning)' : 'var(--info)');
                                     @endphp
-                                    <i class="fa-solid {{ $icon }}" style="color: {{ $iconColor }}; margin-top: 4px;"></i>
+                                    <i class="fa-solid {{ $icon }} notif-icon-margin" style="color: {{ $iconColor }};"></i>
                                     <div>
-                                        <div class="notif-title" style="font-weight: 700; font-size: 13px; color: #fff; margin-bottom: 2px;">{{ $notif->title }}</div>
-                                        <div class="notif-message" style="font-size: 11px; color: var(--text-dim); line-height: 1.4;">{{ $notif->message }}</div>
-                                        <div class="notif-time" style="font-size: 9px; color: var(--text-dim); margin-top: 5px; opacity: 0.6;">{{ $notif->created_at->diffForHumans() }}</div>
+                                        <div class="notif-title notif-item-title">{{ $notif->title }}</div>
+                                        <div class="notif-message notif-item-message">{{ $notif->message }}</div>
+                                        <div class="notif-time notif-item-time">{{ $notif->created_at->diffForHumans() }}</div>
                                     </div>
                                 </div>
                             </div>
                             @empty
-                            <div class="notif-empty" style="padding: 20px; text-align: center; color: var(--text-dim); font-size: 12px;">No notifications.</div>
+                            <div class="notif-empty notif-empty-state">No notifications.</div>
                             @endforelse
                         </div>
                     </div>
@@ -265,7 +200,9 @@
 
         @yield('content')
     </div>
+@endsection
 
+@push('js')
     <!-- Interactivity Script -->
     <script src="{{ asset('js/dashboardview/layout/admin-layout.js') }}"></script>
 
@@ -293,7 +230,4 @@
             .catch(error => console.error('Error:', error));
         }
     </script>
-    @stack('js')
-</body>
-
-</html>
+@endpush

@@ -1,0 +1,129 @@
+:root {
+    /* --- Transitions --- */
+    --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius-lg: 24px;
+    --radius-md: 16px;
+
+    /* --- Deep Obsidian & Royal Gold Palette (Dark Mode) --- */
+    --bg-main: #020202; /* Midnight Black */
+    --bg-gradient: radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.12) 0px, transparent 40%),
+                   radial-gradient(at 100% 0%, rgba(197, 160, 40, 0.08) 0px, transparent 40%),
+                   radial-gradient(at 100% 100%, rgba(212, 175, 55, 0.05) 0px, transparent 40%),
+                   radial-gradient(at 0% 100%, rgba(20, 20, 20, 1) 0px, transparent 100%);
+    
+    --accent-primary: #fac000;   /* Metallic Gold */
+    --accent-secondary: #C5A028; /* Bronze Gold */
+    --accent-glow: rgba(212, 175, 55, 0.25);
+    
+    --primary: var(--accent-primary);
+    --primary-light: rgba(212, 175, 55, 0.15);
+    
+    --card-glass: rgba(10, 10, 10, 0.85); /* Highly opaque dark glass */
+    --card-border: rgba(212, 175, 55, 0.25); /* Subtle gold border */
+    --card-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    
+    --text-main: #ffffff;
+    --text-dim: rgba(255, 255, 255, 0.5);
+    --input-bg: rgba(255, 255, 255, 0.02);
+    --input-placeholder: rgba(255, 255, 255, 0.3);
+    --input-focus-bg: rgba(255, 255, 255, 0.05);
+    --card-bg: var(--card-glass);
+
+    --sidebar-bg: #000000; /* Solid Black */
+    --sidebar-text: rgba(255, 255, 255, 0.6);
+    --sidebar-active-bg: var(--primary-light);
+    --sidebar-active-text: var(--accent-primary);
+    --sidebar-width-collapsed: 80px;
+    --sidebar-width-expanded: 260px;
+
+    /* --- Status Colors --- */
+    --success: #4ade80;
+    --success-light: rgba(74, 222, 128, 0.1);
+    --warning: #fbbf24;
+    --warning-light: rgba(251, 191, 36, 0.1);
+    --danger: #f43f5e;
+    --danger-light: rgba(244, 63, 94, 0.1);
+    --info: #60a5fa;
+    --info-light: rgba(96, 165, 250, 0.1);
+}
+
+/* --- Pearl & Champagne Palette (Light Mode) --- */
+[data-theme="light"] {
+    --bg-main: #fcfaf5; /* Creamy Pearl */
+    --bg-gradient: radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.08) 0px, transparent 50%),
+                   radial-gradient(at 100% 0%, rgba(255, 255, 255, 0.8) 0px, transparent 50%),
+                   radial-gradient(at 50% 50%, rgba(245, 245, 240, 1) 0px, transparent 100%);
+    
+    --accent-primary: #B8860B; /* Dark Goldenrod */
+    --accent-secondary: #DAA520; /* Goldenrod */
+    --accent-glow: rgba(184, 134, 11, 0.15);
+    
+    --primary: var(--accent-primary);
+    --primary-light: rgba(184, 134, 11, 0.08);
+    
+    --card-glass: rgba(255, 255, 255, 0.95);
+    --card-border: rgba(184, 134, 11, 0.12);
+    --card-shadow: 0 10px 30px rgba(184, 134, 11, 0.05);
+    
+    --text-main: #1a1a1a;
+    --text-dim: #6b6b6b;
+    --input-bg: rgba(0, 0, 0, 0.03);
+    --input-placeholder: rgba(0, 0, 0, 0.4);
+    --input-focus-bg: rgba(0, 0, 0, 0.05);
+    --card-bg: #ffffff;
+
+    --sidebar-bg: #ffffff;
+    --sidebar-text: #5c5c5c;
+    --sidebar-active-bg: rgba(184, 134, 11, 0.08);
+    --sidebar-active-text: var(--accent-primary);
+
+    /* --- Status Colors (Light Mode) --- */
+    --success: #15803d; /* Darker Green */
+    --success-light: rgba(21, 128, 61, 0.08);
+    --warning: #b45309; /* Darker Amber */
+    --warning-light: rgba(180, 83, 9, 0.08);
+    --danger: #be123c; /* Darker Rose */
+    --danger-light: rgba(190, 18, 60, 0.08);
+    --info: #1d4ed8; /* Darker Blue */
+    --info-light: rgba(29, 78, 216, 0.08);
+}
+
+/* --- Leaflet Routing Machine Theme Overrides --- */
+.leaflet-routing-container {
+    background: var(--card-bg) !important;
+    color: var(--text-main) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.leaflet-routing-alt,
+.leaflet-routing-alt h2, 
+.leaflet-routing-alt h3, 
+.leaflet-routing-alt tr,
+.leaflet-routing-alt td {
+    color: var(--text-main) !important;
+}
+
+.leaflet-routing-alt tr:hover {
+    background-color: var(--input-bg) !important;
+    cursor: pointer;
+}
+
+.leaflet-routing-icon {
+    filter: brightness(0) invert(1) !important;
+}
+
+[data-theme="light"] .leaflet-routing-icon {
+    filter: none !important;
+}
+
+.leaflet-routing-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.leaflet-routing-container::-webkit-scrollbar-thumb {
+    background: var(--card-border);
+    border-radius: 10px;
+}

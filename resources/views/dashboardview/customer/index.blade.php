@@ -1,7 +1,7 @@
 @extends('layout.admin')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/dashboardview/customers/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboardview/customer/index.css') }}">
 @endpush
 
 @section('content')
@@ -79,7 +79,7 @@
                         <p class="passenger-phone"><i class="fa-solid fa-envelope contact-icon"></i> {{ $customer->email ?? 'N/A' }}</p>
                     </td>
                     <td class="address-cell">
-                        <p class="date-text truncate-text" title="{{ $customer->address }}">
+                        <p class="date-text truncate-text">
                             {{ $customer->address ?? 'No address provided' }}
                         </p>
                     </td>
@@ -90,13 +90,13 @@
                     </td>
                     <td>
                         <div class="action-btn-group">
-                            <a href="{{ route('customers.edit', $customer) }}" class="btn-action-edit" title="Edit Customer">
+                            <a href="{{ route('customers.edit', $customer) }}" class="btn-action-edit">
                                 <i class="fa-solid fa-user-pen"></i>
                             </a>
                             <form action="{{ route('customers.destroy', $customer) }}" method="POST" onsubmit="return confirm('Permanently remove this customer?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn-action-delete" title="Delete">
+                                <button type="submit" class="btn-action-delete">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </form>
@@ -125,3 +125,4 @@
 @push('js')
     <script src="{{ asset('js/dashboardview/customers/search.js') }}"></script>
 @endpush
+

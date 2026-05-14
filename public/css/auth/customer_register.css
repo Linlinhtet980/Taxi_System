@@ -1,11 +1,8 @@
 :root {
-    --bg: #f8fafc;
-    --surface: #ffffff;
-    --accent: #6366f1;
-    --text-main: #0f172a;
-    --text-dim: #64748b;
-    --border: #e2e8f0;
-    --shadow: rgba(0, 0, 0, 0.05);
+    --accent: var(--primary);
+    --surface: var(--card-bg);
+    --shadow: var(--card-shadow);
+    --border: var(--card-border);
 }
 
 body, html {
@@ -13,7 +10,7 @@ body, html {
     padding: 0;
     height: 100%;
     font-family: 'Outfit', sans-serif;
-    background: var(--bg);
+    background: var(--bg-main);
     color: var(--text-main);
     overflow: hidden;
 }
@@ -73,7 +70,7 @@ p { color: var(--text-dim); margin-bottom: 20px; font-size: 0.75rem; text-align:
 }
 
 .input-wrapper {
-    background: #f1f5f9;
+    background: var(--input-bg);
     border: 1px solid transparent;
     border-radius: 14px;
     padding: 10px 15px;
@@ -85,8 +82,8 @@ p { color: var(--text-dim); margin-bottom: 20px; font-size: 0.75rem; text-align:
 
 .input-wrapper:focus-within {
     border-color: var(--accent);
-    background: #ffffff;
-    box-shadow: 0 0 12px rgba(99, 102, 241, 0.08);
+    background: var(--input-focus-bg);
+    box-shadow: 0 0 12px var(--accent-glow);
 }
 
 .input-wrapper i { color: var(--accent); font-size: 0.9rem; }
@@ -102,11 +99,11 @@ input {
     font-weight: 600;
 }
 
-input::placeholder { color: #94a3b8; }
+input::placeholder { color: var(--input-placeholder); opacity: 1; }
 
 .btn-register {
     background: var(--accent);
-    color: white;
+    color: var(--bg-main);
     border: none;
     width: 100%;
     padding: 14px;

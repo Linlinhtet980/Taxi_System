@@ -7,11 +7,12 @@
     width: 45px;
     height: 45px;
     border-radius: 50%;
-    background: rgba(251, 191, 36, 0.1);
+    background: var(--primary-light);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fbbf24;
+    color: var(--primary);
+    border: 1px solid var(--card-border);
 }
 
 .style-7dc9cf {
@@ -40,7 +41,7 @@
 .style-8d108f {
     font-size: 0.95rem;
     font-weight: 700;
-    color: white;
+    color: var(--text-main);
     margin: 0;
     display: flex;
     align-items: center;
@@ -49,10 +50,11 @@
 
 .style-e16ccf {
     font-size: 0.6rem;
-    background: var(--accent-purple);
-    color: white;
+    background: var(--primary);
+    color: #000;
     padding: 2px 6px;
     border-radius: 4px;
+    font-weight: 800;
 }
 
 .style-4b6fe5 {
@@ -76,7 +78,7 @@
     margin-top: 20px;
     padding: 20px;
     text-align: center;
-    border: 1px dashed var(--accent-purple);
+    border: 1px dashed var(--primary);
     border-radius: 20px;
 }
 
@@ -88,7 +90,7 @@
 
 .style-81a4fe {
     margin-right: 8px;
-    color: var(--accent-purple);
+    color: var(--primary);
 }
 
 /* Extracted Inline Styles v2 */

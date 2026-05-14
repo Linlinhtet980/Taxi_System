@@ -194,11 +194,24 @@
             text-align: center;
             transition: 0.3s;
             cursor: pointer;
+            overflow: hidden;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .file-drop-area:hover { background: rgba(212, 175, 55, 0.05); border-color: var(--primary); }
-        .file-drop-area i { font-size: 20px; color: var(--primary); margin-bottom: 5px; display: block; margin-bottom: 5px; }
-        .file-drop-area span { font-size: 10px; color: var(--text-dim); font-weight: 700; text-transform: uppercase; }
-        .file-drop-area input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .file-drop-area i { font-size: 20px; color: var(--primary); margin-bottom: 5px; display: block; }
+        .file-drop-area span { font-size: 10px; color: var(--text-dim); font-weight: 700; text-transform: uppercase; z-index: 2; position: relative; }
+        .file-drop-area input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 3; }
+        .preview-img {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            border-radius: 12px;
+        }
 
         .btn-continue {
             width: 100%;
@@ -357,21 +370,28 @@
                 const preview = document.getElementById('imagePreview');
                 preview.innerHTML = `<img src="${URL.createObjectURL(file)}" alt="Preview">`;
             }
-        }
-    </script>
-</body>
-</html>
+        };
 
-    <script>
-        document.getElementById('profile_picture').onchange = function (evt) {
-            const [file] = this.files;
-            if (file) {
-                const preview = document.getElementById('imagePreview');
-                preview.innerHTML = `<img src="${URL.createObjectURL(file)}" alt="Preview">`;
-            }
-        }
+        // Live Preview for all document drop areas
+        document.querySelectorAll('.file-drop-area input[type="file"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    let dropArea = this.closest('.file-drop-area');
+                    let existingImg = dropArea.querySelector('.preview-img');
+                    if (!existingImg) {
+                        existingImg = document.createElement('img');
+                        existingImg.className = 'preview-img';
+                        dropArea.appendChild(existingImg);
+                    }
+                    existingImg.src = URL.createObjectURL(file);
+                    let span = dropArea.querySelector('span');
+                    if (span) span.style.opacity = '0'; // Hide 'Upload' text neatly to show image fully
+                    let icon = dropArea.querySelector('i');
+                    if (icon) icon.style.opacity = '0';
+                }
+            });
+        });
     </script>
-</body>
-
 </body>
 </html>

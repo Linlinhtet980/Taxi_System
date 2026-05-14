@@ -1,7 +1,7 @@
 @extends('layout.admin')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/dashboardview/vehicles/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboardview/vehicle/index.css') }}">
 @endpush
 
 @section('content')
@@ -99,16 +99,16 @@
                     </td>
                     <td>
                         <div class="action-btn-group">
-                            <a href="{{ route('vehicles.show', $vehicle) }}" class="btn-action-view" title="View Profile">
+                            <a href="{{ route('vehicles.show', $vehicle) }}" class="btn-action-view">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
-                            <a href="{{ route('vehicles.edit', $vehicle) }}" class="btn-action-edit" title="Edit Vehicle">
+                            <a href="{{ route('vehicles.edit', $vehicle) }}" class="btn-action-edit">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                             <form action="{{ route('vehicles.destroy', $vehicle) }}" method="POST" onsubmit="return confirm('Remove vehicle {{ $vehicle->license_plate }} from fleet?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn-action-delete" title="Remove">
+                                <button type="submit" class="btn-action-delete">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </form>
@@ -138,3 +138,4 @@
 @push('js')
     <script src="{{ asset('js/dashboardview/vehicles/search.js') }}"></script>
 @endpush
+

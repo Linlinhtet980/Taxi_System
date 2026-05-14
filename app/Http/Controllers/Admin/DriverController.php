@@ -35,6 +35,7 @@ class DriverController extends Controller
             'vehicle_no' => 'nullable|string',
             'vehicle_type' => 'nullable|string',
             'driver_status' => 'required|in:active,inactive,pending',
+            'commission_rate' => 'nullable|integer|min:0|max:100',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'license_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'nric_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -71,7 +72,7 @@ class DriverController extends Controller
         if (!empty($validated['vehicle_no']) || !empty($validated['vehicle_type'])) {
             $driver->vehicle()->create([
                 'license_plate' => $validated['vehicle_no'] ?? null,
-                'vehicle_type' => $validated['vehicle_type'] ?? null,
+                'vehicle_type' => $validated['vehicle_type'] ?? 'Standard',
             ]);
         }
 
@@ -100,6 +101,7 @@ class DriverController extends Controller
             'vehicle_no' => 'nullable|string',
             'vehicle_type' => 'nullable|string',
             'driver_status' => 'required|in:active,inactive,pending',
+            'commission_rate' => 'nullable|integer|min:0|max:100',
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'license_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'nric_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -138,13 +140,13 @@ class DriverController extends Controller
                 ['driver_id' => $driver->id],
                 [
                     'license_plate' => $validated['vehicle_no'] ?? null,
-                    'vehicle_type' => $validated['vehicle_type'] ?? null,
+                    'vehicle_type' => $validated['vehicle_type'] ?? 'Standard',
                 ]
             );
         } else if ($driver->vehicle) {
             $driver->vehicle()->update([
                 'license_plate' => null,
-                'vehicle_type' => null,
+                'vehicle_type' => 'Standard',
             ]);
         }
 

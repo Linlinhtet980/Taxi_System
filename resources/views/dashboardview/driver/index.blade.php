@@ -2,7 +2,7 @@
 @extends('layout.admin')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/dashboardview/drivers/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboardview/driver/index.css') }}">
 @endpush
 
 @section('content')
@@ -19,30 +19,18 @@
     </div>
 
     <!-- Stats summary -->
-    <div class="stats-grid">
-        <div class="stat-card glass">
-            <h3 class="stat-label"><i class="fa-solid fa-car-side purple-icon"></i> Total Drivers</h3>
-            <p class="stat-value">{{ $drivers->total() }}</p>
-        </div>
-        <div class="stat-card glass">
-            <h3 class="stat-label"><i class="fa-solid fa-circle-check green-icon"></i> Active Service</h3>
-            <p class="stat-value">{{ $totalActive }}</p>
-        </div>
-        <div class="stat-card glass">
-            <h3 class="stat-label"><i class="fa-solid fa-clock-rotate-left orange-icon"></i> Pending</h3>
-            <p class="stat-value">{{ $totalPending }}</p>
-        </div>
-        <div class="stat-card glass style-299339">
-            <h3 class="stat-label"><i class="fa-solid fa-hand-holding-dollar style-3f909e"></i> Total Comm. Due</h3>
-            @php
-                $totalDue = \App\Models\Auth\Driver::query()->where('wallet_balance', '<', 0)->sum('wallet_balance');
-            @endphp
-            <p class="stat-value style-3f909e">{{ number_format(abs($totalDue)) }} <span class="style-fb2a71">MMK</span></p>
-        </div>
+    <div class="stats-grid driver-stats-grid">
+        <x-stat-card label="Total Drivers" :value="$drivers->total()" icon="fa-solid fa-car-side" color="primary" />
+        <x-stat-card label="Active Service" :value="$totalActive" icon="fa-solid fa-circle-check" color="success" />
+        <x-stat-card label="Pending" :value="$totalPending" icon="fa-solid fa-clock-rotate-left" color="warning" />
+        @php
+            $totalDue = \App\Models\Auth\Driver::query()->where('wallet_balance', '<', 0)->sum('wallet_balance');
+        @endphp
+        <x-stat-card label="Total Comm. Due" :value="number_format(abs($totalDue)) . ' MMK'" icon="fa-solid fa-hand-holding-dollar" color="danger" />
     </div>
 
     <h3 class="section-title">
-        <i class="fa-solid fa-list-ul purple-icon"></i> Ongoing Status
+        <i class="fa-solid fa-list-ul"></i> Ongoing Status
     </h3>
 
     <!-- Filter Bar -->
@@ -135,16 +123,16 @@
                     </td>
                     <td>
                         <div class="action-btn-group">
-                            <a href="{{ route('drivers.show', $driver) }}" class="btn-action-show" title="View Digital ID">
+                            <a href="{{ route('drivers.show', $driver) }}" class="btn-action-show">
                                 <i class="fa-solid fa-id-badge"></i>
                             </a>
-                            <a href="{{ route('drivers.edit', $driver) }}" class="btn-action-edit" title="Edit Profile">
+                            <a href="{{ route('drivers.edit', $driver) }}" class="btn-action-edit">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                             <form action="{{ route('drivers.destroy', $driver) }}" method="POST" onsubmit="return confirm('Archive driver records?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn-action-delete" title="Remove">
+                                <button type="submit" class="btn-action-delete">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </form>

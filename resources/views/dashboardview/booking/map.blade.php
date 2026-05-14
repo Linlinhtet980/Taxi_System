@@ -56,13 +56,13 @@
                             <div class="secondary-text">{{ $b->customer->phone ?? 'No contact' }}</div>
                         </td>
                         <td>
-                            <div class="secondary-text style-1a5c8d" title="{{ $b->pickup_location }}">
+                            <div class="secondary-text style-1a5c8d">
                                 <i class="fa-solid fa-circle-dot style-575259"></i>
                                 {{ Str::limit($b->pickup_location, 35) }}
                             </div>
                         </td>
                         <td>
-                            <div class="secondary-text style-1a5c8d" title="{{ $b->dropoff_location }}">
+                            <div class="secondary-text style-1a5c8d">
                                 <i class="fa-solid fa-location-dot style-455477"></i>
                                 {{ Str::limit($b->dropoff_location, 35) }}
                             </div>
@@ -126,6 +126,7 @@
 
         var bookings = @json($bookings);
         var routingControl = null;
+        var isFocused = false;
 
         bookings.forEach(function(b) {
             if (b.pickup_lat && b.pickup_lng) {
@@ -141,6 +142,7 @@
         });
 
         window.focusOnRide = function(pLat, pLng, dLat, dLng) {
+            isFocused = true;
             if (routingControl) {
                 map.removeControl(routingControl);
             }
@@ -180,6 +182,12 @@
             }
         };
 
+        // Continuous automated map refresh for live fleet monitoring
+        setInterval(() => {
+            if (!isFocused) {
+                window.location.reload();
+            }
+        }, 10000);
     });
 </script>
 @endsection

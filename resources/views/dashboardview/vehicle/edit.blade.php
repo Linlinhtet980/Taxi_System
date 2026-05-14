@@ -2,7 +2,7 @@
 @extends('layout.admin')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/dashboardview/vehicles/form.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboardview/vehicle/form.css') }}">
 @endpush
 
 @section('content')
@@ -133,3 +133,4 @@
     }
 </script>
 @endsection
+

@@ -186,7 +186,9 @@ class BookingController extends Controller
             // Transaction & Wallet Logic
             if ($newStatus == 'completed' && $oldStatus != 'completed') {
                 $fare = $booking->fare;
-                $rate = \App\Models\Core\Setting::get('commission_rate', 15) / 100; // Default to 15 if not set
+                $driverObj = Driver::query()->find($booking->driver_id);
+                $customRate = $driverObj ? $driverObj->commission_rate : null;
+                $rate = ($customRate !== null ? $customRate : \App\Models\Core\Setting::get('commission_rate', 15)) / 100;
                 $commission = $fare * $rate;
                 $driverAmount = $fare - $commission;
 

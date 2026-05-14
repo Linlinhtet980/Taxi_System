@@ -77,9 +77,12 @@
         const labels = {!! json_encode($dailyData->pluck('date')) !!};
         const data = {!! json_encode($dailyData->pluck('total')) !!};
 
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#D4AF37';
+        const primaryLight = getComputedStyle(document.documentElement).getPropertyValue('--primary-light').trim() || 'rgba(212, 175, 55, 0.1)';
+
         const gradient = ctx.createLinearGradient(0, 0, 0, 250);
-        gradient.addColorStop(0, 'rgba(212, 175, 55, 0.4)');
-        gradient.addColorStop(1, 'rgba(212, 175, 55, 0)');
+        gradient.addColorStop(0, primaryLight);
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
         new Chart(ctx, {
             type: 'line',
@@ -88,12 +91,12 @@
                 datasets: [{
                     label: 'Daily Net',
                     data: data,
-                    borderColor: '#D4AF37',
+                    borderColor: primaryColor,
                     borderWidth: 3,
                     fill: true,
                     backgroundColor: gradient,
                     tension: 0.4,
-                    pointBackgroundColor: '#D4AF37',
+                    pointBackgroundColor: primaryColor,
                     pointRadius: 0,
                     pointHoverRadius: 6
                 }]
@@ -105,12 +108,17 @@
                 scales: {
                     x: {
                         grid: { display: false },
-                        ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } }
+                        ticks: { 
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-dim').trim() || '#666', 
+                            font: { size: 10 } 
+                        }
                     },
                     y: {
-                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        grid: { 
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--card-border').trim() || 'rgba(255,255,255,0.05)' 
+                        },
                         ticks: { 
-                            color: 'rgba(255,255,255,0.4)', 
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-dim').trim() || '#666', 
                             font: { size: 10 },
                             callback: function(value) { return value.toLocaleString(); }
                         }

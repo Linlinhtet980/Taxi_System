@@ -100,10 +100,10 @@
                     <td>
                         @php
                             $statusColor = [
-                                'Completed' => '#4ade80',
-                                'Pending' => '#fbbf24',
-                                'Failed' => '#f43f5e'
-                            ][$tx->status] ?? '#94a3b8';
+                                'Completed' => 'var(--success)',
+                                'Pending' => 'var(--warning)',
+                                'Failed' => 'var(--danger)'
+                            ][$tx->status] ?? 'var(--text-dim)';
                         @endphp
                         <span class="status-badge " style="background: {{ $statusColor }}20; color: {{ $statusColor }}; border: 1px solid {{ $statusColor }}40;">
                             {{ $tx->status }}

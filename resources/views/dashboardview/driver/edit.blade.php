@@ -2,7 +2,7 @@
 @extends('layout.admin')
 
 @push('css')
-    <link rel="stylesheet" href="{{ asset('css/dashboardview/drivers/form.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboardview/driver/form.css') }}">
 @endpush
 
 @section('content')
@@ -93,6 +93,11 @@
                         <option value="active" {{ $driver->driver_status == 'active' ? 'selected' : '' }}>Active</option>
                         <option value="inactive" {{ $driver->driver_status == 'inactive' ? 'selected' : '' }}>Inactive</option>
                     </select>
+                </div>
+
+                <div class="form-group style-d3297f">
+                    <label class="style-367f5d">Custom Commission Rate (%)</label>
+                    <input type="number" name="commission_rate" min="0" max="100" class="glass style-ad5d06" value="{{ $driver->commission_rate }}" placeholder="e.g. 10 (Leave blank for default)">
                 </div>
 
                 <div class="style-85f502">
@@ -200,3 +205,4 @@
     }
 </script>
 @endsection
+

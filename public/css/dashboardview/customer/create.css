@@ -8,9 +8,11 @@
 .style-4ac43c { font-size: 1.25rem; font-weight: 700; color: var(--accent-purple); display: flex; align-items: center; gap: 10px; }
 .style-c45d59 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 .style-367f5d { display: block; margin-bottom: 0.75rem; font-weight: 600; }
-.style-ad5d06 { width: 100%; padding: 12px; border-radius: 12px; color: white; border-color: var(--glass-border); }
+.style-ad5d06 { width: 100%; padding: 12px; border-radius: 12px; color: var(--text-main); border: 1px solid var(--card-border); background: var(--input-bg); outline: none; transition: 0.3s; }
+.style-ad5d06:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--accent-glow); }
+.style-ad5d06::placeholder { color: var(--input-placeholder); }
 .style-185d79 { margin-top: 1.5rem; }
-.style-e19da8 { width: 100%; padding: 10px; border-radius: 12px; color: white; border-color: var(--glass-border); }
+.style-e19da8 { width: 100%; padding: 10px; border-radius: 12px; color: var(--text-main); border: 1px solid var(--card-border); background: var(--input-bg); }
 .style-dd0058 { margin-top: 2.5rem; display: flex; justify-content: flex-end; gap: 1rem; }
 .style-54f933 { padding: 12px 25px; border-radius: 12px; }
 .style-853a9b { padding: 12px 40px; border-radius: 12px; font-weight: 700; box-shadow: 0 10px 20px rgba(168, 85, 247, 0.3); }

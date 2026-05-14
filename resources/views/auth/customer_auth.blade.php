@@ -41,7 +41,8 @@
                     <input type="password" name="password_confirmation" placeholder="Confirm Password" required id="reg-password-confirm">
                     <i class="fa-solid fa-eye toggle-password" onclick="togglePassword('reg-password-confirm', this)"></i>
                 </div>
-                <button type="submit">Register Now</button>
+                <button type="submit" style="width: 100%; padding: 14px; border-radius: 12px; font-size: 14px;">Register Now</button>
+                <p class="mobile-toggle-link">Already have an account? <a href="javascript:void(0)" onclick="document.getElementById('container').classList.remove('active');">Sign In</a></p>
             </form>
         </div>
 
@@ -62,8 +63,9 @@
                     <input type="password" name="password" placeholder="Password" required id="login-password">
                     <i class="fa-solid fa-eye toggle-password" onclick="togglePassword('login-password', this)"></i>
                 </div>
-                <a href="#">Forgot password?</a>
-                <button type="submit">Sign In</button>
+                <a href="#" style="align-self: flex-end;">Forgot password?</a>
+                <button type="submit" style="width: 100%; padding: 14px; border-radius: 12px; font-size: 14px;">Sign In</button>
+                <p class="mobile-toggle-link">Don't have an account? <a href="javascript:void(0)" onclick="document.getElementById('container').classList.add('active');">Register Now</a></p>
             </form>
         </div>
 

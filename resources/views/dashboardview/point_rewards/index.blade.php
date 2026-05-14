@@ -127,12 +127,12 @@
                         </td>
                         <td>
                             <div class="action-btns">
-                                <a href="{{ route('point-rewards.edit', $reward->id) }}" class="btn-action btn-edit" title="Edit">
+                                <a href="{{ route('point-rewards.edit', $reward->id) }}" class="btn-action btn-edit">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                                 <form action="{{ route('point-rewards.destroy', $reward->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this reward?')">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="btn-action btn-delete" title="Delete">
+                                    <button type="submit" class="btn-action btn-delete">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </form>

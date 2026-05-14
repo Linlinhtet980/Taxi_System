@@ -8,7 +8,7 @@
             <h1 class="page-title">Vehicle Status</h1>
             <p class="page-subtitle">Manage your tool of trade and stay safe on the road.</p>
         </div>
-        <div class="status-badge style-355479">
+        <div class="status-badge status-completed">
             {{ $driver->vehicle->inspection_status ?? 'Good' }}
         </div>
     </div>
@@ -54,7 +54,7 @@
             @foreach($photos as $label => $path)
                 @if($path)
                     <div style="text-align: center;">
-                        <img src="{{ asset($path) }}" style="width: 100%; height: 80px; object-fit: cover; border-radius: 12px; border: 1px solid var(--glass-border);">
+                        <img src="{{ asset($path) }}" style="width: 100%; height: 80px; object-fit: cover; border-radius: 12px; border: 1px solid var(--card-border);">
                         <span style="font-size: 10px; color: var(--text-dim); display: block; margin-top: 4px;">{{ $label }}</span>
                     </div>
                 @endif

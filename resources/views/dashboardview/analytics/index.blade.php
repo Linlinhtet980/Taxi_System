@@ -123,12 +123,12 @@
                 datasets: [{
                     label: 'Revenue',
                     data: revenueTrendData.length ? revenueTrendData : [0],
-                    borderColor: '#22d3ee',
-                    backgroundColor: 'rgba(34, 211, 238, 0.1)',
+                    borderColor: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#D4AF37',
+                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-light').trim() || 'rgba(212, 175, 55, 0.1)',
                     fill: true,
                     tension: 0.4,
                     borderWidth: 3,
-                    pointBackgroundColor: '#22d3ee',
+                    pointBackgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#D4AF37',
                     pointBorderColor: 'rgba(255,255,255,0.5)',
                     pointHoverRadius: 6
                 }]
@@ -151,12 +151,12 @@
                 scales: {
                     y: { 
                         beginAtZero: true,
-                        grid: { color: 'rgba(255,255,255,0.05)' }, 
-                        ticks: { color: '#94a3b8', font: { family: 'Outfit' } } 
+                        grid: { color: getComputedStyle(document.documentElement).getPropertyValue('--card-border').trim() || 'rgba(0,0,0,0.1)' }, 
+                        ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-dim').trim() || '#6b6b6b', font: { family: 'Outfit' } } 
                     },
                     x: { 
                         grid: { display: false }, 
-                        ticks: { color: '#94a3b8', font: { family: 'Outfit' } } 
+                        ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-dim').trim() || '#6b6b6b', font: { family: 'Outfit' } } 
                     }
                 }
             }
@@ -175,11 +175,11 @@
                 datasets: [{
                     data: statusValues.length ? statusValues : [1],
                     backgroundColor: statusValues.length ? [
-                        '#fbbf24', // pending
-                        '#60a5fa', // confirmed
-                        '#a855f7', // ongoing
-                        '#4ade80', // completed
-                        '#f43f5e'  // cancelled
+                        getComputedStyle(document.documentElement).getPropertyValue('--warning').trim() || '#fbbf24',
+                        getComputedStyle(document.documentElement).getPropertyValue('--info').trim() || '#60a5fa',
+                        getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#D4AF37',
+                        getComputedStyle(document.documentElement).getPropertyValue('--success').trim() || '#4ade80',
+                        getComputedStyle(document.documentElement).getPropertyValue('--danger').trim() || '#f43f5e'
                     ] : ['rgba(255,255,255,0.05)'],
                     borderWidth: 0,
                     hoverOffset: 15
@@ -193,7 +193,7 @@
                     legend: {
                         position: 'bottom',
                         labels: { 
-                            color: '#94a3b8', 
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-dim').trim() || '#6b6b6b', 
                             usePointStyle: true, 
                             padding: 20,
                             font: { family: 'Outfit', size: 11 }

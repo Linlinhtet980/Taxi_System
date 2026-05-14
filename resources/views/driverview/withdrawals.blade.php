@@ -21,10 +21,14 @@
             <div class="style-68b0c3">
                 <span class="style-d9a249">#WDR-{{ str_pad($w->id, 4, '0', STR_PAD_LEFT) }}</span>
                 @php
-                    $colors = ['pending' => '#fbbf24', 'approved' => '#4ade80', 'rejected' => '#f43f5e'];
-                    $color = $colors[$w->status] ?? '#94a3b8';
+                    $statusClasses = [
+                        'pending' => 'status-pending',
+                        'approved' => 'status-confirmed',
+                        'rejected' => 'status-cancelled'
+                    ];
+                    $statusClass = $statusClasses[$w->status] ?? 'status-default';
                 @endphp
-                <span class="status-badge " style="background: {{ $color }}20; color: {{ $color }}; border: 1px solid {{ $color }}40;">
+                <span class="status-badge {{ $statusClass }}">
                     {{ strtoupper($w->status) }}
                 </span>
             </div>

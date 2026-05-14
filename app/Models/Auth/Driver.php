@@ -31,6 +31,7 @@ class Driver extends Authenticatable
         'identity_card_no',
         'wallet_balance',
         'loyalty_points',
+        'commission_rate',
     ];
 
     protected $hidden = [

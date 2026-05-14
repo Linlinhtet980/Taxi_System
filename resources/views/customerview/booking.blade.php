@@ -12,9 +12,39 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <link rel="stylesheet" href="{{ asset('css/root/theme.css') }}">
     <link rel="stylesheet" href="{{ asset('css/customerview/booking.css') }}">
+    <script>
+        const savedTheme = localStorage.getItem('taxi_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
 </head>
 <body>
+    @if(session('error') || session('warning') || session('success') || $errors->any())
+        <div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 400px; text-align: center;">
+            @if(session('error'))
+                <div style="background: var(--danger); color: white; padding: 12px 20px; border-radius: 12px; margin-bottom: 10px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                    {{ session('error') }}
+                </div>
+            @endif
+            @if(session('warning'))
+                <div style="background: var(--warning); color: var(--bg-main); padding: 12px 20px; border-radius: 12px; margin-bottom: 10px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                    {{ session('warning') }}
+                </div>
+            @endif
+            @if(session('success'))
+                <div style="background: var(--success); color: white; padding: 12px 20px; border-radius: 12px; margin-bottom: 10px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if($errors->any())
+                <div style="background: var(--danger); color: white; padding: 12px 20px; border-radius: 12px; margin-bottom: 10px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+        </div>
+    @endif
+
     <div id="map"></div>
     
     <div class="header-overlay">
@@ -85,11 +115,11 @@
                 </div>
             </div>
         </div>
-        <div id="balance-warning" style="display: none; color: #ef4444; font-size: 11px; font-weight: 600; margin-top: 8px; text-align: center;">
+        <div id="balance-warning" style="display: none; color: var(--danger); font-size: 11px; font-weight: 600; margin-top: 8px; text-align: center;">
             <i class="fa-solid fa-circle-exclamation"></i> လက်ကျန်ငွေ မလုံလောက်ပါ။ ငွေဖြည့်ပေးပါ။
         </div>
 
-        <form action="{{ route('customer.booking.store') }}" method="POST" id="booking-form">
+        <form action="{{ route('customer.booking.store') }}" method="POST" id="booking-form" onsubmit="prepareLocationValues()">
             @csrf
             <input type="hidden" name="customer_id" value="{{ $customer->id }}">
             <input type="hidden" name="driver_id" id="selected_driver">
@@ -242,17 +272,36 @@
         setupAutocomplete('pickup_addr', 'pickup-results', 'pickup');
         setupAutocomplete('dropoff_addr', 'dropoff-results', 'dropoff');
 
+        function prepareLocationValues() {
+            const pVal = document.getElementById('pickup_loc_val');
+            const dVal = document.getElementById('dropoff_loc_val');
+            if (!pVal.value) pVal.value = document.getElementById('pickup_addr').value || "Current Pickup Location";
+            if (!dVal.value) dVal.value = document.getElementById('dropoff_addr').value || "Selected Destination";
+        }
+
         function reverseGeocode(latlng, type) {
             fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latlng.lat}&lon=${latlng.lng}&format=json`)
                 .then(r => r.json())
                 .then(data => {
-                    const addr = data.display_name.split(',')[0] + ', ' + (data.address.suburb || data.address.city || '');
+                    let addr = "Location (" + latlng.lat.toFixed(4) + ", " + latlng.lng.toFixed(4) + ")";
+                    if (data && data.display_name) {
+                        addr = data.display_name.split(',').slice(0, 2).join(', ');
+                    }
                     if (type === 'pickup') {
                         document.getElementById('pickup_addr').value = addr;
                         document.getElementById('pickup_loc_val').value = addr;
                     } else {
                         document.getElementById('dropoff_addr').value = addr;
                         document.getElementById('dropoff_loc_val').value = addr;
+                    }
+                }).catch(() => {
+                    const fallbackAddr = "Location (" + latlng.lat.toFixed(4) + ", " + latlng.lng.toFixed(4) + ")";
+                    if (type === 'pickup') {
+                        document.getElementById('pickup_addr').value = fallbackAddr;
+                        document.getElementById('pickup_loc_val').value = fallbackAddr;
+                    } else {
+                        document.getElementById('dropoff_addr').value = fallbackAddr;
+                        document.getElementById('dropoff_loc_val').value = fallbackAddr;
                     }
                 });
         }
@@ -263,7 +312,7 @@
             routingControl = L.Routing.control({
                 waypoints: [pickupMarker.getLatLng(), dropoffMarker.getLatLng()],
                 router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1' }),
-                lineOptions: { styles: [{ color: '#6366f1', opacity: 0.8, weight: 6 }] },
+                lineOptions: { styles: [{ color: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#D4AF37', opacity: 0.8, weight: 6 }] },
                 createMarker: function() { return null; }
             }).addTo(map);
 

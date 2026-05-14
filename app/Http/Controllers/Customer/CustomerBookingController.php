@@ -37,12 +37,12 @@ class CustomerBookingController extends Controller
             ->latest()
             ->first();
 
-        // Fetch last 2 completed/cancelled bookings for re-booking
+        // Fetch last 4 completed/cancelled bookings for re-booking
         $recentBookings = Booking::query()->where('customer_id', $customer->id)
             ->whereIn('status', ['completed', 'cancelled'])
             ->with('driver.vehicle')
             ->latest()
-            ->take(2)
+            ->take(4)
             ->get();
 
         // Get unread notifications count for this customer
@@ -56,8 +56,8 @@ class CustomerBookingController extends Controller
         $hour = now()->hour;
         $greeting = "မင်္ဂလာပါ";
         if ($hour >= 5 && $hour < 12) $greeting = "မင်္ဂလာနံနက်ခင်းပါ";
-        elseif ($hour >= 12 && $hour < 17) $greeting = "မင်္ဂလာနေ့ခင်းပါ";
-        elseif ($hour >= 17 && $hour < 21) $greeting = "မင်္ဂလာညနေခင်းပါ";
+        elseif ($hour >= 12 && $hour < 14) $greeting = "မင်္ဂလာနေ့ခင်းပါ";
+        elseif ($hour >= 14 && $hour < 21) $greeting = "မင်္ဂလာညနေခင်းပါ";
         else $greeting = "မင်္ဂလာညချမ်းပါ";
 
         return view('customerview.dashboard', compact(
@@ -236,7 +236,40 @@ class CustomerBookingController extends Controller
     public function waiting(int $bookingId)
     {
         $booking = Booking::query()->with('driver.vehicle')->findOrFail($bookingId);
+        
+        if ($booking->status == 'completed') {
+            if (!$booking->rating) {
+                return view('customerview.review', compact('booking'));
+            }
+            return redirect()->route('customer.dashboard')->with('success', 'ခရီးစဉ် အောင်မြင်စွာ ပြီးဆုံးပါပြီ။ ကျေးဇူးတင်ပါသည်။');
+        }
+        if ($booking->status == 'cancelled') {
+            return redirect()->route('customer.dashboard')->with('error', 'ခရီးစဉ် ပယ်ဖျက်လိုက်ပါသည်။');
+        }
+
         return view('customerview.waiting', compact('booking'));
+    }
+
+    public function submitReview(Request $request, int $bookingId)
+    {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'review' => 'nullable|string|max:1000',
+        ]);
+
+        $booking = Booking::query()->findOrFail($bookingId);
+        $booking->update([
+            'rating' => $request->rating,
+            'review' => $request->review,
+        ]);
+
+        // Award bonus loyalty points for submitting a review
+        $customer = $booking->customer;
+        if ($customer) {
+            $customer->increment('loyalty_points', 10);
+        }
+
+        return redirect()->route('customer.dashboard')->with('success', 'ကျေးဇူးတင်ပါသည်။ သင့်၏ Review ကို အောင်မြင်စွာ မှတ်တမ်းတင်ပြီးပါပြီ။ (Points +10 ရရှိပါသည်)');
     }
 
     public function cancel(int $bookingId)

@@ -27,22 +27,20 @@
              onclick="markAsRead(this, {{ $n->id }}, '{{ ($n->link && !$is_admin_link) ? $n->link : '' }}')"
              style="display: flex; gap: 20px; padding: 25px; cursor: pointer; transition: 0.3s; {{ $is_read ? 'opacity: 0.5;' : '' }}">
             @php
-                $icon = 'fa-circle-info';
-                $bg = 'rgba(96, 165, 250, 0.1)';
-                $color = '#60a5fa';
-                
-                if($n->type == 'success') {
-                    $icon = 'fa-circle-check'; $bg = 'rgba(74, 222, 128, 0.1)'; $color = '#4ade80';
-                } elseif($n->type == 'warning') {
-                    $icon = 'fa-circle-exclamation'; $bg = 'rgba(251, 191, 36, 0.1)'; $color = '#fbbf24';
-                }
+                $statusColors = [
+                    'success' => ['bg' => 'var(--success-light)', 'color' => 'var(--success)', 'icon' => 'fa-circle-check'],
+                    'warning' => ['bg' => 'var(--warning-light)', 'color' => 'var(--warning)', 'icon' => 'fa-circle-exclamation'],
+                    'info' => ['bg' => 'var(--primary-light)', 'color' => 'var(--primary)', 'icon' => 'fa-circle-info'],
+                    'danger' => ['bg' => 'var(--danger-light)', 'color' => 'var(--danger)', 'icon' => 'fa-circle-xmark']
+                ];
+                $s = $statusColors[$n->type] ?? $statusColors['info'];
             @endphp
-            <div style="width: 40px; height: 40px; border-radius: 12px; background: {{ $bg }}; display: flex; align-items: center; justify-content: center; color: {{ $color }}; flex-shrink: 0;">
-                <i class="fa-solid {{ $icon }}"></i>
+            <div style="width: 40px; height: 40px; border-radius: 12px; background: {{ $s['bg'] }}; display: flex; align-items: center; justify-content: center; color: {{ $s['color'] }}; flex-shrink: 0; border: 1px solid {{ $s['color'] }};">
+                <i class="fa-solid {{ $s['icon'] }}"></i>
             </div>
             <div style="flex: 1;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
-                    <h4 style="font-size: 16px; font-weight: 700; color: #fff;">{{ $n->title }}</h4>
+                    <h4 style="font-size: 16px; font-weight: 700; color: var(--text-main);">{{ $n->title }}</h4>
                     <span style="font-size: 11px; color: var(--text-dim);">{{ $n->created_at->diffForHumans() }}</span>
                 </div>
                 <p style="font-size: 13px; color: var(--text-dim); line-height: 1.5;">{{ $n->message }}</p>

@@ -85,14 +85,14 @@
         transition: 0.3s;
         white-space: nowrap;
     }
-    .tab-btn:hover { background: rgba(255, 255, 255, 0.05); color: white; }
+    .tab-btn:hover { background: var(--primary-light); color: var(--text-main); }
     .tab-btn.active {
-        background: var(--accent-purple);
-        color: white;
-        box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        background: var(--primary);
+        color: var(--bg-main);
+        box-shadow: 0 4px 15px var(--accent-glow);
     }
 
-    .tab-content { display: none; padding: 30px; border-radius: 20px; }
+    .tab-content { display: none; padding: 30px; border-radius: 20px; border: 1px solid var(--card-border); }
     .tab-content.active { display: block; animation: slideUp 0.4s ease-out; }
 
     @keyframes slideUp {
@@ -100,7 +100,7 @@
         to { opacity: 1; transform: translateY(0); }
     }
 
-    .tab-title { font-size: 18px; font-weight: 800; color: white; margin-bottom: 25px; }
+    .tab-title { font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 25px; }
     .settings-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -111,17 +111,17 @@
 
     .form-control {
         width: 100%;
-        background: rgba(255, 255, 255, 0.05) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        background: var(--input-bg) !important;
+        border: 1px solid var(--card-border) !important;
         border-radius: 12px;
         padding: 12px 15px;
-        color: white !important;
+        color: var(--text-main) !important;
         font-size: 14px;
         transition: 0.3s;
     }
     .form-control:focus {
-        border-color: var(--accent-purple) !important;
-        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: var(--primary) !important;
+        background: var(--input-bg) !important;
         outline: none;
     }
 
@@ -134,7 +134,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--card-border);
     }
     .save-info { color: var(--text-dim); font-size: 13px; font-weight: 500; }
 

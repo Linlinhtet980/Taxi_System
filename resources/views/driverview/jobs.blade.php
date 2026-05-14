@@ -23,17 +23,17 @@
                     <h4 class="style-7cc7b9">{{ $job->customer->name ?? 'Guest' }}</h4>
                 </div>
                 @php
-                    $statusColors = [
-                        'pending' => '#fbbf24',
-                        'confirmed' => '#60a5fa',
-                        'ongoing' => '#a855f7',
-                        'completed' => '#4ade80',
-                        'cancelled' => '#f43f5e'
+                    $statusClasses = [
+                        'pending' => 'status-pending',
+                        'confirmed' => 'status-confirmed',
+                        'ongoing' => 'status-ongoing',
+                        'completed' => 'status-completed',
+                        'cancelled' => 'status-cancelled'
                     ];
-                    $color = $statusColors[$job->status] ?? '#94a3b8';
+                    $statusClass = $statusClasses[$job->status] ?? 'status-default';
                 @endphp
-                <span class="status-badge " style="background: {{ $color }}20; color: {{ $color }}; border: 1px solid {{ $color }}40;">
-                    {{ $job->status }}
+                <span class="status-badge {{ $statusClass }}">
+                    {{ ucfirst($job->status) }}
                 </span>
             </div>
 

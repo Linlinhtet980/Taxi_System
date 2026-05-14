@@ -73,7 +73,7 @@
 }
 
 .notif-item.unread {
-    background: rgba(255,255,255,0.03);
+    background: var(--input-bg);
     border: 1px solid var(--card-border);
 }
 
