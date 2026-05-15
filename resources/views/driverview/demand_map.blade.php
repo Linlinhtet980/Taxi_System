@@ -108,20 +108,43 @@
                 </div>
             </div>
 
-            <div class="sidebar-footer">
+            <div class="sidebar-footer" style="display: flex; flex-direction: column; gap: 8px;">
                 @if($activeBooking->status == 'confirmed')
                 <form action="{{ route('driver.trip.update', [$driver->id, $activeBooking->id]) }}" method="POST">
                     @csrf
                     <input type="hidden" name="status" value="ongoing">
-                    <button type="submit" class="btn-nav-action btn-nav-start">START TRIP</button>
+                    <button type="submit" class="btn-nav-action btn-nav-start" style="width: 100%;">START TRIP</button>
                 </form>
                 @elseif($activeBooking->status == 'ongoing')
-                <button onclick="showPaymentSelection()" class="btn-nav-action btn-nav-finish">FINISH TRIP</button>
+                <button onclick="showPaymentSelection()" class="btn-nav-action btn-nav-finish" style="width: 100%;">FINISH TRIP</button>
                 @endif
                 
+                <button onclick="toggleDriverChatDrawer()" class="btn-nav-action" style="background: var(--card-glass); border: 1px solid var(--primary); color: var(--primary); font-weight: 800; cursor: pointer;">
+                    <i class="fa-solid fa-comments"></i> PASSENGER CHAT
+                </button>
                 <a href="{{ route('driver.dashboard', $driver->id) }}" class="btn-exit-map">EXIT MAP</a>
             </div>
         </aside>
+    </div>
+
+    <!-- Mirrored Driver Live Chat Drawer Overlay -->
+    <div id="driver-chat-drawer" style="display: none; position: fixed; bottom: 0; right: 0; width: 100%; max-width: 450px; height: 75vh; background: rgba(15, 23, 42, 0.95); z-index: 10000; border-top-left-radius: 30px; border-top-right-radius: 30px; border-top: 1px solid var(--primary); box-shadow: -10px -10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(20px); flex-direction: column;">
+        <div style="padding: 20px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--success); animation: pulseGlow 1.5s infinite;"></div>
+                <h4 style="color: var(--text-main); font-weight: 800; font-size: 15px;">Passenger Chat Thread</h4>
+            </div>
+            <button onclick="toggleDriverChatDrawer()" style="background: none; border: none; color: var(--text-dim); font-size: 20px; cursor: pointer;"><i class="fa-solid fa-chevron-down"></i></button>
+        </div>
+        <div id="driver-chat-container" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <!-- Rendered Live -->
+        </div>
+        <div style="padding: 15px; border-top: 1px solid var(--card-border); display: flex; gap: 10px; background: var(--bg-main);">
+            <input type="text" id="driver-chat-input" onkeypress="if(event.key === 'Enter') sendDriverChatMessage()" placeholder="Reply to passenger..." style="flex: 1; background: var(--input-bg); border: 1px solid var(--card-border); padding: 12px 18px; border-radius: 20px; color: var(--text-main); outline: none;">
+            <button onclick="sendDriverChatMessage()" style="background: var(--primary); border: none; color: var(--bg-main); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
     </div>
 
     <div id="payment-modal" class="payment-modal">
@@ -316,10 +339,18 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', initMap);
+    document.addEventListener('DOMContentLoaded', () => {
+        initMap();
+        if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+            Notification.requestPermission();
+        }
+    });
 
     // Real-Time Auto-polling to detect incoming ride requests while on Heatmap
     setInterval(() => {
+        const driverChat = document.getElementById('driver-chat-drawer');
+        if (driverChat && driverChat.style.display !== 'none') return; // Pause polling while chatting
+
         fetch(window.location.href)
             .then(r => r.text())
             .then(html => {
@@ -330,11 +361,83 @@
                 if (hasIncoming && !currentHasIncoming) {
                     const audio = new Audio('https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg');
                     audio.play().catch(() => {});
+                    
+                    // Trigger Native PWA Web Push Notification Demonstration
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        navigator.serviceWorker.ready.then(reg => {
+                            reg.showNotification('🚖 Incoming Premium Ride Request!', {
+                                body: 'A passenger is waiting for a pickup nearby. Open dashboard to accept.',
+                                icon: 'https://cdn-icons-png.flaticon.com/512/785/785116.png',
+                                vibrate: [200, 100, 200, 100, 200],
+                                tag: 'incoming-trip'
+                            });
+                        });
+                    }
                     window.location.reload();
                 }
             })
             .catch(() => {});
     }, 5000);
+
+    // === Mirrored Driver Live Chat JS Functions ===
+    let driverChatInterval = null;
+    const activeTripId = {{ $activeBooking->id ?? 'null' }};
+
+    function toggleDriverChatDrawer() {
+        const drawer = document.getElementById('driver-chat-drawer');
+        if (drawer.style.display === 'none') {
+            drawer.style.display = 'flex';
+            fetchDriverChatThread();
+            driverChatInterval = setInterval(fetchDriverChatThread, 3000);
+        } else {
+            drawer.style.display = 'none';
+            if (driverChatInterval) clearInterval(driverChatInterval);
+        }
+    }
+
+    function fetchDriverChatThread() {
+        if (!activeTripId) return;
+        fetch(`/chat/messages/${activeTripId}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data && data.success) {
+                    const container = document.getElementById('driver-chat-container');
+                    const isScrolledToBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 50;
+                    
+                    container.innerHTML = data.messages.map(m => `
+                        <div style="display: flex; flex-direction: column; align-items: ${m.sender_type === 'driver' ? 'flex-end' : 'flex-start'};">
+                            <div style="background: ${m.sender_type === 'driver' ? '#fac000' : 'var(--card-glass)'}; color: ${m.sender_type === 'driver' ? '#000000' : 'var(--text-main)'}; padding: 10px 16px; border-radius: 18px; max-width: 80%; font-size: 13px; font-weight: 800; border: 1px solid ${m.sender_type === 'driver' ? '#fac000' : 'var(--card-border)'}; box-shadow: 0 4px 15px rgba(250,192,0,0.2);">
+                                ${m.message}
+                            </div>
+                            <span style="font-size: 9px; color: var(--text-dim); margin-top: 4px; padding: 0 6px;">${m.time}</span>
+                        </div>
+                    `).join('');
+
+                    if (isScrolledToBottom) container.scrollTop = container.scrollHeight;
+                }
+            }).catch(() => {});
+    }
+
+    function sendDriverChatMessage() {
+        if (!activeTripId) return;
+        const input = document.getElementById('driver-chat-input');
+        const msg = input.value.trim();
+        if (!msg) return;
+
+        input.value = '';
+        fetch(`/chat/messages/${activeTripId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ sender_type: 'driver', message: msg })
+        }).then(r => r.json())
+          .then(data => {
+              if (data.success) fetchDriverChatThread();
+          });
+    }
 </script>
 @endpush
 @endsection

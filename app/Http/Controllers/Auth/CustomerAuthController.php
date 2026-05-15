@@ -46,7 +46,7 @@ class CustomerAuthController extends Controller
             'status' => 'active'
         ]);
 
-        Auth::guard('customer')->login($customer);
+        Auth::guard('customer')->login($customer, $request->boolean('remember'));
         return redirect()->route('customer.onboarding');
     }
 

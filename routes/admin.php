@@ -8,8 +8,14 @@ use App\Http\Controllers\Admin\{
     WithdrawalController, PointRewardController
 };
 
-// Admin Auth View (Temporary)
-Route::get('/admin/login', fn() => view('auth.admin_auth'))->name('view.login.admin');
+use App\Http\Controllers\Auth\AdminAuthController;
+
+// Admin Auth Routes
+Route::controller(AdminAuthController::class)->group(function() {
+    Route::get('/admin/login', fn() => view('auth.admin_auth'))->name('view.login.admin');
+    Route::post('/admin/login', 'login')->name('admin.login.submit');
+    Route::post('/admin/logout', 'logout')->name('admin.logout');
+});
 
 // Admin Panel Home
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.home');

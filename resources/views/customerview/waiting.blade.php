@@ -15,7 +15,6 @@
     </script>
     <style>
         :root {
-            --primary: var(--primary);
             --bg: var(--bg-main);
             --card-bg: var(--card-glass);
             --text: var(--text-main);
@@ -152,18 +151,41 @@
             </div>
         </div>
 
-        <div class="actions">
-            <a href="tel:{{ $booking->driver->phone ?? '' }}" class="btn-action btn-call">
-                <i class="fa-solid fa-phone"></i> CALL DRIVER
+        <div class="actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="toggleChatDrawer()" class="btn-action" style="flex: 1; background: var(--card-glass); color: var(--primary); border: 1px solid var(--primary); font-weight: 800; cursor: pointer;">
+                <i class="fa-solid fa-comments"></i> LIVE CHAT
+            </button>
+            <a href="tel:{{ $booking->driver->phone ?? '' }}" class="btn-action btn-call" style="flex: 1;">
+                <i class="fa-solid fa-phone"></i> CALL
             </a>
             @if($booking->status == 'pending')
-            <form action="{{ route('customer.booking.cancel', $booking->id) }}" method="POST" style="flex: 1;">
+            <form action="{{ route('customer.booking.cancel', $booking->id) }}" method="POST" style="flex: 1; min-width: 100%;">
                 @csrf
                 <button type="submit" class="btn-action btn-cancel" style="width: 100%; border: none; cursor: pointer;">
                     <i class="fa-solid fa-xmark"></i> CANCEL RIDE
                 </button>
             </form>
             @endif
+        </div>
+    </div>
+
+    <!-- Live Chat Drawer Overlay -->
+    <div id="chat-drawer" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 75vh; background: rgba(15, 23, 42, 0.95); z-index: 10000; border-top-left-radius: 30px; border-top-right-radius: 30px; border-top: 1px solid var(--primary); box-shadow: 0 -10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(20px); flex-direction: column;">
+        <div style="padding: 20px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--success); animation: pulseGlow 1.5s infinite;"></div>
+                <h4 style="color: var(--text-main); font-weight: 800; font-size: 15px;">Chat with Driver</h4>
+            </div>
+            <button onclick="toggleChatDrawer()" style="background: none; border: none; color: var(--text-dim); font-size: 20px; cursor: pointer;"><i class="fa-solid fa-chevron-down"></i></button>
+        </div>
+        <div id="chat-messages-container" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <!-- Rendered Live -->
+        </div>
+        <div style="padding: 15px; border-top: 1px solid var(--card-border); display: flex; gap: 10px; background: var(--bg-main);">
+            <input type="text" id="chat-input-msg" onkeypress="if(event.key === 'Enter') sendChatMessage()" placeholder="Type message..." style="flex: 1; background: var(--input-bg); border: 1px solid var(--card-border); padding: 12px 18px; border-radius: 20px; color: var(--text-main); outline: none;">
+            <button onclick="sendChatMessage()" style="background: var(--primary); border: none; color: var(--bg-main); width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
         </div>
     </div>
 
@@ -219,6 +241,9 @@
 
         // Optimized Status Checker (Detects backend redirects seamlessly)
         let checkStatusInterval = setInterval(() => {
+            const drawer = document.getElementById('chat-drawer');
+            if (drawer && drawer.style.display !== 'none') return; // Pause auto-reload while chatting
+
             fetch(window.location.href)
                 .then(r => {
                     if (r.redirected) {
@@ -245,6 +270,64 @@
                 })
                 .catch(err => console.log('Status check failed'));
         }, 5000); // Check every 5 seconds for fast real-time demonstration
+
+        // === Live Chat JS Functions ===
+        let chatInterval = null;
+        const targetBookingId = {{ $booking->id }};
+
+        function toggleChatDrawer() {
+            const drawer = document.getElementById('chat-drawer');
+            if (drawer.style.display === 'none') {
+                drawer.style.display = 'flex';
+                fetchChatThread();
+                chatInterval = setInterval(fetchChatThread, 3000);
+            } else {
+                drawer.style.display = 'none';
+                if (chatInterval) clearInterval(chatInterval);
+            }
+        }
+
+        function fetchChatThread() {
+            fetch(`/chat/messages/${targetBookingId}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.success) {
+                        const container = document.getElementById('chat-messages-container');
+                        const isScrolledToBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 50;
+                        
+                        container.innerHTML = data.messages.map(m => `
+                            <div style="display: flex; flex-direction: column; align-items: ${m.sender_type === 'customer' ? 'flex-end' : 'flex-start'};">
+                                <div style="background: ${m.sender_type === 'customer' ? '#fac000' : 'var(--card-glass)'}; color: ${m.sender_type === 'customer' ? '#000000' : 'var(--text-main)'}; padding: 10px 16px; border-radius: 18px; max-width: 80%; font-size: 13px; font-weight: 800; border: 1px solid ${m.sender_type === 'customer' ? '#fac000' : 'var(--card-border)'}; box-shadow: 0 4px 15px rgba(250,192,0,0.2);">
+                                    ${m.message}
+                                </div>
+                                <span style="font-size: 9px; color: var(--text-dim); margin-top: 4px; padding: 0 6px;">${m.time}</span>
+                            </div>
+                        `).join('');
+
+                        if (isScrolledToBottom) container.scrollTop = container.scrollHeight;
+                    }
+                }).catch(() => {});
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input-msg');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            input.value = '';
+            fetch(`/chat/messages/${targetBookingId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ sender_type: 'customer', message: msg })
+            }).then(r => r.json())
+              .then(data => {
+                  if (data.success) fetchChatThread();
+              });
+        }
     </script>
 </body>
 </html>

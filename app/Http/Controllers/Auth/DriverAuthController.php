@@ -70,7 +70,7 @@ class DriverAuthController extends Controller
             'loyalty_points' => 0
         ]);
 
-        Auth::guard('driver')->login($driver);
+        Auth::guard('driver')->login($driver, $request->boolean('remember'));
         return redirect()->route('driver.onboarding.personal');
     }
 

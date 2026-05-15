@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -45,5 +46,22 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // === Role-Based Access Control Helpers ===
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
+
+    public function isDispatcher(): bool
+    {
+        return $this->role === 'dispatcher';
+    }
+
+    public function isSubAdmin(): bool
+    {
+        return $this->role === 'sub_admin';
     }
 }

@@ -189,6 +189,34 @@
 
         .toggle-pass { position: absolute; right: 15px; cursor: pointer; color: var(--text-dim); font-size: 1rem; z-index: 10; }
 
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 0.85rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--text-dim);
+            transition: 0.3s;
+        }
+
+        .remember-me:hover {
+            color: var(--primary);
+        }
+
+        .remember-me input {
+            width: auto !important;
+            margin: 0 !important;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
         .btn-register {
             width: 100%;
             background: var(--primary);
@@ -353,6 +381,12 @@
                                 <input type="password" name="password_confirmation" id="password_confirmation" placeholder="••••••••" required>
                                 <i class="fa-solid fa-eye-slash toggle-pass" data-target="password_confirmation"></i>
                             </div>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="remember-me">
+                                <input type="checkbox" name="remember"> <span>Remember my session</span>
+                            </label>
                         </div>
 
                         <button type="submit" class="btn-register">Next: Personal Info <i class="fa-solid fa-arrow-right"></i></button>

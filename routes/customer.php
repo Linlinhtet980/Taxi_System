@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Customer\{CustomerBookingController, PointController};
+use App\Http\Controllers\Customer\{CustomerBookingController, PointController, ChatController};
 use App\Http\Controllers\Auth\CustomerAuthController;
 
 // Customer Auth
@@ -13,23 +13,37 @@ Route::controller(CustomerAuthController::class)->group(function() {
     Route::post('/logout/customer', 'logout')->name('customer.logout');
 });
 
+// Universal Live Chat API Endpoints (accessible to both Customer and Driver frontend layers)
+Route::controller(ChatController::class)->prefix('chat')->group(function() {
+    Route::get('/messages/{booking}', 'fetchMessages')->name('chat.messages.fetch');
+    Route::post('/messages/{booking}', 'storeMessage')->name('chat.messages.store');
+});
+
 // Customer Portal (Protected)
-Route::middleware('auth:customer')->controller(CustomerBookingController::class)->group(function () {
-    Route::get('/home', 'dashboard')->name('customer.dashboard');
-    Route::get('/activities', 'activities')->name('customer.activities');
-    Route::get('/my-settings', 'profile')->name('customer.settings');
-    Route::post('/my-settings/update', 'updateProfile')->name('customer.settings.update');
-    Route::get('/wallet/topup', 'topupView')->name('customer.wallet.topup');
-    Route::post('/wallet/topup', 'topupStore')->name('customer.wallet.topup.store');
-    Route::post('/wallet/exchange-points', 'exchangePoints')->name('customer.wallet.exchange');
-    Route::get('/onboarding', 'onboarding')->name('customer.onboarding');
-    Route::get('/payment-setup', 'paymentSetup')->name('customer.payment.setup');
-    Route::get('/book', 'index')->name('customer.booking');
-    Route::post('/book/store', 'store')->name('customer.booking.store');
-    Route::get('/waiting/{bookingId}', 'waiting')->name('customer.waiting');
-    Route::post('/booking/{bookingId}/cancel', 'cancel')->name('customer.booking.cancel');
-    Route::post('/booking/{bookingId}/review', 'submitReview')->name('customer.booking.review');
+Route::middleware('auth:customer')->group(function () {
+    Route::controller(CustomerBookingController::class)->group(function () {
+        Route::get('/home', 'dashboard')->name('customer.dashboard');
+        Route::get('/activities', 'activities')->name('customer.activities');
+        Route::get('/my-settings', 'profile')->name('customer.settings');
+        Route::post('/my-settings/update', 'updateProfile')->name('customer.settings.update');
+        Route::get('/wallet/topup', 'topupView')->name('customer.wallet.topup');
+        Route::post('/wallet/topup', 'topupStore')->name('customer.wallet.topup.store');
+        Route::post('/wallet/exchange-points', 'exchangePoints')->name('customer.wallet.exchange');
+        Route::get('/onboarding', 'onboarding')->name('customer.onboarding');
+        Route::get('/payment-setup', 'paymentSetup')->name('customer.payment.setup');
+        Route::get('/book', 'index')->name('customer.booking');
+        Route::post('/book/store', 'store')->name('customer.booking.store');
+        Route::get('/waiting/{bookingId}', 'waiting')->name('customer.waiting');
+        Route::post('/booking/{bookingId}/cancel', 'cancel')->name('customer.booking.cancel');
+        Route::post('/booking/{bookingId}/review', 'submitReview')->name('customer.booking.review');
+    });
     
+    // Saved Places
+    Route::controller(ChatController::class)->prefix('saved-places')->group(function() {
+        Route::post('/store', 'storeSavedPlace')->name('customer.saved-places.store');
+        Route::delete('/{place}', 'destroySavedPlace')->name('customer.saved-places.destroy');
+    });
+
     // Points System
     Route::get('/points/exchange', [PointController::class, 'index'])->name('customer.points.exchange');
     Route::post('/points/exchange/{rewardId}', [PointController::class, 'exchange'])->name('customer.points.exchange.submit');

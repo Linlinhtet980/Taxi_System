@@ -1,0 +1,17 @@
+{
+    "name": "Taxi Driver Pro",
+    "short_name": "DriverPro",
+    "start_url": "/driver/home",
+    "display": "standalone",
+    "background_color": "#0B0F19",
+    "theme_color": "#D4AF37",
+    "description": "Premium real-time driver ride requests and navigation terminal.",
+    "icons": [
+        {
+            "src": "https://cdn-icons-png.flaticon.com/512/785/785116.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}

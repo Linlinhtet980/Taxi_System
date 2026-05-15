@@ -4,6 +4,7 @@
 
 @push('css')
     <link rel="stylesheet" href="{{ asset('css/root/theme.css') }}">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
     <script>
         const savedTheme = localStorage.getItem('taxi_theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -130,6 +131,13 @@
             } else {
                 themeIcon.classList.replace('fa-sun', 'fa-moon');
             }
+        }
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {});
+            });
         }
     </script>
 @endsection

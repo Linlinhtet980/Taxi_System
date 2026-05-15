@@ -7,14 +7,28 @@
 @section('content')
 <div class="animate-fade">
     <!-- Header -->
-    <div class="page-header">
+    <div class="page-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
         <div>
-            <h2 class="page-title">Analytics & Reports</h2>
-            <p class="page-subtitle">Visual overview of fleet performance and revenue trends.</p>
+            <h2 class="page-title">Advanced Analytics Dashboard</h2>
+            <p class="page-subtitle">Interactive fleet operational intelligence and revenue modeling.</p>
         </div>
-        <button class="btn-primary" onclick="window.print()">
-            <i class="fa-solid fa-file-export"></i> Export Report
-        </button>
+        <form method="GET" action="{{ route('analytics.index') }}" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <div style="display: flex; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; padding: 2px;">
+                <button type="submit" name="period" value="all" style="background: {{ ($period ?? 'all') === 'all' ? 'var(--primary)' : 'transparent' }}; color: {{ ($period ?? 'all') === 'all' ? 'var(--bg-main)' : 'var(--text-main)' }}; border: none; padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; cursor: pointer;">All Time</button>
+                <button type="submit" name="period" value="today" style="background: {{ ($period ?? '') === 'today' ? 'var(--primary)' : 'transparent' }}; color: {{ ($period ?? '') === 'today' ? 'var(--bg-main)' : 'var(--text-main)' }}; border: none; padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; cursor: pointer;">Today</button>
+                <button type="submit" name="period" value="week" style="background: {{ ($period ?? '') === 'week' ? 'var(--primary)' : 'transparent' }}; color: {{ ($period ?? '') === 'week' ? 'var(--bg-main)' : 'var(--text-main)' }}; border: none; padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; cursor: pointer;">7 Days</button>
+                <button type="submit" name="period" value="month" style="background: {{ ($period ?? '') === 'month' ? 'var(--primary)' : 'transparent' }}; color: {{ ($period ?? '') === 'month' ? 'var(--bg-main)' : 'var(--text-main)' }}; border: none; padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 10px; cursor: pointer;">30 Days</button>
+            </div>
+            <div style="display: flex; gap: 5px; align-items: center;">
+                <input type="date" name="start_date" value="{{ $startDate ?? '' }}" style="background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-main); padding: 6px 10px; border-radius: 8px; font-size: 12px; outline: none;">
+                <span style="color: var(--text-dim); font-size: 12px;">to</span>
+                <input type="date" name="end_date" value="{{ $endDate ?? '' }}" style="background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-main); padding: 6px 10px; border-radius: 8px; font-size: 12px; outline: none;">
+                <button type="submit" style="background: var(--card-glass); border: 1px solid var(--primary); color: var(--primary); padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;">Filter</button>
+            </div>
+            <button type="button" class="btn-primary" onclick="window.print()" style="padding: 6px 12px; font-size: 12px;">
+                <i class="fa-solid fa-file-export"></i> Export
+            </button>
+        </form>
     </div>
 
     <!-- Quick Stats -->

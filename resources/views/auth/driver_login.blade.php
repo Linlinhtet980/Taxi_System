@@ -136,6 +136,19 @@
         .auth-header h1 { font-size: 1.8rem; margin-bottom: 8px; font-weight: 800; color: var(--text-main); }
         .auth-header p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 30px; }
 
+        .error-badge {
+            padding: 10px;
+            border-radius: 12px;
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid #dc3545;
+            color: #dc3545;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .form-group { margin-bottom: 20px; text-align: left; }
         .form-group label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; }
 
@@ -265,6 +278,12 @@
                     <h1>Welcome Back</h1>
                     <p>Enter your credentials to access your dashboard</p>
                 </div>
+
+                @if($errors->any())
+                    <div class="error-badge">
+                        <i class="fa-solid fa-circle-exclamation"></i> {{ $errors->first() }}
+                    </div>
+                @endif
 
                 <form action="{{ route('driver.login.submit') }}" method="POST">
                     @csrf

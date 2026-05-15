@@ -71,6 +71,47 @@
                 </div>
             </div>
         </div>
+
+        <!-- Saved Places Drawer Carousel -->
+        <div class="saved-places-carousel animate-fade" style="margin-top: 10px; display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none;">
+            <button onclick="document.getElementById('add-place-modal').style.display='flex'" style="background: var(--card-glass); border: 1px dashed var(--primary); color: var(--primary); padding: 8px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; backdrop-filter: blur(10px);">
+                <i class="fa-solid fa-plus"></i> Add Favorite
+            </button>
+            @foreach($savedPlaces ?? [] as $place)
+                @php /** @var \App\Models\Core\SavedPlace $place */ @endphp
+                <div style="background: var(--card-glass); border: 1px solid var(--card-border); color: var(--text-main); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 6px; backdrop-filter: blur(10px);"
+                     onclick="useSavedPlace('{{ addslashes($place->address) }}', {{ $place->lat ?? 'null' }}, {{ $place->lng ?? 'null' }})">
+                    <i class="fa-solid fa-star" style="color: var(--primary);"></i> {{ $place->title }}
+                    <form action="{{ route('customer.saved-places.destroy', $place) }}" method="POST" onclick="event.stopPropagation();" style="display:inline;">
+                        @csrf @method('DELETE')
+                        <button type="submit" style="background:none; border:none; color:var(--danger); cursor:pointer; padding:0; margin-left:4px;"><i class="fa-solid fa-xmark"></i></button>
+                    </form>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    <!-- Add Saved Place Modal -->
+    <div id="add-place-modal" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+        <div class="glass animate-fade" style="width: 90%; max-width: 350px; padding: 25px; border-radius: 24px; border: 1px solid var(--card-border);">
+            <h4 style="color: var(--text-main); margin-bottom: 15px; font-size: 16px; font-weight: 700;">Save Favorite Location</h4>
+            <form action="{{ route('customer.saved-places.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="customer_id" value="{{ $customer->id }}">
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 11px; color: var(--text-dim); display:block; margin-bottom:4px;">Label (e.g. Home, Office)</label>
+                    <input type="text" name="title" required style="width:100%; background: var(--input-bg); border: 1px solid var(--card-border); padding: 10px; border-radius: 12px; color: var(--text-main);">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 11px; color: var(--text-dim); display:block; margin-bottom:4px;">Full Address</label>
+                    <input type="text" name="address" id="modal_saved_address" required style="width:100%; background: var(--input-bg); border: 1px solid var(--card-border); padding: 10px; border-radius: 12px; color: var(--text-main);" placeholder="Enter address or tap map">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" onclick="document.getElementById('add-place-modal').style.display='none'" style="flex:1; background: var(--input-bg); border:none; padding:10px; border-radius:10px; color: var(--text-main);">Cancel</button>
+                    <button type="submit" style="flex:1; background: var(--primary); border:none; padding:10px; border-radius:10px; color: var(--bg-main); font-weight:700;">Save Place</button>
+                </div>
+            </form>
+        </div>
     </div>
 
 
@@ -309,12 +350,16 @@
         function calculateRoute() {
             if (routingControl) map.removeControl(routingControl);
 
+            // Immediately show bottom sheet so UI responds instantly without network lag
+            document.getElementById('booking-sheet').classList.add('active');
+            document.getElementById('fare-display').innerText = "Calculating...";
+
             routingControl = L.Routing.control({
                 waypoints: [pickupMarker.getLatLng(), dropoffMarker.getLatLng()],
                 router: L.Routing.osrmv1({ serviceUrl: 'https://router.project-osrm.org/route/v1' }),
                 lineOptions: { styles: [{ color: getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#D4AF37', opacity: 0.8, weight: 6 }] },
                 createMarker: function() { return null; }
-            }).addTo(map);
+            });
 
             routingControl.on('routesfound', function(e) {
                 let distance = e.routes[0].summary.totalDistance / 1000;
@@ -330,6 +375,8 @@
                 document.getElementById('booking-sheet').classList.add('active');
                 checkValidation();
             });
+
+            routingControl.addTo(map);
         }
 
         let selectedPaymentMethod = 'cash';
@@ -374,6 +421,54 @@
             document.getElementById('selected_driver').value = id;
             checkValidation();
         }
+
+        function useSavedPlace(address, lat, lng) {
+            if (!lat || !lng) return;
+            const latlng = { lat: parseFloat(lat), lng: parseFloat(lng) };
+            map.setView(latlng, 15);
+
+            if (!pickupMarker) {
+                pickupMarker = L.marker(latlng, {
+                    icon: L.divIcon({
+                        className: 'custom-marker',
+                        html: '<div class="map-marker pickup"></div>'
+                    })
+                }).addTo(map);
+                document.getElementById('pickup_lat').value = latlng.lat;
+                document.getElementById('pickup_lng').value = latlng.lng;
+                document.getElementById('pickup_addr').value = address;
+                document.getElementById('pickup_loc_val').value = address;
+                document.getElementById('map-status').innerText = "Now pick destination";
+                if (dropoffMarker) calculateRoute();
+            } else {
+                if (dropoffMarker) map.removeLayer(dropoffMarker);
+                dropoffMarker = L.marker(latlng, {
+                    icon: L.divIcon({
+                        className: 'custom-marker',
+                        html: '<div class="map-marker dropoff"></div>'
+                    })
+                }).addTo(map);
+                document.getElementById('dropoff_lat').value = latlng.lat;
+                document.getElementById('dropoff_lng').value = latlng.lng;
+                document.getElementById('dropoff_addr').value = address;
+                document.getElementById('dropoff_loc_val').value = address;
+                calculateRoute();
+                document.getElementById('map-status').style.display = 'none';
+            }
+        }
+
+        // Keep save place address field synced with current map view center to assist fast creation
+        map.on('moveend', () => {
+            const center = map.getCenter();
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${center.lat}&lon=${center.lng}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.display_name) {
+                        const modalAddr = document.getElementById('modal_saved_address');
+                        if (modalAddr && !modalAddr.value) modalAddr.value = data.display_name;
+                    }
+                }).catch(() => {});
+        });
     </script>
 </body>
 </html>

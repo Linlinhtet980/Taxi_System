@@ -23,7 +23,9 @@ class CustomerBookingController extends Controller
             ->take(4)
             ->get();
             
-        return view('customerview.booking', compact('customer', 'availableDrivers'));
+        $savedPlaces = \App\Models\Core\SavedPlace::query()->where('customer_id', $customer->id)->get();
+            
+        return view('customerview.booking', compact('customer', 'availableDrivers', 'savedPlaces'));
     }
 
     public function dashboard()

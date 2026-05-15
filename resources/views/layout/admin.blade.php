@@ -88,6 +88,7 @@
                 </li>
 
 
+                @if(!auth()->check() || (auth()->check() && auth()->user()->role === 'super_admin'))
                 <li class="nav-group-header">System</li>
                 <li>
                     <a href="{{ route('settings.index') }}" class="nav-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
@@ -95,11 +96,15 @@
                         <span class="nav-text">Settings</span>
                     </a>
                 </li>
+                @endif
 
             </ul>
 
             <div class="logout-link">
-                <a href="#" class="nav-link">
+                <form action="{{ route('admin.logout') }}" method="POST" id="admin-logout-form" style="display: none;">
+                    @csrf
+                </form>
+                <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span class="nav-text">Logout</span>
                 </a>
@@ -182,8 +187,10 @@
 
                 
                 <div class="user-card">
-                    <p class="user-name">James Radcliffe</p>
-                    <p class="user-role">Administrator</p>
+                    <p class="user-name">{{ auth()->user()->name ?? 'James Radcliffe' }}</p>
+                    <p class="user-role" style="text-transform: capitalize; color: var(--primary);">
+                        {{ str_replace('_', ' ', auth()->user()->role ?? 'Super Admin') }}
+                    </p>
                 </div>
                 
                 <div class="user-avatar-box">

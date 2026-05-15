@@ -41,6 +41,11 @@
                     <input type="password" name="password_confirmation" placeholder="Confirm Password" required id="reg-password-confirm">
                     <i class="fa-solid fa-eye toggle-password" onclick="togglePassword('reg-password-confirm', this)"></i>
                 </div>
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember"> <span>Remember my device</span>
+                    </label>
+                </div>
                 <button type="submit" style="width: 100%; padding: 14px; border-radius: 12px; font-size: 14px;">Register Now</button>
                 <p class="mobile-toggle-link">Already have an account? <a href="javascript:void(0)" onclick="document.getElementById('container').classList.remove('active');">Sign In</a></p>
             </form>
@@ -57,13 +62,25 @@
                 @if (session('error'))
                     <div style="color: red; font-size: 0.8rem; margin-bottom: 10px;">{{ session('error') }}</div>
                 @endif
+                @if ($errors->any())
+                    <div style="color: red; font-size: 0.8rem; margin-bottom: 10px;">
+                        @foreach ($errors->all() as $error)
+                            <p>{{ $error }}</p>
+                        @endforeach
+                    </div>
+                @endif
                 
                 <input type="email" name="email" placeholder="Email Address" required value="{{ old('email') }}">
                 <div class="password-wrapper">
                     <input type="password" name="password" placeholder="Password" required id="login-password">
                     <i class="fa-solid fa-eye toggle-password" onclick="togglePassword('login-password', this)"></i>
                 </div>
-                <a href="#" style="align-self: flex-end;">Forgot password?</a>
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember"> <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
                 <button type="submit" style="width: 100%; padding: 14px; border-radius: 12px; font-size: 14px;">Sign In</button>
                 <p class="mobile-toggle-link">Don't have an account? <a href="javascript:void(0)" onclick="document.getElementById('container').classList.add('active');">Register Now</a></p>
             </form>
