@@ -60,7 +60,7 @@
 
         <div class="sidebar-menu-list">
             <a href="{{ route('customer.dashboard') }}" class="nav-menu-link {{ request()->routeIs('customer.dashboard') ? 'active' : '' }}">
-                <i class="fa-solid fa-house"></i> Home Dashboard
+                <i class="fa-solid fa-house"></i> Home
             </a>
             <a href="{{ route('customer.booking') }}" class="nav-menu-link {{ request()->routeIs('customer.booking') ? 'active' : '' }}">
                 <i class="fa-solid fa-taxi"></i> Book a Ride
