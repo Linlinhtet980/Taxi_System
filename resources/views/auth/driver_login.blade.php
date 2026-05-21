@@ -285,13 +285,13 @@
                     </div>
                 @endif
 
-                <form action="{{ route('driver.login.submit') }}" method="POST">
+                <form action="{{ route('driver.login.submit') }}" method="POST" id="driverLoginForm">
                     @csrf
                     <div class="form-group">
                         <label>Email Address</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-envelope"></i>
-                            <input type="email" name="email" placeholder="driver@luxurytaxi.com" value="{{ old('email') }}" required>
+                            <input type="email" name="email" id="driver-email" placeholder="driver@gmail.com" value="{{ old('email') }}" required pattern="[a-zA-Z0-9._%+-]+@gmail\.com" title="Please enter a valid @gmail.com address.">
                         </div>
                     </div>
 
@@ -299,7 +299,7 @@
                         <label>Password</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-lock"></i>
-                            <input type="password" name="password" id="password" placeholder="••••••••" required>
+                            <input type="password" name="password" id="password" placeholder="••••••••" required minlength="6">
                             <i class="fa-solid fa-eye-slash toggle-pass" id="togglePassword"></i>
                         </div>
                     </div>
@@ -337,6 +337,43 @@
             password.setAttribute('type', type);
             this.classList.toggle('fa-eye');
             this.classList.toggle('fa-eye-slash');
+        });
+
+        // Live Email Validation for Driver Login
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('driverLoginForm');
+            const emailInput = document.getElementById('driver-email');
+
+            if (!form) return;
+
+            const emailError = document.createElement('p');
+            emailError.style.color = '#dc3545';
+            emailError.style.fontSize = '0.75rem';
+            emailError.style.marginTop = '5px';
+            emailError.style.display = 'none';
+            emailError.textContent = 'Email must be a valid @gmail.com address.';
+            emailInput.parentNode.insertAdjacentElement('afterend', emailError);
+
+            function validateEmail() {
+                const val = emailInput.value.trim();
+                if (val && !val.endsWith('@gmail.com')) {
+                    emailError.style.display = 'block';
+                    return false;
+                } else {
+                    emailError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            emailInput.addEventListener('input', validateEmail);
+
+            form.addEventListener('submit', function(e) {
+                const isEmailValid = validateEmail();
+                if (!isEmailValid) {
+                    e.preventDefault();
+                    emailInput.focus();
+                }
+            });
         });
     </script>
 </body>

@@ -24,14 +24,14 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.login.submit') }}" method="POST">
+        <form action="{{ route('admin.login.submit') }}" method="POST" id="adminLoginForm">
             @csrf
             
             <div class="form-group">
                 <label>Email Address</label>
                 <div class="input-container">
                     <i class="fa-solid fa-envelope icon-left"></i>
-                    <input type="email" name="email" placeholder="admin@taxipremium.com" value="{{ old('email') }}" required autofocus>
+                    <input type="email" name="email" id="admin-email" placeholder="admin@gmail.com" value="{{ old('email') }}" required autofocus pattern="[a-zA-Z0-9._%+-]+@gmail\.com" title="Please enter a valid @gmail.com address.">
                 </div>
             </div>
 
@@ -39,7 +39,7 @@
                 <label>Password</label>
                 <div class="input-container">
                     <i class="fa-solid fa-lock icon-left"></i>
-                    <input type="password" name="password" id="password" placeholder="••••••••" required>
+                    <input type="password" name="password" id="password" placeholder="••••••••" required minlength="6">
                     <i class="fa-solid fa-eye-slash toggle-password" id="togglePassword"></i>
                 </div>
             </div>
@@ -80,6 +80,41 @@
                 // Toggle the icon
                 this.classList.toggle('fa-eye');
                 this.classList.toggle('fa-eye-slash');
+            });
+        }
+
+        // Live Email Validation for Admin Login
+        const form = document.getElementById('adminLoginForm');
+        const emailInput = document.getElementById('admin-email');
+
+        if (form && emailInput) {
+            const emailError = document.createElement('p');
+            emailError.style.color = '#dc3545';
+            emailError.style.fontSize = '0.75rem';
+            emailError.style.marginTop = '5px';
+            emailError.style.display = 'none';
+            emailError.textContent = 'Email must be a valid @gmail.com address.';
+            emailInput.parentNode.insertAdjacentElement('afterend', emailError);
+
+            function validateEmail() {
+                const val = emailInput.value.trim();
+                if (val && !val.endsWith('@gmail.com')) {
+                    emailError.style.display = 'block';
+                    return false;
+                } else {
+                    emailError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            emailInput.addEventListener('input', validateEmail);
+
+            form.addEventListener('submit', function(e) {
+                const isEmailValid = validateEmail();
+                if (!isEmailValid) {
+                    e.preventDefault();
+                    emailInput.focus();
+                }
             });
         }
     });

@@ -303,14 +303,31 @@
                                 <label>Phone Number</label>
                                 <div class="input-wrapper">
                                     <i class="fa-solid fa-phone"></i>
-                                    <input type="tel" name="phone_no" placeholder="09xxxxxxxxx" value="{{ old('phone_no', $driver->phone_no) }}" required>
+                                    <input type="tel" name="phone_no" id="phone_no" placeholder="09xxxxxxxxx" value="{{ old('phone_no', $driver->phone_no) }}" required minlength="7" maxlength="11" pattern="[0-9]+" title="Phone number should contain only digits (7 to 11 digits)." oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label>Emergency Contact Number</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-phone-flip"></i>
+                                    <input type="tel" name="emergency_contact_no" id="emergency_contact_no" placeholder="09xxxxxxxxx" value="{{ old('emergency_contact_no') }}" minlength="7" maxlength="11" pattern="[0-9]+" title="Emergency contact should contain only digits (7 to 11 digits)." oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
                             <div class="form-group">
                                 <label>NRIC Number</label>
                                 <div class="input-wrapper">
                                     <i class="fa-solid fa-id-card"></i>
-                                    <input type="text" name="identity_card_no" placeholder="NRIC Number" required>
+                                    <input type="text" name="identity_card_no" id="identity_card_no" placeholder="e.g. 12/LATHANA(N)123456" required pattern="\d{1,2}/[a-zA-Z]+\([Nn]\)\d{6}" title="Please match Myanmar NRIC format (e.g. 12/LATHANA(N)123456).">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Driver License Number</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-address-card"></i>
+                                    <input type="text" name="license_no" id="license_no" placeholder="e.g. B/12345/21" required pattern="[a-zA-Z0-9/]+" title="Please enter a valid driver license number (letters, numbers and slashes only).">
                                 </div>
                             </div>
                         </div>
@@ -319,7 +336,7 @@
                             <label>Current Address</label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-location-dot"></i>
-                                <input type="text" name="address" placeholder="Full Address" required>
+                                <input type="text" name="address" id="address" placeholder="Full Address" required value="{{ old('address') }}">
                             </div>
                         </div>
 
@@ -389,6 +406,101 @@
                     if (span) span.style.opacity = '0'; // Hide 'Upload' text neatly to show image fully
                     let icon = dropArea.querySelector('i');
                     if (icon) icon.style.opacity = '0';
+                }
+            });
+        });
+
+        // Live Validation for Form Fields
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('personalForm');
+            const phoneNo = document.getElementById('phone_no');
+            const emergencyNo = document.getElementById('emergency_contact_no');
+            const nric = document.getElementById('identity_card_no');
+            const licenseNo = document.getElementById('license_no');
+
+            // Help elements
+            const phoneError = createErrorElement(phoneNo);
+            const emergencyError = createErrorElement(emergencyNo);
+            const nricError = createErrorElement(nric);
+            const licenseError = createErrorElement(licenseNo);
+
+            function createErrorElement(target) {
+                const p = document.createElement('p');
+                p.style.color = '#dc3545';
+                p.style.fontSize = '0.75rem';
+                p.style.marginTop = '5px';
+                p.style.display = 'none';
+                target.parentNode.insertAdjacentElement('afterend', p);
+                return p;
+            }
+
+            function validatePhone() {
+                const val = phoneNo.value;
+                if (val && (val.length < 7 || val.length > 11)) {
+                    phoneError.textContent = 'Phone number must be between 7 and 11 digits.';
+                    phoneError.style.display = 'block';
+                    return false;
+                } else {
+                    phoneError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            function validateEmergency() {
+                const val = emergencyNo.value;
+                if (val && (val.length < 7 || val.length > 11)) {
+                    emergencyError.textContent = 'Emergency phone number must be between 7 and 11 digits.';
+                    emergencyError.style.display = 'block';
+                    return false;
+                } else {
+                    emergencyError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            function validateNRIC() {
+                const val = nric.value.trim();
+                const regex = /^\d{1,2}\/[a-zA-Z]+\([Nn]\)\d{6}$/;
+                if (val && !regex.test(val)) {
+                    nricError.textContent = 'Must match Myanmar NRIC (e.g. 12/LATHANA(N)123456).';
+                    nricError.style.display = 'block';
+                    return false;
+                } else {
+                    nricError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            function validateLicense() {
+                const val = licenseNo.value.trim();
+                const regex = /^[a-zA-Z0-9\/]+$/;
+                if (val && !regex.test(val)) {
+                    licenseError.textContent = 'License number must only contain letters, numbers, and slashes.';
+                    licenseError.style.display = 'block';
+                    return false;
+                } else {
+                    licenseError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            phoneNo.addEventListener('input', validatePhone);
+            emergencyNo.addEventListener('input', validateEmergency);
+            nric.addEventListener('input', validateNRIC);
+            licenseNo.addEventListener('input', validateLicense);
+
+            form.addEventListener('submit', function(e) {
+                const isPhoneValid = validatePhone();
+                const isEmergValid = validateEmergency();
+                const isNRICValid = validateNRIC();
+                const isLicenseValid = validateLicense();
+
+                if (!isPhoneValid || !isEmergValid || !isNRICValid || !isLicenseValid) {
+                    e.preventDefault();
+                    if (!isPhoneValid) phoneNo.focus();
+                    else if (!isEmergValid) emergencyNo.focus();
+                    else if (!isNRICValid) nric.focus();
+                    else if (!isLicenseValid) licenseNo.focus();
                 }
             });
         });

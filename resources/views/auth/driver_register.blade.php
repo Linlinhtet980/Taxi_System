@@ -353,7 +353,7 @@
                             <label>Full Name</label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-user"></i>
-                                <input type="text" name="full_name" placeholder="Enter your full name" value="{{ old('full_name') }}" required>
+                                <input type="text" name="full_name" id="full_name" placeholder="Enter your full name" value="{{ old('full_name') }}" required pattern="[a-zA-Z\s]+" title="Name should only contain English letters and spaces." oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')">
                             </div>
                         </div>
 
@@ -361,7 +361,7 @@
                             <label>Email Address</label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-envelope"></i>
-                                <input type="email" name="email" placeholder="driver@luxurytaxi.com" value="{{ old('email') }}" required>
+                                <input type="email" name="email" id="email" placeholder="driver@luxurytaxi.com" value="{{ old('email') }}" required pattern="[a-zA-Z0-9._%+-]+@gmail\.com" title="Please enter a valid @gmail.com address.">
                             </div>
                         </div>
 
@@ -369,7 +369,7 @@
                             <label>Password</label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-lock"></i>
-                                <input type="password" name="password" id="password" placeholder="••••••••" required>
+                                <input type="password" name="password" id="password" placeholder="••••••••" required minlength="6">
                                 <i class="fa-solid fa-eye-slash toggle-pass" data-target="password"></i>
                             </div>
                         </div>
@@ -378,7 +378,7 @@
                             <label>Confirm Password</label>
                             <div class="input-wrapper">
                                 <i class="fa-solid fa-shield-check"></i>
-                                <input type="password" name="password_confirmation" id="password_confirmation" placeholder="••••••••" required>
+                                <input type="password" name="password_confirmation" id="password_confirmation" placeholder="••••••••" required minlength="6">
                                 <i class="fa-solid fa-eye-slash toggle-pass" data-target="password_confirmation"></i>
                             </div>
                         </div>
@@ -415,6 +415,65 @@
                 input.setAttribute('type', type);
                 this.classList.toggle('fa-eye');
                 this.classList.toggle('fa-eye-slash');
+            });
+        });
+
+        // Live validation for Driver Registration
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('password_confirmation');
+            const emailInput = document.getElementById('email');
+
+            const passwordError = document.createElement('p');
+            passwordError.style.color = '#dc3545'; // Danger color compatible with theme
+            passwordError.style.fontSize = '0.8rem';
+            passwordError.style.marginTop = '5px';
+            passwordError.style.display = 'none';
+            passwordError.textContent = 'Passwords do not match.';
+            confirmPassword.parentNode.insertAdjacentElement('afterend', passwordError);
+
+            const emailError = document.createElement('p');
+            emailError.style.color = '#dc3545';
+            emailError.style.fontSize = '0.8rem';
+            emailError.style.marginTop = '5px';
+            emailError.style.display = 'none';
+            emailError.textContent = 'Email must be a valid @gmail.com address.';
+            emailInput.parentNode.insertAdjacentElement('afterend', emailError);
+
+            function checkPasswords() {
+                if (password.value && confirmPassword.value && password.value !== confirmPassword.value) {
+                    passwordError.style.display = 'block';
+                    return false;
+                } else {
+                    passwordError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            function validateEmail() {
+                const val = emailInput.value.trim();
+                if (val && !val.endsWith('@gmail.com')) {
+                    emailError.style.display = 'block';
+                    return false;
+                } else {
+                    emailError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            password.addEventListener('input', checkPasswords);
+            confirmPassword.addEventListener('input', checkPasswords);
+            emailInput.addEventListener('input', validateEmail);
+
+            form.addEventListener('submit', function(e) {
+                const isPassValid = checkPasswords();
+                const isEmailValid = validateEmail();
+                if (!isPassValid || !isEmailValid) {
+                    e.preventDefault();
+                    if (!isEmailValid) emailInput.focus();
+                    else if (!isPassValid) confirmPassword.focus();
+                }
             });
         });
     </script>
