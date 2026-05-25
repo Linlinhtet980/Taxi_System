@@ -8,12 +8,12 @@
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     transition: var(--transition);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: none;
 }
 
 .glass:hover {
     border-color: rgba(212, 175, 55, 0.4);
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7);
+    box-shadow: var(--card-shadow);
     transform: translateY(-2px);
 }
 

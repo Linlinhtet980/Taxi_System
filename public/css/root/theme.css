@@ -49,43 +49,43 @@
 
 /* --- Pearl & Champagne Palette (Light Mode) --- */
 [data-theme="light"] {
-    --bg-main: #fcfaf5; /* Creamy Pearl */
-    --bg-gradient: radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.08) 0px, transparent 50%),
-                   radial-gradient(at 100% 0%, rgba(255, 255, 255, 0.8) 0px, transparent 50%),
-                   radial-gradient(at 50% 50%, rgba(245, 245, 240, 1) 0px, transparent 100%);
+    --bg-main: #f8fafc; /* Clean Snow White / Light Slate */
+    --bg-gradient: radial-gradient(at 0% 0%, rgba(212, 175, 55, 0.06) 0px, transparent 50%),
+                   radial-gradient(at 100% 0%, rgba(248, 250, 252, 1) 0px, transparent 50%),
+                   radial-gradient(at 50% 50%, #ffffff 0px, #f1f5f9 100%);
     
-    --accent-primary: #B8860B; /* Dark Goldenrod */
-    --accent-secondary: #DAA520; /* Goldenrod */
-    --accent-glow: rgba(184, 134, 11, 0.15);
+    --accent-primary: #b38f1d; /* Metallic luxury gold with sufficient contrast */
+    --accent-secondary: #d4af37; /* Bright gold */
+    --accent-glow: rgba(212, 175, 55, 0.15);
     
     --primary: var(--accent-primary);
-    --primary-light: rgba(184, 134, 11, 0.08);
+    --primary-light: rgba(179, 143, 29, 0.08);
     
-    --card-glass: rgba(255, 255, 255, 0.95);
-    --card-border: rgba(184, 134, 11, 0.12);
-    --card-shadow: 0 10px 30px rgba(184, 134, 11, 0.05);
+    --card-glass: rgba(255, 255, 255, 0.85); /* Sleek glass card */
+    --card-border: rgba(226, 232, 240, 0.8); /* Clean silver-slate border */
+    --card-shadow: 0 10px 30px rgba(15, 23, 42, 0.03); /* Subtle dark slate shadow */
     
-    --text-main: #1a1a1a;
-    --text-dim: #6b6b6b;
-    --input-bg: rgba(0, 0, 0, 0.03);
-    --input-placeholder: rgba(0, 0, 0, 0.4);
-    --input-focus-bg: rgba(0, 0, 0, 0.05);
+    --text-main: #0f172a; /* Slate 900 */
+    --text-dim: #64748b; /* Slate 500 */
+    --input-bg: rgba(15, 23, 42, 0.02);
+    --input-placeholder: #94a3b8;
+    --input-focus-bg: rgba(15, 23, 42, 0.04);
     --card-bg: #ffffff;
 
     --sidebar-bg: #ffffff;
-    --sidebar-text: #5c5c5c;
-    --sidebar-active-bg: rgba(184, 134, 11, 0.08);
+    --sidebar-text: #475569; /* Slate 600 */
+    --sidebar-active-bg: rgba(179, 143, 29, 0.08);
     --sidebar-active-text: var(--accent-primary);
 
     /* --- Status Colors (Light Mode) --- */
-    --success: #15803d; /* Darker Green */
-    --success-light: rgba(21, 128, 61, 0.08);
-    --warning: #b45309; /* Darker Amber */
-    --warning-light: rgba(180, 83, 9, 0.08);
-    --danger: #be123c; /* Darker Rose */
-    --danger-light: rgba(190, 18, 60, 0.08);
-    --info: #1d4ed8; /* Darker Blue */
-    --info-light: rgba(29, 78, 216, 0.08);
+    --success: #16a34a; /* Green 600 */
+    --success-light: rgba(22, 163, 74, 0.08);
+    --warning: #d97706; /* Amber 600 */
+    --warning-light: rgba(217, 119, 6, 0.08);
+    --danger: #dc2626; /* Red 600 */
+    --danger-light: rgba(220, 38, 38, 0.08);
+    --info: #2563eb; /* Blue 600 */
+    --info-light: rgba(37, 99, 235, 0.08);
 }
 
 /* --- Leaflet Routing Machine Theme Overrides --- */
